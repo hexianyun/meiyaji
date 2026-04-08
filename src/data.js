@@ -63,17 +63,18 @@ export const artworks = [
     artist: "林风眠",
     price: 128000,
     orig: 158000,
-    cat: "山水",
+    cat: "国画",
     style: "水墨设色",
     size: "68×138cm",
     year: "2021",
     mat: "宣纸",
     desc: "以轻盈笔触捕捉春日山林的朦胧之美，晨雾缭绕，层次分明，意境悠远。",
-    img: "https://picsum.photos/seed/at1/800/600",
+    img: "https://picsum.photos/seed/chinese-painting/800/600",
     views: 2340,
     sold: 0,
     stock: 1,
-    featured: true
+    featured: true,
+    charityPct: 30
   },
   {
     id: 2,
@@ -82,17 +83,18 @@ export const artworks = [
     artist: "吴冠中",
     price: 256000,
     orig: null,
-    cat: "风景",
+    cat: "油画",
     style: "油画棒彩",
     size: "50×70cm",
     year: "2022",
     mat: "布面油画",
     desc: "白墙黛瓦、小桥流水，在点与线的韵律中呈现江南的诗画意境。",
-    img: "https://picsum.photos/seed/at2/800/600",
+    img: "https://picsum.photos/seed/oil-painting/800/600",
     views: 4120,
     sold: 0,
     stock: 1,
-    featured: true
+    featured: true,
+    charityPct: 25
   },
   {
     id: 3,
@@ -101,17 +103,18 @@ export const artworks = [
     artist: "徐悲鸿",
     price: 88000,
     orig: 98000,
-    cat: "动物",
+    cat: "国画",
     style: "水墨",
     size: "95×178cm",
     year: "2020",
     mat: "宣纸",
     desc: "奔马姿态矫健，鬃毛飞扬，以刚劲有力的线条勾勒出骏马的澎湃活力。",
-    img: "https://picsum.photos/seed/at3/800/600",
+    img: "https://picsum.photos/seed/horse-painting/800/600",
     views: 5680,
     sold: 3,
     stock: 2,
-    featured: true
+    featured: true,
+    charityPct: 35
   },
   {
     id: 4,
@@ -120,17 +123,18 @@ export const artworks = [
     artist: "齐白石",
     price: 68000,
     orig: null,
-    cat: "花鸟",
+    cat: "国画",
     style: "水墨",
     size: "45×90cm",
     year: "2019",
     mat: "宣纸",
     desc: "寥寥数笔却形神兼备，意趣盎然，尽显大师返璞归真的艺术境界。",
-    img: "https://picsum.photos/seed/at4/800/600",
+    img: "https://picsum.photos/seed/shrimp-painting/800/600",
     views: 7890,
     sold: 8,
     stock: 1,
-    featured: false
+    featured: false,
+    charityPct: 20
   },
   {
     id: 5,
@@ -139,17 +143,18 @@ export const artworks = [
     artist: "齐白石",
     price: 158000,
     orig: 188000,
-    cat: "花鸟",
+    cat: "国画",
     style: "设色",
     size: "68×136cm",
     year: "2022",
     mat: "宣纸",
     desc: "盛夏荷塘，燕语莺声，浓淡相宜，情趣横生。",
-    img: "https://picsum.photos/seed/at5/800/600",
+    img: "https://picsum.photos/seed/lotus-painting/800/600",
     views: 3560,
     sold: 1,
     stock: 1,
-    featured: false
+    featured: false,
+    charityPct: 40
   },
   {
     id: 6,
@@ -158,17 +163,18 @@ export const artworks = [
     artist: "张大千",
     price: 320000,
     orig: null,
-    cat: "山水",
+    cat: "国画",
     style: "泼墨泼彩",
     size: "120×240cm",
     year: "2023",
     mat: "绢本",
     desc: "云海翻涌，山峦若隐若现，气势恢宏，艺术生涯巅峰时期的珍贵之作。",
-    img: "https://picsum.photos/seed/at6/800/600",
+    img: "https://picsum.photos/seed/mountain-painting/800/600",
     views: 6120,
     sold: 0,
     stock: 1,
-    featured: true
+    featured: true,
+    charityPct: 50
   },
   {
     id: 7,
@@ -177,17 +183,18 @@ export const artworks = [
     artist: "潘玉良",
     price: 48000,
     orig: 52000,
-    cat: "花卉",
+    cat: "油画",
     style: "油画",
     size: "40×50cm",
     year: "2021",
     mat: "布面油画",
     desc: "以西方印象派的光色手法描绘东方插花艺术，明快典雅。",
-    img: "https://picsum.photos/seed/at7/800/600",
+    img: "https://picsum.photos/seed/flower-oil/800/600",
     views: 2100,
     sold: 2,
     stock: 3,
-    featured: false
+    featured: false,
+    charityPct: 15
   },
   {
     id: 8,
@@ -196,21 +203,69 @@ export const artworks = [
     artist: "林风眠",
     price: 98000,
     orig: null,
-    cat: "山水",
+    cat: "国画",
     style: "水墨",
     size: "55×105cm",
     year: "2022",
     mat: "宣纸",
     desc: "秋水长天，一叶扁舟，意境空灵悠远，中国文人画的精神家园。",
-    img: "https://picsum.photos/seed/at8/800/600",
+    img: "https://picsum.photos/seed/fishing-painting/800/600",
     views: 3200,
     sold: 1,
     stock: 2,
-    featured: false
+    featured: false,
+    charityPct: 25
+  },
+  {
+    id: 9,
+    title: "沙漠之魂",
+    aid: 1,
+    artist: "孙悦",
+    price: 1580,
+    orig: null,
+    cat: "摄影",
+    style: "风光摄影",
+    size: "30×40cm",
+    year: "2023",
+    mat: "摄影作品",
+    desc: "沙漠中的仙人掌，展现生命的坚韧与美丽。",
+    img: "https://picsum.photos/seed/desert-photo/800/600",
+    views: 1200,
+    sold: 5,
+    stock: 10,
+    featured: true,
+    charityPct: 15
+  },
+  {
+    id: 10,
+    title: "陶艺花瓶",
+    aid: 2,
+    artist: "王芳",
+    price: 8900,
+    orig: null,
+    cat: "陶艺",
+    style: "手工陶艺",
+    size: "高30cm",
+    year: "2023",
+    mat: "陶瓷",
+    desc: "手工制作的陶艺花瓶，简约而不失优雅。",
+    img: "https://picsum.photos/seed/pottery-vase/800/600",
+    views: 850,
+    sold: 3,
+    stock: 8,
+    featured: true,
+    charityPct: 25
   }
 ];
 
-export const categories = ["全部", "山水", "花鸟", "动物", "风景", "书法", "当代"];
+export const categories = ["油画", "国画", "摄影", "陶艺"];
+
+export const categoryIcons = {
+  "油画": "🖼️",
+  "国画": "🖌️",
+  "摄影": "📷",
+  "陶艺": "🏺"
+};
 
 export const stories = [
   {
