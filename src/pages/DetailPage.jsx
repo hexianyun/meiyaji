@@ -48,13 +48,19 @@ export default function DetailPage() {
       </div>
 
       <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-[430px] bg-white border-t border-divider p-3 flex gap-2 z-40">
-        <button 
+        <button
+          onClick={() => navigate('/cart')}
+          className="w-12 h-12 bg-white border border-divider rounded-xl flex items-center justify-center text-xl"
+        >
+          🛒
+        </button>
+        <button
           onClick={() => addToCart(art)}
           className="flex-1 bg-primary text-white py-3 rounded-xl font-semibold text-sm"
         >
           加入购物车
         </button>
-        <button 
+        <button
           onClick={() => {
             addToCart(art)
             navigate('/cart')

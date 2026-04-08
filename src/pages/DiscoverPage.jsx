@@ -80,7 +80,14 @@ export default function DiscoverPage() {
                 <div className="p-2.5">
                   <p className="text-xs font-semibold truncate mb-0.5">{art.title}</p>
                   <p className="text-[10px] text-text-light mb-1.5">{art.artist}</p>
-                  <p className="text-sm font-bold text-primary">¥{art.price.toLocaleString()}</p>
+                  <div className="flex justify-between items-center">
+                    <p className="text-sm font-bold text-primary">¥{art.price.toLocaleString()}</p>
+                    {art.charityPct && (
+                      <span className="bg-green-100 text-green-700 text-[9px] px-1.5 py-0.5 rounded">
+                        {art.charityPct}%公益
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             )
