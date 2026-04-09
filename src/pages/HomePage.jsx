@@ -5,7 +5,7 @@ import { artworks, artists, categories, categoryIcons, charity, exhibitions } fr
 
 export default function HomePage() {
   const navigate = useNavigate()
-  const { showToast } = useApp()
+  const { showToast, addToCart } = useApp()
   const featured = artworks.filter(a => a.featured)
   const [currentSlide, setCurrentSlide] = useState(0)
   const trackRef = useRef(null)
@@ -42,33 +42,6 @@ export default function HomePage() {
           >
             🌟
           </button>
-        </div>
-
-        <div
-          onClick={() => navigate('/discover')}
-          className="bg-white border border-divider rounded-full px-4 py-3 flex items-center gap-2"
-        >
-          <span>🔍</span>
-          <span className="text-text-light text-sm">搜索艺术品、艺术家...</span>
-        </div>
-      </div>
-
-      <div
-        onClick={() => navigate(`/detail/${featured[0].id}`)}
-        className="mx-4 my-3 rounded-2xl overflow-hidden relative aspect-video cursor-pointer"
-      >
-        <img
-          src={featured[0].img}
-          alt={featured[0].title}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex flex-col justify-end p-5">
-          <span className="bg-primary text-white text-[10px] px-2 py-1 rounded-full inline-block mb-1 w-fit">
-            精选
-          </span>
-          <p className="text-white text-lg font-bold mb-1">{featured[0].title}</p>
-          <p className="text-white/80 text-xs mb-1">{featured[0].artist} · {featured[0].cat}</p>
-          <p className="text-secondary font-bold">¥{featured[0].price.toLocaleString()}</p>
         </div>
       </div>
 
@@ -282,12 +255,24 @@ function ArtCard({ art }) {
         <p className="text-xs font-semibold truncate mb-0.5">{art.title}</p>
         <p className="text-[10px] text-text-light mb-1.5">{art.artist} · {art.cat}</p>
         <div className="flex justify-between items-center">
-          <p className="text-sm font-bold text-primary">¥{art.price.toLocaleString()}</p>
-          {art.charityPct && (
-            <span className="bg-green-100 text-green-700 text-[9px] px-1.5 py-0.5 rounded">
-              {art.charityPct}%公益
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-bold text-primary">¥{art.price.toLocaleString()}</p>
+            {art.charityPct && (
+              <span className="bg-green-100 text-green-700 text-[9px] px-1.5 py-0.5 rounded">
+                {art.charityPct}%公益
+              </span>
+            )}
+          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              addToCart(art)
+              showToast('已加入购物车')
+            }}
+            className="w-7 h-7 bg-primary text-white rounded-full flex items-center justify-center text-xs"
+          >
+            🛒
+          </button>
         </div>
       </div>
     </div>

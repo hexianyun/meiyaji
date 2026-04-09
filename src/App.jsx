@@ -56,6 +56,8 @@ function useApp() {
 function Navigation() {
   const location = useLocation()
   const navigate = useNavigate()
+  const { cart } = useApp()
+  const cartCount = cart.reduce((sum, item) => sum + item.qty, 0)
 
   const navItems = [
     { path: '/', icon: '🏠', label: '首页' },
@@ -78,7 +80,14 @@ function Navigation() {
                 isActive ? 'text-primary' : 'text-text-light'
               }`}
             >
-              <span className="text-lg">{item.icon}</span>
+              <span className="text-lg relative">
+                {item.icon}
+                {item.path === '/profile' && cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-danger text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center">
+                    {cartCount > 9 ? '9+' : cartCount}
+                  </span>
+                )}
+              </span>
               <span className="text-[10px] font-medium">{item.label}</span>
             </button>
           )

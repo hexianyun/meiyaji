@@ -7,7 +7,7 @@ export default function DiscoverPage() {
   const [searchQ, setSearchQ] = useState('')
   const [searchCat, setSearchCat] = useState(0)
   const navigate = useNavigate()
-  const { favs, toggleFav } = useApp()
+  const { favs, toggleFav, addToCart, showToast } = useApp()
 
   const filtered = artworks.filter(art => {
     if (searchCat > 0 && art.cat !== categories[searchCat]) return false
@@ -81,12 +81,24 @@ export default function DiscoverPage() {
                   <p className="text-xs font-semibold truncate mb-0.5">{art.title}</p>
                   <p className="text-[10px] text-text-light mb-1.5">{art.artist}</p>
                   <div className="flex justify-between items-center">
-                    <p className="text-sm font-bold text-primary">¥{art.price.toLocaleString()}</p>
-                    {art.charityPct && (
-                      <span className="bg-green-100 text-green-700 text-[9px] px-1.5 py-0.5 rounded">
-                        {art.charityPct}%公益
-                      </span>
-                    )}
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-bold text-primary">¥{art.price.toLocaleString()}</p>
+                      {art.charityPct && (
+                        <span className="bg-green-100 text-green-700 text-[9px] px-1.5 py-0.5 rounded">
+                          {art.charityPct}%公益
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        addToCart(art)
+                        showToast('已加入购物车')
+                      }}
+                      className="w-7 h-7 bg-primary text-white rounded-full flex items-center justify-center text-xs"
+                    >
+                      🛒
+                    </button>
                   </div>
                 </div>
               </div>
