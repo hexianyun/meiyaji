@@ -110,7 +110,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: true,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 2,
@@ -130,7 +130,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 3,
@@ -150,7 +150,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: true,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 4,
@@ -170,7 +170,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 5,
@@ -190,7 +190,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 6,
@@ -210,7 +210,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: true,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 7,
@@ -230,7 +230,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 8,
@@ -250,7 +250,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: true,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 9,
@@ -270,7 +270,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 10,
@@ -290,7 +290,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 11,
@@ -310,7 +310,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: true,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 12,
@@ -330,7 +330,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 13,
@@ -350,7 +350,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: true,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 14,
@@ -370,7 +370,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 15,
@@ -390,7 +390,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 16,
@@ -410,7 +410,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: true,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 17,
@@ -430,7 +430,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 18,
@@ -450,7 +450,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 19,
@@ -470,7 +470,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 20,
@@ -490,7 +490,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: true,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 19,
@@ -510,7 +510,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 20,
@@ -530,7 +530,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: true,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 21,
@@ -550,7 +550,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
   {
     id: 22,
@@ -570,7 +570,7 @@ export const artworks = [
     sold: 0,
     stock: 1,
     featured: false,
-    charityPct: 20,
+    charityPct: 40,
   },
 ]
 
