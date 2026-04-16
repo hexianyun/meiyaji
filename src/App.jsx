@@ -6,7 +6,7 @@ import DetailPage from './pages/DetailPage'
 import CartPage from './pages/CartPage'
 import OrdersPage from './pages/OrdersPage'
 import ProfilePage from './pages/ProfilePage'
-import ArtistPage from './pages/ArtistPage'
+import ArtistListPage from './pages/ArtistListPage'
 import ExhibitionsPage from './pages/ExhibitionsPage'
 import CharityPage from './pages/CharityPage'
 
@@ -61,9 +61,9 @@ function Navigation() {
 
   const navItems = [
     { path: '/', icon: '🏠', label: '首页' },
+    { path: '/charity', icon: '💚', label: '公益活动' },
     { path: '/discover', icon: '🔍', label: '艺术品' },
-    { path: '/exhibitions', icon: '🎨', label: '活动' },
-    { path: '/charity', icon: '💚', label: '公益' },
+    { path: '/artists', icon: '🎨', label: '艺术家' },
     { path: '/profile', icon: '👤', label: '我的' }
   ]
 
@@ -122,6 +122,7 @@ function AppContent() {
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/artist/:id" element={<ArtistPage />} />
+          <Route path="/artists" element={<ArtistListPage />} />
           <Route path="/exhibitions" element={<ExhibitionsPage />} />
           <Route path="/charity" element={<CharityPage />} />
         </Routes>
