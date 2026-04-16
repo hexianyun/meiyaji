@@ -88,7 +88,8 @@ function CharityCarousel({ activities }) {
 export default function HomePage() {
   const navigate = useNavigate()
   const { showToast, addToCart } = useApp()
-  const featured = artworks.filter(a => a.featured)
+  const featured = artworks.filter(a => a.featured).slice(0, 6)
+  const displayedArtists = artists.slice(0, 10)
 
   // 按日期降序取最新3条公益活动
   const recentActivities = [...charityActivities]
@@ -117,7 +118,7 @@ export default function HomePage() {
 
       <div className="px-4 mt-4">
         <div className="flex items-center justify-between mb-3">
-          <span className="font-bold text-base">精品推荐</span>
+          <span className="font-bold text-base">艺术品</span>
           <span
             onClick={() => navigate('/discover')}
             className="text-primary text-xs cursor-pointer"
@@ -134,24 +135,24 @@ export default function HomePage() {
 
       <div className="px-4">
         <div className="flex items-center justify-between mb-3">
-          <span className="font-bold text-base">热门艺术家</span>
+          <span className="font-bold text-base">艺术家</span>
         </div>
-        <div className="flex gap-4 overflow-x-auto pb-2">
-          {artists.map(artist => (
+        <div className="grid grid-cols-5 gap-3">
+          {displayedArtists.map(artist => (
             <div
               key={artist.id}
               onClick={() => navigate(`/artist/${artist.id}`)}
-              className="text-center flex-shrink-0 cursor-pointer"
+              className="text-center cursor-pointer"
             >
-              <div className="w-16 h-16 rounded-full border-2 border-primary overflow-hidden mb-2">
+              <div className="aspect-square rounded-xl border-2 border-primary overflow-hidden mb-1.5">
                 <img
                   src={artist.avatar}
                   alt={artist.name}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <p className="text-xs font-semibold">{artist.name}</p>
-              <p className="text-[10px] text-text-light">{artist.location}</p>
+              <p className="text-[11px] font-semibold truncate">{artist.name}</p>
+              <p className="text-[9px] text-text-light truncate">{artist.location}</p>
             </div>
           ))}
         </div>
