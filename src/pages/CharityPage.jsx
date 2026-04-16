@@ -15,7 +15,7 @@ export default function CharityPage() {
         <h1 className="text-[26px] font-bold mb-2" style={{ color: 'var(--text)', letterSpacing: '-0.01em' }}>
           公益活动
         </h1>
-        <p className="text-sm max-w-[260px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-sm leading-relaxed whitespace-nowrap" style={{ color: 'var(--text-muted)' }}>
           以艺术之名相聚，为乡村孩童的审美启蒙播种。
         </p>
       </div>
