@@ -14,62 +14,61 @@ export default function DiscoverPage() {
   })
 
   return (
-    <div className="pb-16 fade-in">
-      <div className="bg-background p-4 border-b border-divider sticky top-0 z-30">
-        <div className="bg-white border border-divider rounded-xl px-4 py-3 flex items-center gap-2">
-          <span>🔍</span>
+    <div className="pb-20 fade-in">
+      {/* 搜索栏 */}
+      <div className="sticky top-0 z-30 px-4 pt-4 pb-3"
+        style={{ background: 'rgba(246, 241, 234, 0.92)', backdropFilter: 'blur(12px)' }}
+      >
+        <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl"
+          style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+        >
+          <span style={{ color: 'var(--text-weak)', fontSize: '15px' }}>◇</span>
           <input
             type="text"
             placeholder="搜索作品、艺术家..."
             value={searchQ}
             onChange={(e) => setSearchQ(e.target.value)}
             className="flex-1 border-none outline-none bg-none text-sm"
+            style={{ color: 'var(--text)', background: 'transparent' }}
           />
         </div>
       </div>
 
-      <div className="p-4 pb-20">
-        <p className="text-[11px] text-text-light mb-3">共 {filtered.length} 件作品</p>
+      <div className="px-4 pb-6 pt-2">
+        <p className="text-[11px] mb-4" style={{ color: 'var(--text-weak)' }}>共 {filtered.length} 件作品</p>
         <div className="grid grid-cols-2 gap-3">
           {filtered.map(art => {
             const isFav = favs.includes(art.id)
             return (
               <div 
                 key={art.id}
-                className="bg-white rounded-xl border border-divider overflow-hidden cursor-pointer"
+                className="art-card cursor-pointer"
                 onClick={() => navigate(`/detail/${art.id}`)}
               >
-                <div className="aspect-[4/3] relative bg-gradient-to-br from-divider to-[#D4C5B0]">
-                  <img 
-                    src={art.img} 
-                    alt={art.title}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="aspect-[4/3] relative" style={{ background: 'var(--surface-2)' }}>
+                  <img src={art.img} alt={art.title} className="w-full h-full object-cover" />
                   {art.orig && (
-                    <span className="absolute top-2 left-2 bg-danger text-white text-[9px] px-1.5 py-0.5 rounded">
-                      限时
-                    </span>
+                    <span className="absolute top-2.5 left-2.5 tag-accent">限时</span>
                   )}
                   <button 
                     onClick={(e) => {
                       e.stopPropagation()
                       toggleFav(art.id)
                     }}
-                    className="absolute top-2 right-2 w-7 h-7 bg-white/85 rounded-full flex items-center justify-center text-sm"
+                    className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full flex items-center justify-center"
+                    style={{ background: isFav ? 'rgba(199,164,154,0.25)' : 'rgba(255,255,255,0.75)', backdropFilter: 'blur(6px)' }}
                   >
-                    {isFav ? '❤️' : '🤍'}
+                    <span style={{ fontSize: '13px', color: isFav ? '#C98F86' : '#A59B92' }}>{isFav ? '♥' : '♡'}</span>
                   </button>
                 </div>
-                <div className="p-2.5">
-                  <p className="text-xs font-semibold truncate mb-0.5">{art.title}</p>
-                  <p className="text-[10px] text-text-light mb-1.5">{art.artist}</p>
+                <div className="px-3.5 pt-3 pb-3.5">
+                  <p className="text-xs font-semibold truncate mb-0.5" style={{ color: 'var(--text)' }}>{art.title}</p>
+                  <p className="text-[10px] mb-2" style={{ color: 'var(--text-muted)' }}>{art.artist}</p>
                   <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-bold text-primary">¥{art.price.toLocaleString()}</p>
+                    <div className="flex items-baseline gap-1.5">
+                      <p className="text-sm font-bold" style={{ color: 'var(--primary)' }}>¥{art.price.toLocaleString()}</p>
                       {art.charityPct && (
-                        <span className="bg-green-100 text-green-700 text-[9px] px-1.5 py-0.5 rounded">
-                          {art.charityPct}%公益
-                        </span>
+                        <span className="tag-sage" style={{ fontSize: '9px', padding: '2px 7px' }}>{art.charityPct}%公益</span>
                       )}
                     </div>
                     <button
@@ -78,9 +77,10 @@ export default function DiscoverPage() {
                         addToCart(art)
                         showToast('已加入购物车')
                       }}
-                      className="w-7 h-7 bg-primary text-white rounded-full flex items-center justify-center text-xs"
+                      className="w-7 h-7 rounded-xl flex items-center justify-center"
+                      style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}
                     >
-                      🛒
+                      <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>+</span>
                     </button>
                   </div>
                 </div>
@@ -90,9 +90,9 @@ export default function DiscoverPage() {
         </div>
         {filtered.length === 0 && (
           <div className="text-center py-12">
-            <div className="text-5xl mb-3">🔍</div>
-            <p className="font-semibold mb-2">没有找到相关作品</p>
-            <p className="text-sm text-text-light">试试其他关键词或分类</p>
+            <div className="text-4xl mb-3" style={{ color: 'var(--text-weak)' }}>◇</div>
+            <p className="font-semibold mb-1.5" style={{ color: 'var(--text)' }}>没有找到相关作品</p>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>试试其他关键词</p>
           </div>
         )}
       </div>

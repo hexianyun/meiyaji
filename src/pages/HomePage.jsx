@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
 import { artworks, artists, charityActivities } from '../data'
 
-function CharityCarousel({ activities }) {
+/* ===== 公益轮播（莫兰迪风格）===== */
+function HeroCarousel({ activities }) {
   const navigate = useNavigate()
   const [current, setCurrent] = useState(0)
   const total = Math.min(activities.length, 3)
@@ -15,68 +16,59 @@ function CharityCarousel({ activities }) {
 
   useEffect(() => {
     if (total <= 1) return
-    const timer = setInterval(goNext, 3500)
+    const timer = setInterval(goNext, 4000)
     return () => clearInterval(timer)
   }, [goNext, total])
 
   if (!slides.length) return null
 
   return (
-    <div className="mx-4 mt-3 rounded-xl overflow-hidden relative bg-gradient-to-br from-green-600 to-green-800">
-      {/* 轮播图片区 */}
+    <div className="mx-4 mt-5 rounded-2xl overflow-hidden relative" style={{ background: 'var(--surface)' }}>
       {slides.map((item, i) => {
         const isActive = i === current
         return (
           <div
             key={item.id}
             onClick={() => navigate(`/charity/article/${item.id}`)}
-            className={`cursor-pointer transition-all duration-500 ease-in-out ${isActive ? 'opacity-100' : 'opacity-0 absolute inset-0'}`}
+            className={`cursor-pointer transition-all duration-700 ease-out ${isActive ? 'opacity-100' : 'opacity-0 absolute inset-0'}`}
             style={{ pointerEvents: isActive ? 'auto' : 'none' }}
           >
-            <div className="aspect-[16/9] relative">
-              <img
-                src={item.cover}
-                alt={item.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+            <div className="aspect-[4/3] relative">
+              <img src={item.cover} alt={item.title} className="w-full h-full object-cover" />
+              {/* 柔和渐变 */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
 
-              {/* 标签 */}
-              <div className="absolute top-3 left-3 flex gap-2">
-                <span className="bg-green-500/90 backdrop-blur-sm text-white text-[10px] px-2.5 py-1 rounded-full font-medium">
-                  💚 公益活动
-                </span>
-                <span className="bg-white/20 backdrop-blur-sm text-white text-[10px] px-2.5 py-1 rounded-full">
+              {/* 标签区 */}
+              <div className="absolute top-4 left-4 flex gap-2">
+                <span className="tag-sage">公益活动</span>
+                <span className="text-white/80 text-[11px] px-2.5 py-0.5 rounded-full backdrop-blur-sm bg-white/15">
                   {item.location}
                 </span>
               </div>
 
               {/* 文字信息 */}
-              <div className="absolute bottom-4 left-4 right-4 text-white">
-                <p className="text-sm font-bold leading-snug line-clamp-2">{item.title}</p>
-                <div className="flex items-center gap-3 mt-2">
-                  <span className="text-[11px] text-white/85">{item.date}</span>
-                  <span className="text-[11px] text-white/85">👥 约{item.participants}人参与</span>
-                </div>
-                <div className="mt-2 inline-flex items-center gap-1 bg-green-500 text-white text-xs font-semibold px-3 py-1.5 rounded-full">
-                  查看详情 →
-                </div>
+              <div className="absolute bottom-5 left-5 right-5">
+                <p className="text-white font-semibold leading-relaxed text-base drop-shadow-sm line-clamp-2">
+                  {item.title}
+                </p>
+                <p className="text-white/70 text-xs mt-2">{item.date}</p>
               </div>
             </div>
           </div>
         )
       })}
 
-      {/* 指示器 */}
+      {/* 轻量指示器 */}
       {total > 1 && (
-        <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
           {Array.from({ length: total }).map((_, i) => (
             <button
               key={i}
               onClick={(e) => { e.stopPropagation(); setCurrent(i) }}
               className={`transition-all rounded-full ${
-                i === current ? 'w-5 h-2 bg-white' : 'w-2 h-2 bg-white/50'
+                i === current ? 'w-5 h-1.5 bg-primary' : 'w-1.5 h-1.5 bg-white/40'
               }`}
+              style={{ transitionDuration: '0.3s' }}
             />
           ))}
         </div>
@@ -85,9 +77,64 @@ function CharityCarousel({ activities }) {
   )
 }
 
+/* ===== 艺术品卡片（画廊风格）===== */
+function ArtCard({ art }) {
+  const navigate = useNavigate()
+  const { favs, toggleFav, addToCart, showToast } = useApp()
+  const isFav = favs.includes(art.id)
+
+  return (
+    <div
+      className="art-card cursor-pointer"
+      onClick={() => navigate(`/detail/${art.id}`)}
+    >
+      <div className="aspect-[4/3] relative" style={{ background: 'var(--surface-2)' }}>
+        <img src={art.img} alt={art.title} className="w-full h-full object-cover" />
+        {art.orig && (
+          <span className="absolute top-2.5 left-2.5 tag-accent">限时</span>
+        )}
+        <button
+          onClick={(e) => { e.stopPropagation(); toggleFav(art.id) }}
+          className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full flex items-center justify-center backdrop-blur-md"
+          style={{ background: isFav ? 'rgba(199,164,154,0.25)' : 'rgba(255,255,255,0.75)' }}
+        >
+          <span style={{ fontSize: '13px', color: isFav ? '#C98F86' : '#A59B92' }}>{isFav ? '♥' : '♡'}</span>
+        </button>
+      </div>
+      <div className="px-4 pt-3 pb-3.5">
+        <p className="text-sm font-semibold truncate mb-1" style={{ color: 'var(--text)', letterSpacing: '0.01em' }}>
+          {art.title}
+        </p>
+        <p className="text-xs mb-2.5 truncate" style={{ color: 'var(--text-muted)' }}>
+          {art.artist} · {art.mat}
+        </p>
+        <div className="flex justify-between items-center">
+          <div className="flex items-baseline gap-2">
+            <span className="text-base font-bold" style={{ color: 'var(--primary)' }}>
+              ¥{art.price.toLocaleString()}
+            </span>
+            {art.charityPct && (
+              <span className="tag-sage" style={{ fontSize: '9px', padding: '2px 8px' }}>
+                {art.charityPct}%公益
+              </span>
+            )}
+          </div>
+          <button
+            onClick={(e) => { e.stopPropagation(); addToCart(art); showToast('已加入购物车') }}
+            className="w-7 h-7 rounded-xl flex items-center justify-center"
+            style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}
+          >
+            <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>+</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ===== 首页主体 ===== */
 export default function HomePage() {
   const navigate = useNavigate()
-  const { showToast, addToCart } = useApp()
   const featured = artworks.filter(a => a.featured).slice(0, 6)
   const displayedArtists = artists.slice(0, 10)
 
@@ -97,74 +144,72 @@ export default function HomePage() {
     .slice(0, 3)
 
   return (
-    <div className="pb-16 fade-in">
-      <div className="bg-background p-4 pb-0">
-        <div className="flex items-end justify-between mb-3">
-          <div>
-            <p className="text-[10px] text-text-light tracking-widest mb-1">MEIYAJI</p>
-            <h1 className="text-2xl font-bold">美芽集</h1>
-          </div>
-          <button
-            onClick={() => navigate('/profile')}
-            className="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center"
-          >
-            🌟
-          </button>
-        </div>
+    <div className="pb-20 fade-in">
+      {/* ===== 品牌区域（留白、安静） ===== */}
+      <div className="pt-10 pb-8 px-6">
+        <p className="text-[10px] tracking-[0.35em] uppercase mb-2.5" style={{ color: 'var(--text-weak)' }}>
+          MEIYAJI
+        </p>
+        <h1 className="text-[28px] font-bold mb-2.5" style={{ color: 'var(--text)', letterSpacing: '-0.02em' }}>
+          美芽集
+        </h1>
+        <p className="text-sm max-w-[240px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+          收藏艺术之美，灌溉乡村美育之芽
+        </p>
       </div>
 
-      {/* 公益活动轮播 */}
-      <CharityCarousel activities={recentActivities} />
+      {/* ===== 首屏轮播大图 ===== */}
+      <HeroCarousel activities={recentActivities} />
 
-      {/* 公益文章卡片 */}
-      <div className="mx-4 mt-4">
-        <div className="flex items-center justify-between mb-2.5">
-          <span className="font-bold text-sm">💚 最新公益动态</span>
-          <span
+      {/* ===== 公益动态卡片 ===== */}
+      <div className="mt-8 px-4">
+        <div className="flex items-center justify-between mb-3">
+          <span className="font-semibold text-base" style={{ color: 'var(--text)' }}>最新公益</span>
+          <button
             onClick={() => navigate('/charity')}
-            className="text-primary text-xs cursor-pointer"
+            className="btn-ghost"
           >
-            查看全部 →
-          </span>
+            全部 →
+          </button>
         </div>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-3 gap-2.5">
           {recentActivities.map(item => (
             <div
               key={item.id}
               onClick={() => navigate(`/charity/article/${item.id}`)}
-              className="bg-white rounded-lg border border-divider overflow-hidden cursor-pointer active:scale-[0.97] transition-transform"
+              className="rounded-xl overflow-hidden cursor-pointer active:scale-[0.97] transition-transform"
+              style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
             >
-              <div className="aspect-[4/3] relative bg-gradient-to-br from-[#D4C5B0] to-divider">
-                <img
-                  src={item.cover}
-                  alt={item.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                <span className="absolute top-1.5 left-1.5 bg-green-500/90 text-white text-[8px] px-1.5 py-0.5 rounded-full">
+              <div className="aspect-square relative" style={{ background: 'var(--surface-2)' }}>
+                <img src={item.cover} alt={item.title} className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-t-xl" />
+                <span className="absolute top-2 left-2 tag-sage" style={{ fontSize: '8px', padding: '2px 7px' }}>
                   {item.tag}
                 </span>
-                <p className="absolute bottom-1.5 left-1.5 right-1.5 text-white text-[10px] font-semibold leading-snug line-clamp-2">
+              </div>
+              <div className="px-2 pt-1.5 pb-2.5">
+                <p className="text-[11px] font-medium line-clamp-1 mb-0.5" style={{ color: 'var(--text)' }}>
                   {item.title.replace(/——|—/, '\n').split('\n').pop()}
                 </p>
-              </div>
-              <div className="px-1.5 py-1.5">
-                <p className="text-[9px] text-text-light truncate">📍 {item.location} · {item.date}</p>
+                <p className="text-[9px]" style={{ color: 'var(--text-weak)' }}>
+                  {item.location}
+                </p>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="px-4 mt-4">
+      {/* ===== 推荐艺术品 ===== */}
+      <div className="mt-8 px-4">
         <div className="flex items-center justify-between mb-3">
-          <span className="font-bold text-base">艺术品</span>
-          <span
+          <span className="font-semibold text-base" style={{ color: 'var(--text)' }}>推荐作品</span>
+          <button
             onClick={() => navigate('/discover')}
-            className="text-primary text-xs cursor-pointer"
+            className="btn-ghost"
           >
-            查看全部 →
-          </span>
+            全部 →
+          </button>
         </div>
         <div className="grid grid-cols-2 gap-3">
           {featured.map(art => (
@@ -173,87 +218,46 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="px-4">
+      {/* ===== 艺术家 ===== */}
+      <div className="mt-8 px-4 pb-4">
         <div className="flex items-center justify-between mb-3">
-          <span className="font-bold text-base">艺术家</span>
+          <span className="font-semibold text-base" style={{ color: 'var(--text)' }}>艺术家</span>
+          <button
+            onClick={() => navigate('/artists')}
+            className="btn-ghost"
+          >
+            全部 →
+          </button>
         </div>
         <div className="grid grid-cols-5 gap-3">
           {displayedArtists.map(artist => (
             <div
               key={artist.id}
               onClick={() => navigate(`/artist/${artist.id}`)}
-              className="text-center cursor-pointer"
+              className="text-center cursor-pointer group"
             >
-              <div className="aspect-square rounded-xl border-2 border-primary overflow-hidden mb-1.5">
+              <div
+                className="aspect-square overflow-hidden mb-2 transition-transform duration-300 group-active:scale-95"
+                style={{
+                  borderRadius: '16px',
+                  border: '1.5px solid var(--border)',
+                  background: 'var(--surface)',
+                }}
+              >
                 <img
                   src={artist.avatar}
                   alt={artist.name}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <p className="text-[11px] font-semibold truncate">{artist.name}</p>
-              <p className="text-[9px] text-text-light truncate">{artist.location}</p>
+              <p className="text-[11px] font-medium truncate" style={{ color: 'var(--text)' }}>
+                {artist.name}
+              </p>
+              <p className="text-[9px] truncate" style={{ color: 'var(--text-weak)' }}>
+                {artist.location}
+              </p>
             </div>
           ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ArtCard({ art }) {
-  const navigate = useNavigate()
-  const { favs, toggleFav } = useApp()
-  const isFav = favs.includes(art.id)
-
-  return (
-    <div
-      className="bg-white rounded-xl border border-divider overflow-hidden cursor-pointer"
-      onClick={() => navigate(`/detail/${art.id}`)}
-    >
-      <div className="aspect-[4/3] relative bg-gradient-to-br from-divider to-[#D4C5B0]">
-        <img
-          src={art.img}
-          alt={art.title}
-          className="w-full h-full object-cover"
-        />
-        {art.orig && (
-          <span className="absolute top-2 left-2 bg-danger text-white text-[9px] px-1.5 py-0.5 rounded">
-            限时
-          </span>
-        )}
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            toggleFav(art.id)
-          }}
-          className="absolute top-2 right-2 w-7 h-7 bg-white/85 rounded-full flex items-center justify-center text-sm"
-        >
-          {isFav ? '❤️' : '🤍'}
-        </button>
-      </div>
-      <div className="p-2.5">
-        <p className="text-xs font-semibold truncate mb-0.5">{art.title}</p>
-        <p className="text-[10px] text-text-light mb-1.5">{art.artist} · {art.cat}</p>
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <p className="text-sm font-bold text-primary">¥{art.price.toLocaleString()}</p>
-            {art.charityPct && (
-              <span className="bg-green-100 text-green-700 text-[9px] px-1.5 py-0.5 rounded">
-                {art.charityPct}%公益
-              </span>
-            )}
-          </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              addToCart(art)
-              showToast('已加入购物车')
-            }}
-            className="w-7 h-7 bg-primary text-white rounded-full flex items-center justify-center text-xs"
-          >
-            🛒
-          </button>
         </div>
       </div>
     </div>

@@ -7,17 +7,35 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#C8956C',
-        secondary: '#D4A574',
-        background: '#FAF7F2',
-        text: '#2C2420',
-        'text-light': '#6B5B4E',
-        divider: '#E8E0D5',
-        success: '#27AE60',
-        danger: '#C0392B',
+        // 莫兰迪主色调
+        primary: '#A9B8A8',
+        secondary: '#AAB6C5',
+        accent: '#C7A49A',
+        // 背景层级
+        background: '#F6F1EA',
+        surface: '#FBF8F4',
+        'surface-2': '#F1ECE4',
+        // 文字层级
+        text: '#3E3A37',
+        'text-muted': '#7C736C',
+        'text-weak': '#A59B92',
+        divider: '#E8E1D8',
+        // 状态色（低饱和）
+        success: '#9FB3A8',
+        warning: '#D8B58A',
+        danger: '#C98F86',
+      },
+      borderRadius: {
+        'sm': '12px',
+        DEFAULT: '16px',
+        'lg': '20px',
       },
       fontFamily: {
-        sans: ['PingFang SC', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        sans: ['-apple-system', 'BlinkMacSystemFont', 'PingFang SC', 'Helvetica Neue', 'Arial', 'sans-serif'],
+      },
+      boxShadow: {
+        soft: '0 6px 20px rgba(62, 58, 55, 0.06)',
+        card: '0 2px 12px rgba(62, 58, 55, 0.04)',
       },
     },
   },

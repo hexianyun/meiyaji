@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== 莫兰迪设计变量 ===== */
+:root {
+  --bg: #F6F1EA;
+  --surface: #FBF8F4;
+  --surface-2: #F1ECE4;
+  --primary: #A9B8A8;
+  --secondary: #AAB6C5;
+  --accent: #C7A49A;
+  --text: #3E3A37;
+  --text-muted: #7C736C;
+  --text-weak: #A59B92;
+  --border: #E8E1D8;
+  --success: #9FB3A8;
+  --warning: #D8B58A;
+  --danger: #C98F86;
+
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -14,10 +35,12 @@ html, body {
 }
 
 body {
-  font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
-  background-color: #FAF7F2;
-  color: #2C2420;
-  line-height: 1.6;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 img {
@@ -30,13 +53,14 @@ button {
   background: none;
   cursor: pointer;
   font-family: inherit;
+  transition: all 0.2s ease;
 }
 
 input, textarea {
   font-family: inherit;
 }
 
-::-webkit-scrollbar {
+:::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
@@ -46,20 +70,108 @@ input, textarea {
   margin: 0 auto;
   min-height: 100vh;
   position: relative;
-  background-color: #FAF7F2;
+  background-color: var(--bg);
 }
 
+/* ===== 动画 ===== */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .fade-in {
-  animation: fadeIn 0.25s ease;
+  animation: fadeIn 0.3s ease-out;
 }
+
+/* ===== 莫兰迪标签系统 ===== */
+.tag-sage {
+  background: rgba(169, 184, 168, 0.18);
+  color: #5C6B5C;
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.tag-mist {
+  background: rgba(170, 182, 197, 0.18);
+  color: #5A6677;
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.tag-accent {
+  background: rgba(199, 164, 154, 0.18);
+  color: #8B6A62;
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.tag-neutral {
+  background: rgba(232, 225, 216, 0.6);
+  color: var(--text-muted);
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+/* ===== 莫兰迪按钮 ===== */
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 20px;
+  transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.85; }
+.btn-primary:active { opacity: 0.75; }
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 18px;
+  transition: all 0.2s;
+}
+.btn-outline:hover { border-color: var(--text-muted); }
+.btn-outline:active { background: var(--surface); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: 6px 14px;
+  transition: color 0.2s;
+}
+.btn-ghost:hover { color: var(--text); }
+
+/* ===== 艺术品卡片样式 ===== */
+.art-card {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.art-card:active { transform: scale(0.98); }
+
+/* ===== 底部导航图标 ===== */
+.nav-icon {
+  font-size: 18px;
+  transition: color 0.2s;
+  color: var(--text-weak);
+}
+.nav-icon.active { color: var(--primary); }

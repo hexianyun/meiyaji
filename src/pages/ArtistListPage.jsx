@@ -5,38 +5,40 @@ export default function ArtistListPage() {
   const navigate = useNavigate()
 
   return (
-    <div className="pb-16 fade-in">
-      {/* Header */}
-      <div className="bg-primary text-white p-4 pb-5 pt-6">
-        <p className="text-[10px] tracking-widest mb-1 opacity-80">ARTISTS</p>
-        <h1 className="text-xl font-bold">艺术家</h1>
-        <p className="text-xs opacity-80 mt-1">探索名家风采，品味艺术人生</p>
+    <div className="pb-20 fade-in">
+      {/* 品牌头 */}
+      <div className="pt-10 pb-8 px-6">
+        <p className="text-[10px] tracking-[0.35em] uppercase mb-2.5" style={{ color: 'var(--text-weak)' }}>
+          ARTISTS
+        </p>
+        <h1 className="text-[26px] font-bold mb-2" style={{ color: 'var(--text)', letterSpacing: '-0.01em' }}>
+          艺术家
+        </h1>
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+          探索名家风采，品味艺术人生
+        </p>
       </div>
 
-      {/* Artist Grid */}
-      <div className="px-4 py-4 grid grid-cols-2 gap-3">
+      <div className="px-4 pb-6 grid grid-cols-2 gap-3">
         {artists.map(artist => (
           <div
             key={artist.id}
             onClick={() => navigate(`/artist/${artist.id}`)}
-            className="bg-white rounded-xl border border-divider overflow-hidden cursor-pointer"
+            className="rounded-2xl overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
+            style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
           >
-            <div className="aspect-square bg-gradient-to-br from-[#E8DDD0] to-[#D4C5B0] relative flex items-center justify-center">
-              <img
-                src={artist.avatar}
-                alt={artist.name}
-                className="w-full h-full object-cover"
-              />
-              <span className="absolute bottom-2 right-2 bg-black/50 text-white text-[9px] px-1.5 py-0.5 rounded-full backdrop-blur-sm">
+            <div className="aspect-square relative" style={{ background: 'var(--surface-2)' }}>
+              <img src={artist.avatar} alt={artist.name} className="w-full h-full object-cover" />
+              <span className="absolute bottom-2 right-2 text-white text-[9px] px-2 py-0.5 rounded-full backdrop-blur-md bg-black/30">
                 {artist.location}
               </span>
             </div>
-            <div className="p-3">
-              <p className="text-sm font-bold">{artist.name}</p>
-              <p className="text-[10px] text-text-light leading-relaxed line-clamp-2 mt-0.5">{artist.bio}</p>
-              <div className="flex justify-between items-center mt-2 text-[10px] text-text-light">
-                <span>📚 {artist.works} 件作品</span>
-                <span>❤️ {artist.followers.toLocaleString()}</span>
+            <div className="px-4 pt-3 pb-4">
+              <p className="text-sm font-semibold mb-0.5" style={{ color: 'var(--text)' }}>{artist.name}</p>
+              <p className="text-[11px] leading-relaxed line-clamp-2 mb-2.5" style={{ color: 'var(--text-muted)' }}>{artist.bio}</p>
+              <div className="flex justify-between text-[10px]" style={{ color: 'var(--text-weak)' }}>
+                <span>{artist.works} 件作品</span>
+                <span>{artist.followers.toLocaleString()} 关注</span>
               </div>
             </div>
           </div>

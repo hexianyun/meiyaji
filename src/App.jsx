@@ -63,16 +63,17 @@ function Navigation() {
   const cartCount = cart.reduce((sum, item) => sum + item.qty, 0)
 
   const navItems = [
-    { path: '/', icon: '🏠', label: '首页' },
-    { path: '/charity', icon: '💚', label: '公益活动' },
-    { path: '/discover', icon: '🔍', label: '艺术品' },
-    { path: '/artists', icon: '🎨', label: '艺术家' },
-    { path: '/profile', icon: '👤', label: '我的' }
+    { path: '/', icon: 'Home', label: '首页' },
+    { path: '/charity', icon: 'Heart', label: '公益' },
+    { path: '/discover', icon: 'Gallery', label: '作品' },
+    { path: '/artists', icon: 'Palette', label: '艺术家' },
+    { path: '/profile', icon: 'User', label: '我的' }
   ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-divider z-50 safe-area-pb">
-      <div className="max-w-[430px] mx-auto flex">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-pb"
+      style={{ background: 'rgba(251, 248, 244, 0.92)', backdropFilter: 'blur(12px)', borderTop: '1px solid #E8E1D8' }}
+    >      <div className="max-w-[430px] mx-auto flex">
         {navItems.map(item => {
           const isActive = location.pathname === item.path
           return (
@@ -80,13 +81,25 @@ function Navigation() {
               key={item.path}
               onClick={() => navigate(item.path)}
               className={`flex-1 py-2.5 flex flex-col items-center gap-0.5 ${
-                isActive ? 'text-primary' : 'text-text-light'
+                isActive ? 'text-primary' : 'text-text-weak'
               }`}
             >
-              <span className="text-lg relative">
-                {item.icon}
+              <span className="nav-icon relative" style={{ fontSize: '17px' }}>
+                {isActive ? (
+                  item.icon === 'Home' ? '◉' :
+                  item.icon === 'Heart' ? '♥' :
+                  item.icon === 'Gallery' ? '▦' :
+                  item.icon === 'Palette' ? '◈' : '●'
+                ) : (
+                  item.icon === 'Home' ? '○' :
+                  item.icon === 'Heart' ? '♡' :
+                  item.icon === 'Gallery' ? '▢' :
+                  item.icon === 'Palette' ? '◇' : '○'
+                )}
                 {item.path === '/profile' && cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-danger text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center"
+                    style={{ background: 'var(--accent)' }}
+                  >
                     {cartCount > 9 ? '9+' : cartCount}
                   </span>
                 )}
@@ -103,7 +116,16 @@ function Navigation() {
 function Toast({ msg }) {
   if (!msg) return null
   return (
-    <div className="fixed top-16 left-1/2 -translate-x-1/2 bg-black/80 text-white px-4 py-2.5 rounded-full text-sm z-50">
+    <div
+      className="fixed top-16 left-1/2 -translate-x-1/2 text-sm z-50"
+      style={{
+        background: 'var(--text)',
+        color: 'white',
+        padding: '10px 22px',
+        borderRadius: '999px',
+        fontSize: '13px',
+      }}
+    >
       {msg}
     </div>
   )
@@ -115,7 +137,7 @@ function AppContent() {
   const isHome = location.pathname === '/'
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
       <div className="max-w-[430px] mx-auto">
         <Routes>
           <Route path="/" element={<HomePage />} />
