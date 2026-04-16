@@ -116,6 +116,46 @@ export default function HomePage() {
       {/* 公益活动轮播 */}
       <CharityCarousel activities={recentActivities} />
 
+      {/* 公益文章卡片 */}
+      <div className="mx-4 mt-4">
+        <div className="flex items-center justify-between mb-2.5">
+          <span className="font-bold text-sm">💚 最新公益动态</span>
+          <span
+            onClick={() => navigate('/charity')}
+            className="text-primary text-xs cursor-pointer"
+          >
+            查看全部 →
+          </span>
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          {recentActivities.map(item => (
+            <div
+              key={item.id}
+              onClick={() => navigate(`/charity/article/${item.id}`)}
+              className="bg-white rounded-lg border border-divider overflow-hidden cursor-pointer active:scale-[0.97] transition-transform"
+            >
+              <div className="aspect-[4/3] relative bg-gradient-to-br from-[#D4C5B0] to-divider">
+                <img
+                  src={item.cover}
+                  alt={item.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                <span className="absolute top-1.5 left-1.5 bg-green-500/90 text-white text-[8px] px-1.5 py-0.5 rounded-full">
+                  {item.tag}
+                </span>
+                <p className="absolute bottom-1.5 left-1.5 right-1.5 text-white text-[10px] font-semibold leading-snug line-clamp-2">
+                  {item.title.replace(/——|—/, '\n').split('\n').pop()}
+                </p>
+              </div>
+              <div className="px-1.5 py-1.5">
+                <p className="text-[9px] text-text-light truncate">📍 {item.location} · {item.date}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="px-4 mt-4">
         <div className="flex items-center justify-between mb-3">
           <span className="font-bold text-base">艺术品</span>
