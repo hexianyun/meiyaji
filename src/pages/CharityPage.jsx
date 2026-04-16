@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
-import { charity, stories } from '../data'
+import { charity, stories, charityActivities } from '../data'
 
 export default function CharityPage() {
   const navigate = useNavigate()
@@ -122,34 +122,40 @@ export default function CharityPage() {
 
       {activeTab === '活动' && (
         <div className="p-4 pb-20">
-          <p className="text-xs text-text-light mb-3">点击卡片查看活动详情，可直接报名参与</p>
-          {charity.map(project => (
-            <div key={project.id} className="bg-white rounded-xl border border-divider overflow-hidden mb-4">
+          <p className="text-xs text-text-light mb-3">以下内容来自“公益活动文章”资料库，已整理接入公益活动栏目。</p>
+          {charityActivities.map(activity => (
+            <div key={activity.id} className="bg-white rounded-xl border border-divider overflow-hidden mb-4">
               <div className="aspect-[16/9] relative bg-gradient-to-br from-[#D4C5B0] to-divider">
                 <img
-                  src={project.cover}
-                  alt={project.title}
+                  src={activity.cover}
+                  alt={activity.title}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                <div className="absolute bottom-3 left-4 right-4 text-white">
+                <div className="absolute top-3 left-3 flex gap-2">
                   <span className="bg-green-500 text-white text-[10px] px-2 py-0.5 rounded">
-                    {project.tag}
+                    {activity.tag}
                   </span>
-                  <p className="text-sm font-bold mt-2">{project.title}</p>
+                  <span className="bg-white/20 backdrop-blur-sm text-white text-[10px] px-2 py-0.5 rounded">
+                    {activity.location}
+                  </span>
+                </div>
+                <div className="absolute bottom-3 left-4 right-4 text-white">
+                  <p className="text-sm font-bold leading-relaxed">{activity.title}</p>
+                  <p className="text-[11px] text-white/85 mt-1">{activity.date}</p>
                 </div>
               </div>
               <div className="p-3">
-                <p className="text-[11px] text-text-light leading-relaxed mb-3">{project.desc}</p>
+                <p className="text-[11px] text-text-light leading-relaxed mb-3">{activity.desc}</p>
                 <div className="flex items-center justify-between text-[10px] text-text-light mb-3">
-                  <span>👥 已参与 {project.beneficiaries} 人</span>
-                  <span>📍 美芽集艺术中心</span>
+                  <span>👥 约 {activity.participants} 人参与</span>
+                  <span>📍 {activity.location}</span>
                 </div>
                 <button
-                  onClick={() => showToast('报名成功，请查收短信通知')}
-                  className="w-full bg-green-500 text-white py-2.5 rounded-xl font-semibold text-sm"
+                  onClick={() => navigate(`/charity/article/${activity.id}`)}
+                  className="w-full bg-green-500 text-white py-2.5 rounded-xl font-semibold text-sm active:scale-[0.98] transition-transform"
                 >
-                  📝 立即报名
+                  查看活动详情
                 </button>
               </div>
             </div>

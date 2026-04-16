@@ -10,6 +10,7 @@ import ArtistPage from './pages/ArtistPage'
 import ArtistListPage from './pages/ArtistListPage'
 import ExhibitionsPage from './pages/ExhibitionsPage'
 import CharityPage from './pages/CharityPage'
+import CharityArticlePage from './pages/CharityArticlePage'
 
 
 function useApp() {
@@ -127,6 +128,7 @@ function AppContent() {
           <Route path="/artists" element={<ArtistListPage />} />
           <Route path="/exhibitions" element={<ExhibitionsPage />} />
           <Route path="/charity" element={<CharityPage />} />
+          <Route path="/charity/article/:id" element={<CharityArticlePage />} />
         </Routes>
       </div>
       <Navigation />
