@@ -3,12 +3,22 @@ import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
 import { artworks, artists, charityActivities } from '../data'
 
-/* ===== 公益轮播（莫兰迪风格）===== */
-function HeroCarousel({ activities }) {
+/* ===== 首页轮播大图（使用首页滚动图片，点击跳转公益栏目）===== */
+const HERO_IMAGES = [
+  '/hero-carousel/1232997301.jpg',
+  '/hero-carousel/1344637144.jpg',
+  '/hero-carousel/1705491199.jpg',
+  '/hero-carousel/1710908245.jpg',
+  '/hero-carousel/1899084694.jpg',
+  '/hero-carousel/228847295.jpg',
+  '/hero-carousel/549412817.jpg',
+  '/hero-carousel/686508360.jpg',
+]
+
+function HeroCarousel() {
   const navigate = useNavigate()
   const [current, setCurrent] = useState(0)
-  const total = Math.min(activities.length, 3)
-  const slides = activities.slice(0, 3)
+  const total = HERO_IMAGES.length
 
   const goNext = useCallback(() => {
     setCurrent(prev => (prev + 1) % total)
@@ -20,55 +30,44 @@ function HeroCarousel({ activities }) {
     return () => clearInterval(timer)
   }, [goNext, total])
 
-  if (!slides.length) return null
-
   return (
-    <div className="mx-4 mt-5 rounded-2xl overflow-hidden relative" style={{ background: 'var(--surface)' }}>
-      {slides.map((item, i) => {
+    <div className="mx-4 mt-5 rounded-2xl overflow-hidden relative cursor-pointer" style={{ background: 'var(--surface)' }} onClick={() => navigate('/charity')}>
+      {HERO_IMAGES.map((src, i) => {
         const isActive = i === current
         return (
           <div
-            key={item.id}
-            onClick={() => navigate(`/charity/article/${item.id}`)}
-            className={`cursor-pointer transition-all duration-700 ease-out ${isActive ? 'opacity-100' : 'opacity-0 absolute inset-0'}`}
-            style={{ pointerEvents: isActive ? 'auto' : 'none' }}
+            key={src}
+            className={`transition-all duration-700 ease-out ${isActive ? 'opacity-100' : 'opacity-0 absolute inset-0'}`}
+            style={{ pointerEvents: 'none' }}
           >
-            <div className="aspect-[4/3] relative">
-              <img src={item.cover} alt={item.title} className="w-full h-full object-cover" />
-              {/* 柔和渐变 */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-
-              {/* 标签区 */}
-              <div className="absolute top-4 left-4 flex gap-2">
-                <span className="tag-sage">公益活动</span>
-                <span className="text-white/80 text-[11px] px-2.5 py-0.5 rounded-full backdrop-blur-sm bg-white/15">
-                  {item.location}
+            <div className="aspect-[16/9] relative">
+              <img src={src} alt="" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
+              {/* 底部轻提示 */}
+              <div className="absolute bottom-4 right-4">
+                <span className="text-white/70 text-xs px-3 py-1 rounded-full backdrop-blur-sm bg-white/15 border border-white/20">
+                  了解更多 →
                 </span>
-              </div>
-
-              {/* 文字信息 */}
-              <div className="absolute bottom-5 left-5 right-5">
-                <p className="text-white font-semibold leading-relaxed text-base drop-shadow-sm line-clamp-2">
-                  {item.title}
-                </p>
-                <p className="text-white/70 text-xs mt-2">{item.date}</p>
               </div>
             </div>
           </div>
         )
       })}
 
-      {/* 轻量指示器 */}
+      {/* 指示器 */}
       {total > 1 && (
         <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-          {Array.from({ length: total }).map((_, i) => (
+          {HERO_IMAGES.map((_, i) => (
             <button
               key={i}
               onClick={(e) => { e.stopPropagation(); setCurrent(i) }}
               className={`transition-all rounded-full ${
-                i === current ? 'w-5 h-1.5 bg-primary' : 'w-1.5 h-1.5 bg-white/40'
+                i === current ? 'w-5 h-1.5' : 'w-1.5 h-1.5'
               }`}
-              style={{ transitionDuration: '0.3s' }}
+              style={{
+                backgroundColor: i === current ? '#A9B8A8' : 'rgba(255,255,255,0.4)',
+                transitionDuration: '0.3s',
+              }}
             />
           ))}
         </div>
@@ -159,7 +158,7 @@ export default function HomePage() {
       </div>
 
       {/* ===== 首屏轮播大图 ===== */}
-      <HeroCarousel activities={recentActivities} />
+      <HeroCarousel />
 
       {/* ===== 公益动态卡片 ===== */}
       <div className="mt-8 px-4">
