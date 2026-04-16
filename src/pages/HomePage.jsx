@@ -79,26 +79,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="px-4 mb-4">
-        <div className="flex items-center justify-between mb-3">
-          <span className="font-bold text-base">艺术分类</span>
-        </div>
-        <div className="grid grid-cols-4 gap-3">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => navigate('/discover')}
-              className="flex flex-col items-center gap-1.5"
-            >
-              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-2xl">
-                {categoryIcons[cat]}
-              </div>
-              <span className="text-xs text-text-light font-medium">{cat}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
       <div className="px-4">
         <div className="flex items-center justify-between mb-3">
           <span className="font-bold text-base">精品推荐</span>
