@@ -20,7 +20,7 @@ export default function CartPage() {
         <div className="text-center py-12">
           <div className="text-5xl mb-3">🛒</div>
           <p className="font-semibold mb-2">购物车是空的</p>
-          <p className="text-sm text-text-light mb-4">去发现心仪的艺术品吧</p>
+          <p className="text-sm text-text-light mb-4">去浏览心仪的艺术品吧</p>
           <button 
             onClick={() => navigate('/')}
             className="bg-primary text-white px-6 py-2.5 rounded-xl text-sm font-semibold"

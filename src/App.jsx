@@ -61,7 +61,7 @@ function Navigation() {
 
   const navItems = [
     { path: '/', icon: '🏠', label: '首页' },
-    { path: '/discover', icon: '🔍', label: '发现' },
+    { path: '/discover', icon: '🔍', label: '艺术品' },
     { path: '/exhibitions', icon: '🎨', label: '活动' },
     { path: '/charity', icon: '💚', label: '公益' },
     { path: '/profile', icon: '👤', label: '我的' }
