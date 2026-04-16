@@ -96,20 +96,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div
-        onClick={() => navigate('/exhibitions')}
-        className="mx-4 my-4 rounded-2xl bg-gradient-to-br from-primary to-secondary p-5 flex items-center gap-4 text-white cursor-pointer"
-      >
-        <span className="text-4xl flex-shrink-0">🎨</span>
-        <div className="flex-1">
-          <p className="font-bold text-sm mb-1">正在展出 & 即将开展</p>
-          <p className="text-xs opacity-85 leading-relaxed">探索精彩展览，参与艺术活动</p>
-        </div>
-        <span className="bg-white/20 border border-white/40 px-3 py-2 rounded-full text-xs flex-shrink-0">
-          查看全部
-        </span>
-      </div>
-
       <div className="px-4 pb-2 overflow-x-auto">
         <div className="flex gap-2">
           {exhibitions.slice(0, 3).map(ex => (
