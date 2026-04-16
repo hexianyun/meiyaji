@@ -6,9 +6,11 @@ import DetailPage from './pages/DetailPage'
 import CartPage from './pages/CartPage'
 import OrdersPage from './pages/OrdersPage'
 import ProfilePage from './pages/ProfilePage'
+import ArtistPage from './pages/ArtistPage'
 import ArtistListPage from './pages/ArtistListPage'
 import ExhibitionsPage from './pages/ExhibitionsPage'
 import CharityPage from './pages/CharityPage'
+
 
 function useApp() {
   const [favs, setFavs] = useState([])
