@@ -12,7 +12,7 @@ export default function HomePage() {
       <div className="bg-background p-4 pb-0">
         <div className="flex items-end justify-between mb-3">
           <div>
-            <p className="text-[10px] text-text-light tracking-widest mb-1">ART GALLERY</p>
+            <p className="text-[10px] text-text-light tracking-widest mb-1">MEIYAJI</p>
             <h1 className="text-2xl font-bold">美芽集</h1>
           </div>
           <button
