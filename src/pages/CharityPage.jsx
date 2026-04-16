@@ -16,7 +16,7 @@ export default function CharityPage() {
           公益活动
         </h1>
         <p className="text-sm max-w-[260px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-          用艺术点亮山区，每一幅画都是一份爱心。
+          以艺术之名相聚，为乡村孩童的审美启蒙播种。
         </p>
       </div>
 
