@@ -1,16 +1,14 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
-import { artworks, categories } from '../data'
+import { artworks } from '../data'
 
 export default function DiscoverPage() {
   const [searchQ, setSearchQ] = useState('')
-  const [searchCat, setSearchCat] = useState(0)
   const navigate = useNavigate()
   const { favs, toggleFav, addToCart, showToast } = useApp()
 
   const filtered = artworks.filter(art => {
-    if (searchCat > 0 && art.cat !== categories[searchCat]) return false
     if (searchQ && !art.title.includes(searchQ) && !art.artist.includes(searchQ)) return false
     return true
   })
@@ -27,21 +25,6 @@ export default function DiscoverPage() {
             onChange={(e) => setSearchQ(e.target.value)}
             className="flex-1 border-none outline-none bg-none text-sm"
           />
-        </div>
-        <div className="flex gap-2 overflow-x-auto py-2 whitespace-nowrap">
-          {categories.map((cat, i) => (
-            <button
-              key={cat}
-              onClick={() => setSearchCat(i)}
-              className={`px-3 py-1 rounded-full text-xs transition-colors ${
-                searchCat === i 
-                  ? 'bg-primary text-white' 
-                  : 'bg-white border border-divider text-text-light'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
         </div>
       </div>
 
