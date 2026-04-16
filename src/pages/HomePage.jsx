@@ -13,7 +13,7 @@ export default function HomePage() {
         <div className="flex items-end justify-between mb-3">
           <div>
             <p className="text-[10px] text-text-light tracking-widest mb-1">ART GALLERY</p>
-            <h1 className="text-2xl font-bold">画里画外</h1>
+            <h1 className="text-2xl font-bold">美芽集</h1>
           </div>
           <button
             onClick={() => navigate('/profile')}

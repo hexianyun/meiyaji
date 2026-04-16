@@ -273,7 +273,7 @@ export const stories = [
     title: "林风眠：孤独的先行者",
     type: "艺术家",
     cover: "https://picsum.photos/seed/st1/400/300",
-    author: "画里画外编辑部",
+    author: "美芽集编辑部",
     read: "8分钟"
   },
   {
@@ -417,7 +417,7 @@ export const events = [
     type: "公益讲座",
     cover: "https://picsum.photos/seed/ev1/800/400",
     date: "2026-04-20 14:00",
-    location: "画里画外艺术中心",
+    location: "美芽集艺术中心",
     participants: 86,
     price: 0,
     status: "报名中",
@@ -443,7 +443,7 @@ export const events = [
     type: "艺术沙龙",
     cover: "https://picsum.photos/seed/ev3/800/400",
     date: "2026-05-08 19:00",
-    location: "画里画外艺术中心",
+    location: "美芽集艺术中心",
     participants: 50,
     price: 99,
     status: "报名中",

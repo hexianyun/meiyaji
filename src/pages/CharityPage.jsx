@@ -143,7 +143,7 @@ export default function CharityPage() {
                 <p className="text-[11px] text-text-light leading-relaxed mb-3">{project.desc}</p>
                 <div className="flex items-center justify-between text-[10px] text-text-light mb-3">
                   <span>👥 已参与 {project.beneficiaries} 人</span>
-                  <span>📍 画里画外艺术中心</span>
+                  <span>📍 美芽集艺术中心</span>
                 </div>
                 <button
                   onClick={() => showToast('报名成功，请查收短信通知')}
