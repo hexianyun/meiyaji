@@ -1,32 +1,11 @@
-import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
-import { artworks, artists, categories, categoryIcons, charity, exhibitions } from '../data'
+import { artworks, artists, categories, categoryIcons, exhibitions } from '../data'
 
 export default function HomePage() {
   const navigate = useNavigate()
   const { showToast, addToCart } = useApp()
   const featured = artworks.filter(a => a.featured)
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const trackRef = useRef(null)
-
-  const scrollToSlide = (index) => {
-    if (trackRef.current) {
-      const slideWidth = 296
-      trackRef.current.scrollTo({
-        left: index * slideWidth,
-        behavior: 'smooth'
-      })
-      setCurrentSlide(index)
-    }
-  }
-
-  const handleScroll = (e) => {
-    const scrollLeft = e.target.scrollLeft
-    const slideWidth = 296
-    const newIndex = Math.round(scrollLeft / slideWidth)
-    setCurrentSlide(newIndex)
-  }
 
   return (
     <div className="pb-16 fade-in">
@@ -58,59 +37,45 @@ export default function HomePage() {
           </span>
         </div>
 
-        <div className="relative">
+        <div className="px-4">
           <div
-            ref={trackRef}
-            onScroll={handleScroll}
-            className="flex gap-3 overflow-x-auto px-4 pb-2 scroll-smooth"
-            style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}
+            onClick={() => navigate('/charity')}
+            className="bg-white rounded-2xl overflow-hidden shadow-sm border border-divider cursor-pointer"
           >
-            {charity.map((item, index) => (
-              <div
-                key={item.id}
-                onClick={() => navigate('/charity')}
-                className="flex-shrink-0 w-[280px] h-[180px] rounded-2xl overflow-hidden relative cursor-pointer"
-                style={{ scrollSnapAlign: 'start' }}
-              >
-                <img
-                  src={item.cover}
-                  alt={item.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                  <span className="bg-white/25 backdrop-blur-sm text-[9px] px-2 py-0.5 rounded-full font-bold">
-                    {item.tag}
-                  </span>
-                  <p className="text-sm font-bold mt-2 leading-tight">{item.title}</p>
-                  <p className="text-[11px] text-white/80 mt-1">{item.desc.substring(0, 20)}...</p>
-                </div>
+            <div className="h-[120px] bg-gradient-to-br from-green-400 to-emerald-600 relative flex items-center justify-center">
+              <span className="text-5xl">🌱</span>
+              <span className="absolute top-3 right-3 bg-white/25 backdrop-blur-sm text-white text-[9px] px-2 py-0.5 rounded-full font-bold">
+                进行中
+              </span>
+            </div>
+            <div className="p-4">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-sm font-bold">山区儿童艺术教育基金</span>
               </div>
-            ))}
+              <p className="text-[10px] text-text-light mb-2">🏛️ 中国青少年发展基金会</p>
+              <p className="text-xs text-text-light leading-relaxed mb-3">为偏远山区的孩子们提供艺术教育资源，让美育不因地域而受限。</p>
+              <div className="bg-gray-100 rounded-full h-1.5 mb-2">
+                <div className="bg-green-500 h-1.5 rounded-full" style={{ width: '73%' }}></div>
+              </div>
+              <div className="flex justify-between items-center text-[10px] text-text-light mb-3">
+                <span>已筹 <span className="font-semibold text-green-600">¥73,680</span></span>
+                <span>目标 ¥100,000 · <span className="font-semibold text-green-600">73%</span></span>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t border-divider">
+                <span className="text-[10px] text-text-light">👥 2,341 人参与</span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    navigate('/charity')
+                    showToast('感谢您对山区儿童的关注！')
+                  }}
+                  className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1.5 rounded-full text-xs font-bold"
+                >
+                  💚 支持项目
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div className="flex justify-center gap-1.5 mt-3">
-          {charity.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => scrollToSlide(index)}
-              className={`h-1.5 rounded-full transition-all ${
-                currentSlide === index
-                  ? 'w-5 bg-green-500'
-                  : 'w-1.5 bg-gray-300'
-              }`}
-            />
-          ))}
-        </div>
-
-        <div className="flex justify-center mt-3 px-4">
-          <button
-            onClick={() => showToast('感谢您的支持！')}
-            className="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-2.5 rounded-full text-sm font-bold shadow-lg"
-          >
-            💚 支持公益
-          </button>
         </div>
       </div>
 
