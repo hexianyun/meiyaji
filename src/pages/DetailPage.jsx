@@ -162,7 +162,6 @@ export default function DetailPage() {
           >✕</button>
         </div>
       )}
-      </div>
     </div>
   )
 }
