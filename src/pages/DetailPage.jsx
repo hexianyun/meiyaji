@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useState } from 'react-router-dom'
 import { useApp } from '../App'
 import { artworks, artists } from '../data'
 
@@ -6,17 +6,18 @@ export default function DetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { favs, toggleFav, addToCart } = useApp()
-  
+  const [showZoom, setShowZoom] = useState(false)
+
   const art = artworks.find(a => a.id === parseInt(id))
   if (!art) return null
-  
+
   const artist = artists.find(a => a.id === art.aid)
   const isFav = favs.includes(art.id)
 
   return (
     <div className="pb-22 fade-in">
-      {/* 大图 */}
-      <div className="aspect-[4/3] relative" style={{ background: 'var(--surface-2)' }}>
+      {/* 大图（点击放大） */}
+      <div className="aspect-[4/3] relative cursor-pointer" style={{ background: 'var(--surface-2)' }} onClick={() => setShowZoom(true)}>
         <img src={art.img} alt={art.title} className="w-full h-full object-cover" />
         
         <button 
@@ -88,20 +89,6 @@ export default function DetailPage() {
           </p>
         </div>
 
-        {/* 数据统计 */}
-        <div className="flex py-3 mb-4" style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
-          {[
-            [art.views.toLocaleString(), '浏览'],
-            [art.sold, '已售'],
-            [art.stock, '库存']
-          ].map(([val, label], i) => (
-            <div key={label} className={`flex-1 text-center ${i > 0 ? '' : ''}`}>
-              <p className="font-bold text-sm" style={{ color: 'var(--text)' }}>{val}</p>
-              <p className="text-[10px]" style={{ color: 'var(--text-weak)' }}>{label}</p>
-            </div>
-          ))}
-        </div>
-
         {/* 艺术家信息 */}
         {artist && (
           <div 
@@ -126,22 +113,55 @@ export default function DetailPage() {
           <p className="text-sm leading-relaxed" style={{ color: 'var(--text)' }}>{art.desc}</p>
         </div>
 
-        {/* 详细信息 */}
+        {/* 详细信息（两列紧凑） */}
         <div>
           <p className="text-[11px] mb-2" style={{ color: 'var(--text-weak)' }}>详细信息</p>
-          {[
-            ['类别', art.cat],
-            ['风格', art.style],
-            ['年份', art.year],
-            ['材质', art.mat],
-            ['尺寸', art.size]
-          ].map(([key, val]) => (
-            <div key={key} className="flex py-2.5" style={{ borderBottom: '1px solid var(--border)' }}>
-              <span className="w-14 text-xs flex-shrink-0" style={{ color: 'var(--text-weak)' }}>{key}</span>
-              <span className="text-xs" style={{ color: 'var(--text)' }}>{val}</span>
-            </div>
-          ))}
+          <div className="grid grid-cols-2 gap-x-4">
+            {[
+              ['类别', art.cat],
+              ['风格', art.style],
+              ['年份', art.year],
+              ['材质', art.mat],
+              ['尺寸', art.size]
+            ].map(([key, val]) => (
+              <div key={key} className="flex py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                <span className="w-10 text-xs flex-shrink-0" style={{ color: 'var(--text-weak)' }}>{key}</span>
+                <span className="text-xs truncate" style={{ color: 'var(--text)' }}>{val}</span>
+              </div>
+            ))}
+          </div>
         </div>
+
+        {/* 收藏作品 */}
+        <button
+          onClick={() => toggleFav(art.id)}
+          className={`w-full mt-5 py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-medium transition-colors`}
+          style={{
+            background: isFav ? 'rgba(169,184,168,0.15)' : 'var(--surface)',
+            border: `1px solid ${isFav ? 'var(--primary)' : 'var(--border)'}`,
+            color: isFav ? 'var(--primary)' : 'var(--text)',
+          }}
+        >
+          <span>{isFav ? '♥' : '♡'}</span>
+          {isFav ? '已收藏' : '收藏作品'}
+        </button>
+
+      </div>
+
+      {/* 图片放大弹窗 */}
+      {showZoom && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+          onClick={() => setShowZoom(false)}
+        >
+          <img src={art.img} alt={art.title} className="max-w-full max-h-full object-contain" />
+          <button
+            onClick={() => setShowZoom(false)}
+            className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center text-white text-lg"
+            style={{ background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(8px)' }}
+          >✕</button>
+        </div>
+      )}
       </div>
     </div>
   )
