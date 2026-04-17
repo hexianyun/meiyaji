@@ -1,4 +1,5 @@
-import { useParams, useNavigate, useState } from 'react-router-dom'
+import { useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
 import { artworks, artists } from '../data'
 
