@@ -26,8 +26,8 @@ export default function ArtistPage() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="w-18 h-18 overflow-hidden"
-            style={{ borderRadius: '50%', border: '2px solid var(--border)' }}
+          <div className="w-full max-w-[180px] aspect-[4/3] overflow-hidden"
+            style={{ borderRadius: '12px', border: '1px solid var(--border)' }}
           >
             <img src={artist.avatar} alt={artist.name} className="w-full h-full object-cover" />
           </div>
