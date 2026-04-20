@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/((?!artists-safe/|artists/|charity-articles/|hero-carousel/).*)",
+      "destination": "/"
+    }
+  ]
+}
