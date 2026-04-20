@@ -73,19 +73,33 @@ function Navigation() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-pb"
-      style={{ background: 'rgba(251, 248, 244, 0.92)', backdropFilter: 'blur(12px)', borderTop: '1px solid #E8E1D8' }}
-    >      <div className="max-w-[430px] mx-auto flex">
+      style={{
+        background: 'rgba(248, 244, 239, 0.96)',
+        backdropFilter: 'blur(16px)',
+        borderTop: '1px solid rgba(215, 205, 194, 0.92)',
+        boxShadow: '0 -10px 28px rgba(27, 23, 19, 0.06)'
+      }}
+    >
+      <div className="max-w-[430px] mx-auto flex px-1">
         {navItems.map(item => {
-          const isActive = location.pathname === item.path
+          const isActive = item.path === '/'
+            ? location.pathname === '/'
+            : location.pathname.startsWith(item.path)
           return (
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`flex-1 py-2.5 flex flex-col items-center gap-0.5 ${
-                isActive ? 'text-primary' : 'text-text-weak'
-              }`}
+              className="relative flex-1 pt-3 pb-3.5 flex flex-col items-center gap-1 transition-colors"
+              style={{ color: isActive ? 'var(--text)' : 'rgba(81, 73, 64, 0.72)' }}
             >
-              <span className="nav-icon relative" style={{ fontSize: '17px' }}>
+              <span
+                className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] transition-all"
+                style={{
+                  width: isActive ? '24px' : '0px',
+                  background: 'var(--text)',
+                }}
+              />
+              <span className="nav-icon relative" style={{ fontSize: '18px', lineHeight: 1 }}>
                 {isActive ? (
                   item.icon === 'Home' ? '◉' :
                   item.icon === 'Heart' ? '♥' :
@@ -105,7 +119,7 @@ function Navigation() {
                   </span>
                 )}
               </span>
-              <span className="text-[10px] font-medium">{item.label}</span>
+              <span className="text-[12px] font-medium tracking-[0.04em]">{item.label}</span>
             </button>
           )
         })}
