@@ -180,7 +180,7 @@ function HeroShowcase() {
         <p className="text-[9px] tracking-[0.34em] uppercase mb-2.5" style={{ color: 'var(--text-weak)' }}>
           MEIYAJI
         </p>
-        <h1 className="text-[13px] leading-[1.35] font-medium whitespace-nowrap" style={{ color: 'rgba(62, 58, 55, 0.68)' }}>
+        <h1 className="text-[16px] leading-[1.28] font-semibold whitespace-nowrap" style={{ color: '#3a3029' }}>
           美芽集 收藏艺术之美 灌溉乡村美育之芽
         </h1>
       </div>
