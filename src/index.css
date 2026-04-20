@@ -60,9 +60,18 @@ input, textarea {
   font-family: inherit;
 }
 
-:::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 0;
   height: 0;
+}
+
+/* ===== 去除卡片与图片圆角 ===== */
+img,
+.art-card,
+div[class*="rounded"],
+a[class*="rounded"],
+[style*="borderRadius"]:not(button):not(span) {
+  border-radius: 0 !important;
 }
 
 .app-container {
@@ -161,7 +170,6 @@ input, textarea {
 /* ===== 艺术品卡片样式 ===== */
 .art-card {
   background: var(--surface);
-  border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--border);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
