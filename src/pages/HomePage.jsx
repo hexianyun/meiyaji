@@ -242,7 +242,6 @@ export default function HomePage() {
                 <div
                   className="aspect-square overflow-hidden mb-2 transition-transform duration-300 group-active:scale-95"
                   style={{
-                    borderRadius: '16px',
                     border: '1.5px solid var(--border)',
                     background: 'var(--surface)',
                   }}
