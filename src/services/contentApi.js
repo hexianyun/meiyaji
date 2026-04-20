@@ -1,11 +1,20 @@
 import { artists, artworks } from '../data'
 
 const CURRENT_USER_STORAGE_KEY = 'meiyaji_current_user'
+const AUTH_TOKEN_STORAGE_KEY = 'meiyaji_auth_token'
 
 function wait(ms) {
   return new Promise(resolve => {
     window.setTimeout(resolve, ms)
   })
+}
+
+function getApiBaseUrl() {
+  return (import.meta.env.VITE_API_BASE_URL || '').trim()
+}
+
+function resolveDisplayName(user) {
+  return user?.name || user?.realName || user?.username || user?.email || '美芽集用户'
 }
 
 function buildCharitySupportNote(artwork) {
@@ -22,10 +31,54 @@ function normalizeCurrentUser(user) {
 
   return {
     id: user.id ?? null,
-    name: user.name ?? '美芽集用户',
+    name: resolveDisplayName(user),
+    email: user.email ?? '',
+    username: user.username ?? '',
+    realName: user.realName ?? '',
     role: user.role ?? 'member',
     artistStatus: user.artistStatus ?? 'pending',
+    bio: user.bio ?? '',
+    artistIntro: user.artistIntro ?? '',
+    portfolioUrl: user.portfolioUrl ?? '',
     artistProfileId: user.artistProfileId ?? user.artistId ?? null,
+  }
+}
+
+async function parseApiResponse(response) {
+  const contentType = response.headers.get('content-type') || ''
+
+  if (!contentType.includes('application/json')) {
+    throw new Error('当前线上认证接口暂未连通，请先部署后端接口。')
+  }
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data?.message || '请求失败，请稍后再试。')
+  }
+
+  return data
+}
+
+async function requestAuth(path, payload) {
+  const apiBaseUrl = getApiBaseUrl()
+
+  try {
+    const response = await fetch(`${apiBaseUrl}${path}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+
+    return await parseApiResponse(response)
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error
+    }
+
+    throw new Error('网络连接失败，请稍后再试。')
   }
 }
 
@@ -52,6 +105,41 @@ export function setStoredCurrentUser(user) {
     CURRENT_USER_STORAGE_KEY,
     JSON.stringify(normalizeCurrentUser(user)),
   )
+}
+
+export function getStoredAuthToken() {
+  if (typeof window === 'undefined') return ''
+  return window.localStorage.getItem(AUTH_TOKEN_STORAGE_KEY) || ''
+}
+
+export function setStoredAuthToken(token) {
+  if (typeof window === 'undefined') return
+
+  if (!token) {
+    window.localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY)
+    return
+  }
+
+  window.localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token)
+}
+
+export function persistAuthSession(payload) {
+  setStoredAuthToken(payload?.token || '')
+  setStoredCurrentUser(payload?.user || null)
+  return normalizeCurrentUser(payload?.user || null)
+}
+
+export function clearAuthSession() {
+  setStoredAuthToken('')
+  setStoredCurrentUser(null)
+}
+
+export async function registerUser(payload) {
+  return requestAuth('/api/auth/register', payload)
+}
+
+export async function loginUser(payload) {
+  return requestAuth('/api/auth/login', payload)
 }
 
 export async function getArtistProfileById(artistId) {

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
 import { orders } from '../data'
+import { clearAuthSession } from '../services/contentApi'
 
 function AuthEntryCard({ onLogin, onRegister }) {
   return (
@@ -15,7 +16,7 @@ function AuthEntryCard({ onLogin, onRegister }) {
         登录 / 注册
       </h2>
       <p className="text-[13px] leading-6 mb-5" style={{ color: 'var(--text-muted)' }}>
-        登录后可查看订单、收藏作品，并在后续接入购买与艺术家申请功能。
+        登录后可查看订单、收藏作品，并继续接入购买与艺术家申请功能。
       </p>
 
       <div className="flex gap-2.5">
@@ -91,15 +92,8 @@ export default function ProfilePage() {
     { icon: '✦', label: '联系客服', badge: null, path: '/profile' },
   ]
 
-  const handleLoginEntry = () => {
-    showToast('登录入口已添加，下一步可继续接入登录表单')
-  }
-
-  const handleRegisterEntry = () => {
-    showToast('注册入口已添加，下一步可继续接入注册表单')
-  }
-
   const handleLogout = () => {
+    clearAuthSession()
     setCurrentUser(null)
     showToast('已退出当前账号')
   }
@@ -129,7 +123,7 @@ export default function ProfilePage() {
       {currentUser ? (
         <LoggedInCard currentUser={currentUser} onLogout={handleLogout} />
       ) : (
-        <AuthEntryCard onLogin={handleLoginEntry} onRegister={handleRegisterEntry} />
+        <AuthEntryCard onLogin={() => navigate('/login')} onRegister={() => navigate('/register')} />
       )}
 
       <div
