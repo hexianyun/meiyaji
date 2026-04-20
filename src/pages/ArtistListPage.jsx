@@ -13,7 +13,7 @@ function ArtistWorksStrip({ artistId, navigate }) {
   }
 
   return (
-    <div className="flex gap-3 mt-4 overflow-x-auto">
+    <div className="flex gap-2.5 mt-4 overflow-x-auto">
       {previewWorks.map(work => (
         <button
           key={work.id}
@@ -21,7 +21,7 @@ function ArtistWorksStrip({ artistId, navigate }) {
             event.stopPropagation()
             navigate(`/detail/${work.id}`)
           }}
-          className="w-[92px] h-[118px] overflow-hidden flex-shrink-0"
+          className="w-[84px] h-[106px] overflow-hidden flex-shrink-0"
           style={{ background: 'var(--surface-2)' }}
         >
           <img src={work.img} alt={work.title} className="w-full h-full object-cover" />
@@ -34,10 +34,10 @@ function ArtistWorksStrip({ artistId, navigate }) {
             event.stopPropagation()
             navigate(`/artist/${artistId}`)
           }}
-          className="w-[92px] h-[118px] flex-shrink-0 flex items-center justify-center text-sm font-medium"
-          style={{ background: 'var(--surface)', color: 'var(--text)', border: '1px solid var(--border)' }}
+          className="w-[84px] h-[106px] flex-shrink-0 flex items-center justify-center px-3 text-[15px] font-medium leading-tight"
+          style={{ background: 'white', color: 'var(--text)', border: '1px solid #ECE6DD' }}
         >
-          更多作品 &gt;
+          <span className="whitespace-nowrap">更多作品 &gt;</span>
         </button>
       )}
     </div>
@@ -177,7 +177,7 @@ export default function ArtistListPage() {
                             : [...prev, artist.id]
                         )
                       }}
-                      className="px-4 h-10 text-sm font-medium flex-shrink-0"
+                      className="px-3 h-8 text-[12px] font-medium flex-shrink-0"
                       style={{
                         background: isFollowed ? 'var(--text)' : 'white',
                         color: isFollowed ? 'white' : 'var(--text)',
@@ -188,9 +188,6 @@ export default function ArtistListPage() {
                     </button>
                   </div>
 
-                  <p className="text-[10px] mt-2" style={{ color: 'var(--text-weak)' }}>
-                    {artist.works} 件作品 · {artist.followers.toLocaleString()} 关注
-                  </p>
                 </div>
               </div>
 
