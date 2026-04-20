@@ -21,7 +21,7 @@ function ArtistWorksStrip({ artistId, navigate }) {
             event.stopPropagation()
             navigate(`/detail/${work.id}`)
           }}
-          className="w-[92px] h-[118px] rounded-xl overflow-hidden flex-shrink-0"
+          className="w-[92px] h-[118px] overflow-hidden flex-shrink-0"
           style={{ background: 'var(--surface-2)' }}
         >
           <img src={work.img} alt={work.title} className="w-full h-full object-cover" />
@@ -34,7 +34,7 @@ function ArtistWorksStrip({ artistId, navigate }) {
             event.stopPropagation()
             navigate(`/artist/${artistId}`)
           }}
-          className="w-[92px] h-[118px] rounded-xl flex-shrink-0 flex items-center justify-center text-sm font-medium"
+          className="w-[92px] h-[118px] flex-shrink-0 flex items-center justify-center text-sm font-medium"
           style={{ background: 'var(--surface)', color: 'var(--text)', border: '1px solid var(--border)' }}
         >
           更多作品 &gt;
@@ -73,7 +73,7 @@ export default function ArtistListPage() {
         <div className="flex items-center justify-between mb-3">
           <button
             onClick={() => navigate(-1)}
-            className="w-10 h-10 rounded-full flex items-center justify-center text-xl"
+            className="w-10 h-10 flex items-center justify-center text-xl"
             style={{ color: 'var(--text)', background: 'var(--surface)' }}
           >
             ←
@@ -85,13 +85,13 @@ export default function ArtistListPage() {
 
           <div className="flex items-center gap-2">
             <button
-              className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
+              className="w-10 h-10 flex items-center justify-center text-lg"
               style={{ color: 'var(--text)', background: 'var(--surface)' }}
             >
               •••
             </button>
             <button
-              className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
+              className="w-10 h-10 flex items-center justify-center text-lg"
               style={{ color: 'var(--text)', background: 'var(--surface)' }}
             >
               ◎
@@ -101,7 +101,7 @@ export default function ArtistListPage() {
 
         <div className="flex items-center gap-2">
           <div
-            className="flex-1 flex items-center gap-2 px-4 h-12 rounded-2xl"
+            className="flex-1 flex items-center gap-2 px-4 h-12"
             style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
           >
             <span className="text-xl leading-none" style={{ color: 'var(--text-weak)' }}>
@@ -118,14 +118,14 @@ export default function ArtistListPage() {
           </div>
 
           <button
-            className="px-4 h-12 rounded-2xl text-sm font-medium"
+            className="px-4 h-12 text-sm font-medium"
             style={{ background: 'var(--surface)', color: 'var(--text)', border: '1px solid var(--border)' }}
           >
             搜索
           </button>
 
           <button
-            className="w-12 h-12 rounded-2xl flex items-center justify-center text-lg"
+            className="w-12 h-12 flex items-center justify-center text-lg"
             style={{ background: 'var(--surface)', color: 'var(--text)', border: '1px solid var(--border)' }}
           >
             ⌯
@@ -142,12 +142,12 @@ export default function ArtistListPage() {
             <div
               key={artist.id}
               onClick={() => navigate(`/artist/${artist.id}`)}
-              className="rounded-3xl p-4 mb-4 cursor-pointer"
+              className="p-4 mb-4 cursor-pointer"
               style={{ background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(232,225,216,0.9)' }}
             >
               <div className="flex items-start gap-3">
                 <div
-                  className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0"
+                  className="w-14 h-14 overflow-hidden flex-shrink-0"
                   style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}
                 >
                   {coverArt ? (
@@ -177,7 +177,7 @@ export default function ArtistListPage() {
                             : [...prev, artist.id]
                         )
                       }}
-                      className="px-4 h-10 rounded-xl text-sm font-medium flex-shrink-0"
+                      className="px-4 h-10 text-sm font-medium flex-shrink-0"
                       style={{
                         background: isFollowed ? 'var(--text)' : 'white',
                         color: isFollowed ? 'white' : 'var(--text)',
@@ -201,7 +201,7 @@ export default function ArtistListPage() {
 
         {filteredArtists.length === 0 && (
           <div
-            className="rounded-3xl px-6 py-12 text-center"
+            className="px-6 py-12 text-center"
             style={{ background: 'rgba(255,255,255,0.92)', border: '1px solid rgba(232,225,216,0.9)' }}
           >
             <p className="text-base font-semibold mb-2" style={{ color: 'var(--text)' }}>
