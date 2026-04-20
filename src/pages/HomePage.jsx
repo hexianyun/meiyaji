@@ -228,8 +228,8 @@ function FeaturedWorksSection() {
     <section className="px-4 mt-14">
       <SectionIntro
         eyebrow="CURATED WORKS"
-        title={'以作品为入口\n理解艺术，也理解公益'}
-        description="首页只保留少量精选作品，让浏览更像阅读图录，而不是滚动商品列表。"
+        title={'以作品为入口\n让艺术与公益被看见'}
+        description="首页只保留少量精选作品，让浏览更像翻阅图录，而不是滑动一长串商品。"
         actionLabel="全部作品"
         onAction={() => navigate('/discover')}
       />
