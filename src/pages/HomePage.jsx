@@ -74,10 +74,10 @@ function HeroShowcase() {
   return (
     <section className="px-4 pt-5">
       <div className="mb-6">
-        <p className="text-[11px] tracking-[0.34em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
+        <p className="text-[9px] tracking-[0.34em] uppercase mb-2.5" style={{ color: 'var(--text-weak)' }}>
           MEIYAJI
         </p>
-        <h1 className="text-[34px] leading-[1.08] font-semibold whitespace-pre-line" style={{ color: 'var(--text)' }}>
+        <h1 className="text-[28px] leading-[1.12] font-semibold whitespace-pre-line" style={{ color: 'var(--text)' }}>
           收藏艺术之美
           {'\n'}
           灌溉乡村美育之芽
