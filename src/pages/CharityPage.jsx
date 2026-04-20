@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { charity, charityActivities } from '../data'
+import { charity, charityActivities, charityProjectDetails } from '../data'
 
 function SectionIntro({ eyebrow, title, description, actionLabel, onAction }) {
   return (
@@ -144,6 +144,8 @@ function ImpactSection() {
 }
 
 function InitiativesSection() {
+  const navigate = useNavigate()
+
   return (
     <section className="px-4 mt-14">
       <SectionIntro
@@ -180,6 +182,15 @@ function InitiativesSection() {
               <p className="text-[13px] leading-6" style={{ color: 'var(--text-muted)' }}>
                 {item.desc}
               </p>
+              {charityProjectDetails[item.id] && (
+                <button
+                  onClick={() => navigate(`/charity/project/${item.id}`)}
+                  className="mt-4 text-[12px] pb-1"
+                  style={{ color: 'var(--text)', borderBottom: '1px solid var(--text)' }}
+                >
+                  查看项目详情
+                </button>
+              )}
             </div>
           </div>
         ))}

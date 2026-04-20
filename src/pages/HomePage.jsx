@@ -156,6 +156,7 @@ function HeroShowcase() {
 }
 
 function MissionBlock() {
+  const navigate = useNavigate()
   const totalProjects = charity.length + charityActivities.length
   const stats = [
     { value: totalProjects, label: '公益项目与实践' },
@@ -203,7 +204,11 @@ function MissionBlock() {
             <p className="text-[13px] leading-6 mb-4" style={{ color: 'var(--text-muted)' }}>
               {leadProject.desc}
             </p>
-            <button className="text-[12px] pb-1" style={{ color: 'var(--text)', borderBottom: '1px solid var(--text)' }}>
+            <button
+              onClick={() => navigate(`/charity/project/${leadProject.id}`)}
+              className="text-[12px] pb-1"
+              style={{ color: 'var(--text)', borderBottom: '1px solid var(--text)' }}
+            >
               查看项目详情
             </button>
           </div>
