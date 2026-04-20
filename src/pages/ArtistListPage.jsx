@@ -189,7 +189,7 @@ export default function ArtistListPage() {
                   </div>
 
                   <p className="text-[10px] mt-2" style={{ color: 'var(--text-weak)' }}>
-                    {artist.location} · {artist.works} 件作品 · {artist.followers.toLocaleString()} 关注
+                    {artist.works} 件作品 · {artist.followers.toLocaleString()} 关注
                   </p>
                 </div>
               </div>

@@ -259,9 +259,6 @@ export default function HomePage() {
                 <p className="text-[11px] font-medium truncate" style={{ color: 'var(--text)' }}>
                   {artist.name}
                 </p>
-                <p className="text-[9px] truncate" style={{ color: 'var(--text-weak)' }}>
-                  {artist.location}
-                </p>
               </div>
             )
           })}
