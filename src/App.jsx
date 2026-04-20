@@ -161,17 +161,17 @@ function Navigation() {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className="relative flex-1 pt-3 pb-3.5 flex flex-col items-center gap-1 transition-colors"
-              style={{ color: isActive ? 'var(--text)' : 'rgba(81, 73, 64, 0.72)' }}
+              className="relative flex-1 pt-3 pb-3 flex flex-col items-center gap-1.5 transition-colors"
+              style={{ color: isActive ? '#2f2720' : '#6a5f56' }}
             >
               <span
-                className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] transition-all"
+                className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] transition-all"
                 style={{
-                  width: isActive ? '24px' : '0px',
-                  background: 'var(--text)',
+                  width: isActive ? '26px' : '0px',
+                  background: '#2f2720',
                 }}
               />
-              <span className="nav-icon relative" style={{ fontSize: '18px', lineHeight: 1 }}>
+              <span className="nav-icon relative" style={{ fontSize: '21px', lineHeight: 1 }}>
                 {isActive ? (
                   item.icon === 'Home' ? '○' :
                   item.icon === 'Heart' ? '♡' :
@@ -192,7 +192,7 @@ function Navigation() {
                   </span>
                 )}
               </span>
-              <span className="text-[12px] font-medium tracking-[0.04em]">{item.label}</span>
+              <span className="text-[13px] font-semibold tracking-[0.03em]">{item.label}</span>
             </button>
           )
         })}
