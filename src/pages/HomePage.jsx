@@ -322,11 +322,9 @@ function MissionBlock() {
 function FeaturedWorksSection() {
   const navigate = useNavigate()
   const { addToCart } = useApp()
-  const curatedWorks = artworks.slice(0, 21)
-  const lead = curatedWorks[0]
-  const secondary = curatedWorks.slice(1)
+  const curatedWorks = artworks.slice(0, 20)
 
-  if (!lead) return null
+  if (!curatedWorks.length) return null
 
   return (
     <section className="px-4 mt-14">
@@ -339,14 +337,7 @@ function FeaturedWorksSection() {
       />
 
         <div className="grid grid-cols-2 gap-2">
-          <ArtworkTile
-            artwork={lead}
-            large
-            onOpen={(id) => navigate(`/detail/${id}`)}
-            onAdd={addToCart}
-          />
-
-          {secondary.map(work => (
+          {curatedWorks.map(work => (
             <ArtworkTile
               key={work.id}
               artwork={work}
