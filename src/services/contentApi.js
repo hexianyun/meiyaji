@@ -142,6 +142,34 @@ export async function loginUser(payload) {
   return requestAuth('/api/auth/login', payload)
 }
 
+export async function applyArtistApplication(payload) {
+  const apiBaseUrl = getApiBaseUrl()
+  const token = getStoredAuthToken()
+
+  if (!token) {
+    throw new Error('请先登录后再提交艺术家入驻申请。')
+  }
+
+  try {
+    const response = await fetch(`${apiBaseUrl}/api/auth/artist/apply`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    })
+
+    return await parseApiResponse(response)
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error
+    }
+
+    throw new Error('网络连接失败，请稍后再试。')
+  }
+}
+
 export async function getArtistProfileById(artistId) {
   await wait(140)
 

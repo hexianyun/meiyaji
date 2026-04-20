@@ -16,7 +16,7 @@ function AuthEntryCard({ onLogin, onRegister }) {
         登录 / 注册
       </h2>
       <p className="text-[13px] leading-6 mb-5" style={{ color: 'var(--text-muted)' }}>
-        登录后可查看订单、收藏作品，并继续接入购买与艺术家申请功能。
+        登录后可查看订单、收藏作品，并继续申请成为艺术家。
       </p>
 
       <div className="flex gap-2.5">
@@ -43,7 +43,9 @@ function LoggedInCard({ currentUser, onLogout }) {
   const roleLabel = currentUser?.role === 'artist'
     ? currentUser?.artistStatus === 'approved'
       ? '已认证艺术家'
-      : '艺术家申请中'
+      : currentUser?.artistStatus === 'rejected'
+        ? '艺术家申请未通过'
+        : '艺术家申请中'
     : '普通会员'
 
   return (
@@ -79,17 +81,83 @@ function LoggedInCard({ currentUser, onLogout }) {
   )
 }
 
+function ArtistEntryCard({ currentUser, onApply, onDashboard }) {
+  const isApprovedArtist = currentUser?.role === 'artist' && currentUser?.artistStatus === 'approved'
+  const isApplyingArtist = currentUser?.role === 'artist' && currentUser?.artistStatus === 'pending'
+  const isRejectedArtist = currentUser?.role === 'artist' && currentUser?.artistStatus === 'rejected'
+
+  const title = isApprovedArtist
+    ? '艺术家后台'
+    : '艺术家入驻'
+
+  const description = isApprovedArtist
+    ? '你已通过认证，可以进入艺术家后台管理作品。'
+    : isApplyingArtist
+      ? '你的入驻申请正在审核中，申请资料仍可继续完善。'
+      : isRejectedArtist
+        ? '你的申请暂未通过，可以重新提交更完整的资料。'
+        : '填写真实姓名、个人介绍与公益创作理念，即可提交入驻申请。'
+
+  const buttonLabel = isApprovedArtist
+    ? '进入艺术家后台'
+    : currentUser
+      ? '填写入驻申请'
+      : '登录后申请'
+
+  const buttonHandler = isApprovedArtist ? onDashboard : onApply
+
+  return (
+    <div
+      className="mx-4 mt-4 border p-5"
+      style={{ background: 'rgba(255,255,255,0.88)', borderColor: 'rgba(232,225,216,0.92)' }}
+    >
+      <div className="flex items-start justify-between gap-4 mb-4">
+        <div>
+          <p className="text-[10px] tracking-[0.24em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
+            Artist Entry
+          </p>
+          <h3 className="text-[18px] font-semibold mb-2" style={{ color: 'var(--text)' }}>
+            {title}
+          </h3>
+          <p className="text-[13px] leading-6" style={{ color: 'var(--text-muted)' }}>
+            {description}
+          </p>
+        </div>
+
+        <span
+          className="shrink-0 text-[11px] px-2.5 py-1 border"
+          style={{ color: 'var(--text)', borderColor: 'var(--border)', background: 'var(--surface)' }}
+        >
+          {isApprovedArtist ? '已开通' : currentUser ? '可申请' : '需登录'}
+        </span>
+      </div>
+
+      <button
+        onClick={buttonHandler}
+        className="w-full py-3 text-[14px] font-medium border"
+        style={{
+          background: isApprovedArtist ? 'var(--text)' : 'var(--surface)',
+          borderColor: 'var(--border)',
+          color: isApprovedArtist ? 'white' : 'var(--text)',
+        }}
+      >
+        {buttonLabel}
+      </button>
+    </div>
+  )
+}
+
 export default function ProfilePage() {
   const navigate = useNavigate()
   const { favs, currentUser, setCurrentUser, showToast } = useApp()
 
   const menuItems = [
-    { icon: '◌', label: '我的订单', badge: orders.length, path: '/orders' },
-    { icon: '♡', label: '我的收藏', badge: favs.length, path: '/discover' },
-    { icon: '⌂', label: '收货地址', badge: null, path: '/profile' },
-    { icon: '¥', label: '支付管理', badge: null, path: '/profile' },
-    { icon: '⋯', label: '设置', badge: null, path: '/profile' },
-    { icon: '✦', label: '联系客服', badge: null, path: '/profile' },
+    { icon: '•', label: '我的订单', badge: orders.length, path: '/orders' },
+    { icon: '•', label: '我的收藏', badge: favs.length, path: '/discover' },
+    { icon: '•', label: '收货地址', badge: null, path: '/profile' },
+    { icon: '•', label: '支付管理', badge: null, path: '/profile' },
+    { icon: '•', label: '设置', badge: null, path: '/profile' },
+    { icon: '•', label: '联系客服', badge: null, path: '/profile' },
   ]
 
   const handleLogout = () => {
@@ -109,7 +177,7 @@ export default function ProfilePage() {
             className="w-full h-full flex items-center justify-center"
             style={{ color: 'var(--text-weak)', fontSize: '28px' }}
           >
-            ○
+            •
           </div>
         </div>
         <p className="text-lg font-bold mb-1" style={{ color: 'var(--text)' }}>
@@ -125,6 +193,12 @@ export default function ProfilePage() {
       ) : (
         <AuthEntryCard onLogin={() => navigate('/login')} onRegister={() => navigate('/register')} />
       )}
+
+      <ArtistEntryCard
+        currentUser={currentUser}
+        onApply={() => (currentUser ? navigate('/artist/apply') : navigate('/login'))}
+        onDashboard={() => navigate('/artist/dashboard')}
+      />
 
       <div
         className="flex rounded-2xl mx-4 mt-5 p-5 relative z-10 gap-0"
@@ -180,9 +254,9 @@ export default function ProfilePage() {
           <p className="text-sm font-semibold mb-4" style={{ color: 'var(--text)' }}>关注我们</p>
           <div className="flex justify-center gap-8">
             {[
-              { name: '微信', icon: '♡' },
+              { name: '微信', icon: '◌' },
               { name: '微博', icon: '◌' },
-              { name: '小红书', icon: '□' },
+              { name: '小红书', icon: '◌' },
             ].map((platform, i) => (
               <div key={i} className="text-center">
                 <div
