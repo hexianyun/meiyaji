@@ -1,6 +1,7 @@
 import cors from 'cors'
 import express from 'express'
 import authRoutes from './routes/auth.routes.js'
+import artistArtworkRoutes from './routes/artist-artworks.routes.js'
 import { config } from './config.js'
 import { verifyArtist, verifyMember } from './middleware/auth.js'
 import { serializeUser } from './utils/auth.js'
@@ -18,6 +19,7 @@ app.get('/api/health', (_req, res) => {
 })
 
 app.use('/api/auth', authRoutes)
+app.use('/api/artist/artworks', artistArtworkRoutes)
 
 app.get('/api/member/me', verifyMember, (req, res) => {
   res.json({
