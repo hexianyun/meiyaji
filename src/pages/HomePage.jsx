@@ -1,25 +1,63 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useApp } from '../App'
-import { artworks, artists, charityActivities } from '../data'
+import { artworks, artists, charity, charityActivities, stories } from '../data'
 import { getArtistCoverArtwork } from '../artistMedia'
 
-/* ===== 首页轮播大图（使用首页滚动图片，点击跳转公益栏目）===== */
-const HERO_IMAGES = [
-  '/hero-carousel/1232997301.jpg',
-  '/hero-carousel/1344637144.jpg',
-  '/hero-carousel/1705491199.jpg',
-  '/hero-carousel/1710908245.jpg',
-  '/hero-carousel/1899084694.jpg',
-  '/hero-carousel/228847295.jpg',
-  '/hero-carousel/549412817.jpg',
-  '/hero-carousel/686508360.jpg',
+const HERO_SLIDES = [
+  {
+    image: '/hero-carousel/1232997301.jpg',
+    eyebrow: 'ART & PUBLIC GOOD',
+    title: '让收藏成为一场\n持续发生的美育行动',
+    description: '以艺术作品为入口，连接艺术家、收藏者与乡村美育计划。',
+  },
+  {
+    image: '/hero-carousel/1710908245.jpg',
+    eyebrow: 'CURATED CHARITY',
+    title: '把作品带到更远的地方\n也把美带给更多孩子',
+    description: '通过线上展陈、公益讲堂与长期项目支持，让艺术的影响真正落地。',
+  },
+  {
+    image: '/hero-carousel/549412817.jpg',
+    eyebrow: 'MEIYAJI',
+    title: '在图录式浏览中\n理解作品，也理解公益',
+    description: '每一次浏览与收藏，都是对乡村美育的一次微小灌溉。',
+  },
 ]
 
-function HeroCarousel() {
+function SectionIntro({ eyebrow, title, description, actionLabel, onAction }) {
+  return (
+    <div className="flex items-end justify-between gap-4 mb-5">
+      <div className="min-w-0">
+        <p className="text-[10px] tracking-[0.28em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
+          {eyebrow}
+        </p>
+        <h2 className="text-[24px] leading-[1.18] font-semibold whitespace-pre-line" style={{ color: 'var(--text)' }}>
+          {title}
+        </h2>
+        {description && (
+          <p className="text-[13px] leading-6 mt-3 max-w-[300px]" style={{ color: 'var(--text-muted)' }}>
+            {description}
+          </p>
+        )}
+      </div>
+
+      {actionLabel && (
+        <button
+          onClick={onAction}
+          className="text-[12px] whitespace-nowrap pb-1"
+          style={{ color: 'var(--text)', borderBottom: '1px solid var(--text)' }}
+        >
+          {actionLabel}
+        </button>
+      )}
+    </div>
+  )
+}
+
+function HeroShowcase() {
   const navigate = useNavigate()
   const [current, setCurrent] = useState(0)
-  const total = HERO_IMAGES.length
+  const total = HERO_SLIDES.length
 
   const goNext = useCallback(() => {
     setCurrent(prev => (prev + 1) % total)
@@ -27,243 +65,402 @@ function HeroCarousel() {
 
   useEffect(() => {
     if (total <= 1) return
-    const timer = setInterval(goNext, 4000)
+    const timer = setInterval(goNext, 4500)
     return () => clearInterval(timer)
   }, [goNext, total])
 
-  return (
-    <div className="mx-4 mt-5 rounded-2xl overflow-hidden relative cursor-pointer" style={{ background: 'var(--surface)' }} onClick={() => navigate('/charity')}>
-      {HERO_IMAGES.map((src, i) => {
-        const isActive = i === current
-        return (
-          <div
-            key={src}
-            className={`transition-all duration-700 ease-out ${isActive ? 'opacity-100' : 'opacity-0 absolute inset-0'}`}
-            style={{ pointerEvents: 'none' }}
-          >
-            <div className="aspect-[16/9] relative">
-              <img src={src} alt="" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
-              {/* 底部轻提示 */}
-              <div className="absolute bottom-4 right-4">
-                <span className="text-white/70 text-xs px-3 py-1 rounded-full backdrop-blur-sm bg-white/15 border border-white/20">
-                  了解更多 →
-                </span>
-              </div>
-            </div>
-          </div>
-        )
-      })}
-
-      {/* 指示器 */}
-      {total > 1 && (
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
-          {HERO_IMAGES.map((_, i) => (
-            <button
-              key={i}
-              onClick={(e) => { e.stopPropagation(); setCurrent(i) }}
-              className={`transition-all rounded-full ${
-                i === current ? 'w-5 h-1.5' : 'w-1.5 h-1.5'
-              }`}
-              style={{
-                backgroundColor: i === current ? '#A9B8A8' : 'rgba(255,255,255,0.4)',
-                transitionDuration: '0.3s',
-              }}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
-/* ===== 艺术品卡片（画廊风格）===== */
-function ArtCard({ art }) {
-  const navigate = useNavigate()
-  const { favs, toggleFav, addToCart, showToast } = useApp()
-  const isFav = favs.includes(art.id)
+  const slide = HERO_SLIDES[current]
 
   return (
-    <div
-      className="art-card cursor-pointer"
-      onClick={() => navigate(`/detail/${art.id}`)}
-    >
-      <div className="aspect-[4/3] relative" style={{ background: 'var(--surface-2)' }}>
-        <img src={art.img} alt={art.title} className="w-full h-full object-cover" />
-        {art.orig && (
-          <span className="absolute top-2.5 left-2.5 tag-accent">限时</span>
-        )}
-        <button
-          onClick={(e) => { e.stopPropagation(); toggleFav(art.id) }}
-          className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full flex items-center justify-center backdrop-blur-md"
-          style={{ background: isFav ? 'rgba(199,164,154,0.25)' : 'rgba(255,255,255,0.75)' }}
-        >
-          <span style={{ fontSize: '13px', color: isFav ? '#C98F86' : '#A59B92' }}>{isFav ? '♥' : '♡'}</span>
-        </button>
-      </div>
-      <div className="px-4 pt-3 pb-3.5">
-        <p className="text-sm font-semibold truncate mb-1" style={{ color: 'var(--text)', letterSpacing: '0.01em' }}>
-          {art.title}
-        </p>
-        <p className="text-xs mb-2.5 truncate" style={{ color: 'var(--text-muted)' }}>
-          {art.artist} · {art.mat}
-        </p>
-        <div className="flex justify-between items-center">
-          <div className="flex items-baseline gap-2">
-            <span className="text-base font-bold" style={{ color: 'var(--primary)' }}>
-              ¥{art.price.toLocaleString()}
-            </span>
-            {art.charityPct && (
-              <span className="tag-sage" style={{ fontSize: '9px', padding: '2px 8px' }}>
-                {art.charityPct}%公益
-              </span>
-            )}
-          </div>
-          <button
-            onClick={(e) => { e.stopPropagation(); addToCart(art); showToast('已加入购物车') }}
-            className="w-7 h-7 rounded-xl flex items-center justify-center"
-            style={{ background: 'var(--surface-2)', border: '1px solid var(--border)' }}
-          >
-            <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>+</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/* ===== 首页主体 ===== */
-export default function HomePage() {
-  const navigate = useNavigate()
-  const featured = artworks.filter(a => a.featured).slice(0, 6)
-  const displayedArtists = artists.slice(0, 10)
-
-  // 按日期降序取最新3条公益活动
-  const recentActivities = [...charityActivities]
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 3)
-
-  return (
-    <div className="pb-20 fade-in">
-      {/* ===== 品牌区域（留白、安静） ===== */}
-      <div className="pt-10 pb-8 px-6">
-        <p className="text-[10px] tracking-[0.35em] uppercase mb-2.5" style={{ color: 'var(--text-weak)' }}>
+    <section className="px-4 pt-5">
+      <div className="mb-6">
+        <p className="text-[11px] tracking-[0.34em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
           MEIYAJI
         </p>
-        <h1 className="text-[28px] font-bold mb-2.5" style={{ color: 'var(--text)', letterSpacing: '-0.02em' }}>
-          美芽集
+        <h1 className="text-[34px] leading-[1.08] font-semibold whitespace-pre-line" style={{ color: 'var(--text)' }}>
+          收藏艺术之美
+          {'\n'}
+          灌溉乡村美育之芽
         </h1>
-        <p className="text-sm max-w-[240px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-          收藏艺术之美，灌溉乡村美育之芽
-        </p>
       </div>
 
-      {/* ===== 首屏轮播大图 ===== */}
-      <HeroCarousel />
+      <div
+        className="relative overflow-hidden border cursor-pointer"
+        style={{ borderColor: 'rgba(232,225,216,0.9)', background: '#D9D4CE' }}
+        onClick={() => navigate('/charity')}
+      >
+        <div className="aspect-[4/5] relative">
+          <img src={slide.image} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(19,18,17,0.08) 0%, rgba(19,18,17,0.62) 100%)' }} />
 
-      {/* ===== 公益动态卡片 ===== */}
-      <div className="mt-8 px-4">
-        <div className="flex items-center justify-between mb-3">
-          <span className="font-semibold text-base" style={{ color: 'var(--text)' }}>最新公益</span>
-          <button
-            onClick={() => navigate('/charity')}
-            className="btn-ghost"
-          >
-            全部 →
-          </button>
+          <div className="absolute inset-x-0 top-0 px-5 pt-5 flex items-start justify-between">
+            <div>
+              <p className="text-[10px] tracking-[0.26em] uppercase" style={{ color: 'rgba(255,255,255,0.72)' }}>
+                {slide.eyebrow}
+              </p>
+            </div>
+            <div className="text-[11px]" style={{ color: 'rgba(255,255,255,0.72)' }}>
+              {String(current + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+            </div>
+          </div>
+
+          <div className="absolute inset-x-0 bottom-0 px-5 pb-5">
+            <h2 className="text-[29px] leading-[1.12] font-semibold whitespace-pre-line mb-3" style={{ color: 'white' }}>
+              {slide.title}
+            </h2>
+            <p className="text-[13px] leading-6 max-w-[290px] mb-5" style={{ color: 'rgba(255,255,255,0.78)' }}>
+              {slide.description}
+            </p>
+
+            <div className="flex gap-2.5">
+              <button
+                onClick={(event) => {
+                  event.stopPropagation()
+                  navigate('/discover')
+                }}
+                className="px-4 py-3 text-[12px] font-medium"
+                style={{ background: 'white', color: '#161412' }}
+              >
+                浏览作品
+              </button>
+              <button
+                onClick={(event) => {
+                  event.stopPropagation()
+                  navigate('/charity')
+                }}
+                className="px-4 py-3 text-[12px] font-medium border"
+                style={{ borderColor: 'rgba(255,255,255,0.38)', color: 'white' }}
+              >
+                查看公益计划
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="grid grid-cols-3 gap-2.5">
-          {recentActivities.map(item => (
-            <div
-              key={item.id}
-              onClick={() => navigate(`/charity/article/${item.id}`)}
-              className="rounded-xl overflow-hidden cursor-pointer active:scale-[0.97] transition-transform"
-              style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
-            >
-              <div className="aspect-square relative" style={{ background: 'var(--surface-2)' }}>
-                <img src={item.cover} alt={item.title} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent rounded-t-xl" />
-                <span className="absolute top-2 left-2 tag-sage" style={{ fontSize: '8px', padding: '2px 7px' }}>
-                  {item.tag}
-                </span>
-              </div>
-              <div className="px-2 pt-1.5 pb-2.5">
-                <p className="text-[11px] font-medium line-clamp-1 mb-0.5" style={{ color: 'var(--text)' }}>
-                  {item.title.replace(/——|—/, '\n').split('\n').pop()}
-                </p>
-                <p className="text-[9px]" style={{ color: 'var(--text-weak)' }}>
-                  {item.location}
-                </p>
-              </div>
+      </div>
+
+      <div className="flex gap-2 mt-4">
+        {HERO_SLIDES.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrent(index)}
+            className="h-[2px] transition-all"
+            style={{
+              width: index === current ? '44px' : '18px',
+              background: index === current ? 'var(--text)' : 'rgba(62,58,55,0.18)',
+            }}
+          />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function MissionBlock() {
+  const totalProjects = charity.length + charityActivities.length
+  const stats = [
+    { value: totalProjects, label: '公益项目与实践' },
+    { value: artworks.length, label: '参与作品' },
+    { value: artists.length, label: '合作艺术家' },
+  ]
+
+  const leadProject = charity[0]
+
+  return (
+    <section className="px-4 mt-14">
+      <SectionIntro
+        eyebrow="PUBLIC GOOD"
+        title={'把公益做成长期项目\n而不是一次性活动'}
+        description="我们希望让艺术的流动真正进入乡村教育现场，让作品、课堂、艺术家与受益者形成可持续连接。"
+      />
+
+      <div className="border p-5" style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.9)' }}>
+        <p className="text-[10px] tracking-[0.22em] uppercase mb-4" style={{ color: 'var(--text-weak)' }}>
+          Current Initiative
+        </p>
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          {stats.map(stat => (
+            <div key={stat.label}>
+              <p className="text-[34px] leading-none font-semibold mb-2" style={{ color: 'var(--text)' }}>
+                {stat.value}
+              </p>
+              <p className="text-[11px] leading-5" style={{ color: 'var(--text-muted)' }}>
+                {stat.label}
+              </p>
             </div>
           ))}
         </div>
+
+        {leadProject && (
+          <div className="pt-4 border-t" style={{ borderColor: 'rgba(232,225,216,0.9)' }}>
+            <div className="flex items-start justify-between gap-4 mb-2">
+              <h3 className="text-[19px] font-semibold leading-[1.25]" style={{ color: 'var(--text)' }}>
+                {leadProject.title}
+              </h3>
+              <span className="text-[11px] px-2 py-1 border whitespace-nowrap" style={{ color: 'var(--text-muted)', borderColor: 'rgba(232,225,216,0.9)' }}>
+                {leadProject.tag}
+              </span>
+            </div>
+            <p className="text-[13px] leading-6 mb-4" style={{ color: 'var(--text-muted)' }}>
+              {leadProject.desc}
+            </p>
+            <button className="text-[12px] pb-1" style={{ color: 'var(--text)', borderBottom: '1px solid var(--text)' }}>
+              查看项目详情
+            </button>
+          </div>
+        )}
       </div>
+    </section>
+  )
+}
 
-      {/* ===== 推荐艺术品 ===== */}
-      <div className="mt-8 px-4">
-        <div className="flex items-center justify-between mb-3">
-          <span className="font-semibold text-base" style={{ color: 'var(--text)' }}>推荐作品</span>
-          <button
-            onClick={() => navigate('/discover')}
-            className="btn-ghost"
-          >
-            全部 →
-          </button>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          {featured.map(art => (
-            <ArtCard key={art.id} art={art} />
-          ))}
-        </div>
-      </div>
+function FeaturedWorksSection() {
+  const navigate = useNavigate()
+  const featured = artworks.filter(art => art.featured).slice(0, 4)
+  const lead = featured[0]
+  const secondary = featured.slice(1)
 
-      {/* ===== 艺术家 ===== */}
-      <div className="mt-8 px-4 pb-4">
-        <div className="flex items-center justify-between mb-3">
-          <span className="font-semibold text-base" style={{ color: 'var(--text)' }}>艺术家</span>
-          <button
-            onClick={() => navigate('/artists')}
-            className="btn-ghost"
-          >
-            全部 →
-          </button>
-        </div>
-        <div className="grid grid-cols-5 gap-3">
-          {displayedArtists.map(artist => {
-            const coverArt = getArtistCoverArtwork(artist.id)
+  if (!lead) return null
 
-            return (
-              <div
-                key={artist.id}
-                onClick={() => navigate(`/artist/${artist.id}`)}
-                className="text-center cursor-pointer group"
-              >
-                <div
-                  className="aspect-square overflow-hidden mb-2 transition-transform duration-300 group-active:scale-95"
-                  style={{
-                    border: '1.5px solid var(--border)',
-                    background: 'var(--surface)',
-                  }}
-                >
-                  {coverArt ? (
-                    <img
-                      src={coverArt.img}
-                      alt={`${artist.name}作品《${coverArt.title}》`}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full" />
-                  )}
-                </div>
-                <p className="text-[11px] font-medium truncate" style={{ color: 'var(--text)' }}>
-                  {artist.name}
+  return (
+    <section className="px-4 mt-14">
+      <SectionIntro
+        eyebrow="CURATED WORKS"
+        title={'以作品为入口\n理解艺术，也理解公益'}
+        description="首页只保留少量精选作品，让浏览更像阅读图录，而不是滚动商品列表。"
+        actionLabel="全部作品"
+        onAction={() => navigate('/discover')}
+      />
+
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          onClick={() => navigate(`/detail/${lead.id}`)}
+          className="col-span-2 text-left border overflow-hidden"
+          style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}
+        >
+          <div className="aspect-[16/11] relative">
+            <img src={lead.img} alt={lead.title} className="w-full h-full object-cover" />
+            <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(23,21,18,0.02) 20%, rgba(23,21,18,0.55) 100%)' }} />
+            <div className="absolute left-4 right-4 bottom-4 flex items-end justify-between gap-4">
+              <div>
+                <p className="text-[10px] tracking-[0.2em] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.72)' }}>
+                  Lead Work
+                </p>
+                <p className="text-[24px] leading-[1.15] font-semibold" style={{ color: 'white' }}>
+                  {lead.title}
+                </p>
+                <p className="text-[12px] mt-1" style={{ color: 'rgba(255,255,255,0.74)' }}>
+                  {lead.artist}
                 </p>
               </div>
-            )
-          })}
+              <div className="text-right">
+                <p className="text-[10px] uppercase tracking-[0.18em]" style={{ color: 'rgba(255,255,255,0.72)' }}>
+                  公益贡献
+                </p>
+                <p className="text-[20px] font-semibold" style={{ color: 'white' }}>
+                  {lead.charityPct}%
+                </p>
+              </div>
+            </div>
+          </div>
+        </button>
+
+        {secondary.map(work => (
+          <button
+            key={work.id}
+            onClick={() => navigate(`/detail/${work.id}`)}
+            className="text-left border overflow-hidden"
+            style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}
+          >
+            <div className="aspect-[4/5]">
+              <img src={work.img} alt={work.title} className="w-full h-full object-cover" />
+            </div>
+            <div className="p-3">
+              <p className="text-[15px] font-semibold leading-[1.3] mb-1" style={{ color: 'var(--text)' }}>
+                {work.title}
+              </p>
+              <p className="text-[11px] mb-3" style={{ color: 'var(--text-muted)' }}>
+                {work.artist}
+              </p>
+              <div className="flex items-center justify-between text-[11px]" style={{ color: 'var(--text-weak)' }}>
+                <span>{work.mat}</span>
+                <span>{work.charityPct}% 公益</span>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function ArtistsSection() {
+  const navigate = useNavigate()
+  const featuredArtists = artists.slice(0, 5)
+
+  return (
+    <section className="px-4 mt-14">
+      <SectionIntro
+        eyebrow="ARTISTS"
+        title={'与艺术家并肩\n让作品进入更广阔的公共现场'}
+        description="每一位合作艺术家都以自己的作品参与这场长期的美育支持计划。"
+        actionLabel="艺术家名录"
+        onAction={() => navigate('/artists')}
+      />
+
+      <div className="flex gap-3 overflow-x-auto pb-1">
+        {featuredArtists.map(artist => {
+          const coverArt = getArtistCoverArtwork(artist.id)
+          const conciseBio = artist.bio.split('，').slice(0, 2).join('，')
+
+          return (
+            <button
+              key={artist.id}
+              onClick={() => navigate(`/artist/${artist.id}`)}
+              className="w-[216px] flex-shrink-0 text-left border"
+              style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}
+            >
+              <div className="aspect-[4/5]" style={{ background: 'var(--surface-2)' }}>
+                {coverArt ? (
+                  <img src={coverArt.img} alt={`${artist.name}代表作品`} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full" />
+                )}
+              </div>
+              <div className="p-4">
+                <p className="text-[18px] font-semibold mb-2" style={{ color: 'var(--text)' }}>
+                  {artist.name}
+                </p>
+                <p className="text-[12px] leading-6 min-h-[72px]" style={{ color: 'var(--text-muted)' }}>
+                  {conciseBio}。
+                </p>
+                <div className="mt-4 text-[12px]" style={{ color: 'var(--text)', borderBottom: '1px solid var(--text)', display: 'inline-block', paddingBottom: '4px' }}>
+                  查看作品
+                </div>
+              </div>
+            </button>
+          )
+        })}
+      </div>
+    </section>
+  )
+}
+
+function StoriesSection() {
+  const navigate = useNavigate()
+  const latestActivities = [...charityActivities].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3)
+  const leadStory = latestActivities[0]
+  const sideStories = [...stories.slice(0, 2)]
+
+  if (!leadStory) return null
+
+  return (
+    <section className="px-4 mt-14">
+      <SectionIntro
+        eyebrow="FIELD NOTES"
+        title={'让公益被看见\n也让它被认真记录'}
+        description="我们希望公益故事像一本持续更新的现场札记，既有温度，也有真实的项目脉络。"
+        actionLabel="全部公益"
+        onAction={() => navigate('/charity')}
+      />
+
+      <div className="border overflow-hidden mb-3" style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}>
+        <button onClick={() => navigate(`/charity/article/${leadStory.id}`)} className="w-full text-left">
+          <div className="aspect-[16/10]">
+            <img src={leadStory.cover} alt={leadStory.title} className="w-full h-full object-cover" />
+          </div>
+          <div className="p-4">
+            <p className="text-[10px] tracking-[0.18em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
+              {leadStory.tag}
+            </p>
+            <h3 className="text-[21px] leading-[1.28] font-semibold mb-2" style={{ color: 'var(--text)' }}>
+              {leadStory.title}
+            </h3>
+            <p className="text-[13px] leading-6" style={{ color: 'var(--text-muted)' }}>
+              {leadStory.desc}
+            </p>
+          </div>
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        {sideStories.map(story => (
+          <div
+            key={story.id}
+            className="border"
+            style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}
+          >
+            <div className="aspect-[4/3]">
+              <img src={story.cover} alt={story.title} className="w-full h-full object-cover" />
+            </div>
+            <div className="p-3">
+              <p className="text-[10px] tracking-[0.14em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
+                {story.type}
+              </p>
+              <p className="text-[15px] leading-[1.4] font-semibold mb-2" style={{ color: 'var(--text)' }}>
+                {story.title}
+              </p>
+              <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
+                {story.author} · {story.read}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function FooterSection() {
+  const navigate = useNavigate()
+
+  return (
+    <footer className="px-4 mt-14 pb-28">
+      <div className="border p-5" style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(248,244,239,0.92)' }}>
+        <p className="text-[10px] tracking-[0.26em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
+          MEIYAJI FOUNDATION
+        </p>
+        <h3 className="text-[24px] leading-[1.2] font-semibold mb-3" style={{ color: 'var(--text)' }}>
+          让线上展陈成为公益支持的开始
+        </h3>
+        <p className="text-[13px] leading-6 mb-5 max-w-[310px]" style={{ color: 'var(--text-muted)' }}>
+          这里既是作品浏览入口，也是公益项目的长期记录页。我们相信，艺术不仅值得收藏，也值得被分享给更多孩子。
+        </p>
+
+        <div className="flex gap-2.5 mb-6">
+          <button
+            onClick={() => navigate('/charity')}
+            className="px-4 py-3 text-[12px] font-medium"
+            style={{ background: 'var(--text)', color: 'white' }}
+          >
+            查看公益计划
+          </button>
+          <button
+            onClick={() => navigate('/discover')}
+            className="px-4 py-3 text-[12px] font-medium border"
+            style={{ borderColor: 'var(--border)', color: 'var(--text)' }}
+          >
+            浏览全部作品
+          </button>
+        </div>
+
+        <div className="pt-4 border-t text-[11px] flex items-center justify-between gap-3" style={{ borderColor: 'rgba(232,225,216,0.9)', color: 'var(--text-weak)' }}>
+          <span>美芽集 · 艺术公益 H5</span>
+          <span>Art for Rural Aesthetic Education</span>
         </div>
       </div>
+    </footer>
+  )
+}
+
+export default function HomePage() {
+  return (
+    <div className="pb-20 fade-in">
+      <HeroShowcase />
+      <MissionBlock />
+      <FeaturedWorksSection />
+      <ArtistsSection />
+      <StoriesSection />
+      <FooterSection />
     </div>
   )
 }
