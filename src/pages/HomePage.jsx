@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { artworks, artists, charity, charityActivities } from '../data'
 import { getArtistCoverArtwork } from '../artistMedia'
+import { useApp } from '../App'
 
 const HERO_SLIDES = [
   {
@@ -51,6 +52,108 @@ function SectionIntro({ eyebrow, title, description, actionLabel, onAction }) {
         </button>
       )}
     </div>
+  )
+}
+
+function formatPrice(value) {
+  return `¥${new Intl.NumberFormat('zh-CN').format(Number(value) || 0)}`
+}
+
+function isLandscapeArtwork(artwork) {
+  const size = artwork?.size || ''
+  const match = size.match(/(\d+(?:\.\d+)?)\s*[×x]\s*(\d+(?:\.\d+)?)/)
+
+  if (!match) return false
+
+  return Number(match[1]) > Number(match[2])
+}
+
+function CartIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="9" cy="20" r="1.2" />
+      <circle cx="17" cy="20" r="1.2" />
+      <path d="M3 4h2l2.2 10.5a1.6 1.6 0 0 0 1.6 1.3h8.8a1.6 1.6 0 0 0 1.5-1.1L21 7H6.1" />
+    </svg>
+  )
+}
+
+function ArtworkTile({ artwork, large = false, onOpen, onAdd }) {
+  const landscape = isLandscapeArtwork(artwork)
+
+  return (
+    <article
+      className={`border overflow-hidden ${large ? 'col-span-2' : ''}`}
+      style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}
+    >
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => onOpen(artwork.id)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault()
+            onOpen(artwork.id)
+          }
+        }}
+        className="block text-left cursor-pointer"
+      >
+        <div
+          className={`flex items-center justify-center ${large ? 'aspect-[16/10]' : 'aspect-[4/5]'}`}
+          style={{ background: 'rgba(255,255,255,0.7)' }}
+        >
+          <img
+            src={artwork.img}
+            alt={artwork.title}
+            className="block object-contain"
+            loading="lazy"
+            style={{
+              maxWidth: large ? (landscape ? '84%' : '94%') : (landscape ? '80%' : '92%'),
+              maxHeight: large ? (landscape ? '74%' : '88%') : (landscape ? '70%' : '84%'),
+            }}
+          />
+        </div>
+
+        <div className={large ? 'px-4 py-3' : 'px-3 py-2.5'}>
+          <p
+            className={`${large ? 'text-[12px]' : 'text-[11px]'} font-medium mb-1`}
+            style={{ color: 'var(--text-muted)' }}
+          >
+            {artwork.artist}
+          </p>
+          <p
+            className={`${large ? 'text-[18px]' : 'text-[14px]'} leading-[1.28] font-semibold`}
+            style={{
+              color: 'var(--text)',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+              minHeight: large ? '2.56em' : '2.56em',
+            }}
+          >
+            {artwork.title}
+          </p>
+          <div className="mt-2 flex items-center justify-between gap-3">
+            <p className={`${large ? 'text-[15px]' : 'text-[13px]'} font-semibold`} style={{ color: 'var(--text)' }}>
+              {formatPrice(artwork.price)}
+            </p>
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation()
+                onAdd(artwork)
+              }}
+              className={`shrink-0 border flex items-center justify-center ${large ? 'w-9 h-9' : 'w-8 h-8'}`}
+              style={{ borderColor: 'var(--border)', background: 'var(--surface)', color: 'var(--text)' }}
+              aria-label={`加入购物车：${artwork.title}`}
+            >
+              <CartIcon />
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
   )
 }
 
@@ -218,9 +321,10 @@ function MissionBlock() {
 
 function FeaturedWorksSection() {
   const navigate = useNavigate()
-  const featured = artworks.filter(art => art.featured).slice(0, 4)
-  const lead = featured[0]
-  const secondary = featured.slice(1)
+  const { addToCart } = useApp()
+  const curatedWorks = artworks.slice(0, 21)
+  const lead = curatedWorks[0]
+  const secondary = curatedWorks.slice(1)
 
   if (!lead) return null
 
@@ -234,65 +338,24 @@ function FeaturedWorksSection() {
         onAction={() => navigate('/discover')}
       />
 
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          onClick={() => navigate(`/detail/${lead.id}`)}
-          className="col-span-2 text-left border overflow-hidden"
-          style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}
-        >
-          <div className="aspect-[16/11] relative">
-            <img src={lead.img} alt={lead.title} className="w-full h-full object-cover" />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(23,21,18,0.02) 20%, rgba(23,21,18,0.55) 100%)' }} />
-            <div className="absolute left-4 right-4 bottom-4 flex items-end justify-between gap-4">
-              <div>
-                <p className="text-[10px] tracking-[0.2em] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.72)' }}>
-                  Lead Work
-                </p>
-                <p className="text-[24px] leading-[1.15] font-semibold" style={{ color: 'white' }}>
-                  {lead.title}
-                </p>
-                <p className="text-[12px] mt-1" style={{ color: 'rgba(255,255,255,0.74)' }}>
-                  {lead.artist}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-[10px] uppercase tracking-[0.18em]" style={{ color: 'rgba(255,255,255,0.72)' }}>
-                  公益贡献
-                </p>
-                <p className="text-[20px] font-semibold" style={{ color: 'white' }}>
-                  {lead.charityPct}%
-                </p>
-              </div>
-            </div>
-          </div>
-        </button>
+        <div className="grid grid-cols-2 gap-2">
+          <ArtworkTile
+            artwork={lead}
+            large
+            onOpen={(id) => navigate(`/detail/${id}`)}
+            onAdd={addToCart}
+          />
 
-        {secondary.map(work => (
-          <button
-            key={work.id}
-            onClick={() => navigate(`/detail/${work.id}`)}
-            className="text-left border overflow-hidden"
-            style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}
-          >
-            <div className="aspect-[4/5]">
-              <img src={work.img} alt={work.title} className="w-full h-full object-cover" />
-            </div>
-            <div className="p-3">
-              <p className="text-[15px] font-semibold leading-[1.3] mb-1" style={{ color: 'var(--text)' }}>
-                {work.title}
-              </p>
-              <p className="text-[11px] mb-3" style={{ color: 'var(--text-muted)' }}>
-                {work.artist}
-              </p>
-              <div className="flex items-center justify-between text-[11px]" style={{ color: 'var(--text-weak)' }}>
-                <span>{work.mat}</span>
-                <span>{work.charityPct}% 公益</span>
-              </div>
-            </div>
-          </button>
-        ))}
-      </div>
-    </section>
+          {secondary.map(work => (
+            <ArtworkTile
+              key={work.id}
+              artwork={work}
+              onOpen={(id) => navigate(`/detail/${id}`)}
+              onAdd={addToCart}
+            />
+          ))}
+        </div>
+      </section>
   )
 }
 
