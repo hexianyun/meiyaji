@@ -141,6 +141,60 @@ function Navigation() {
     { path: '/profile', icon: 'User', label: '我的' },
   ]
 
+  const renderIcon = (iconName, isActive) => {
+    const strokeColor = isActive ? '#2f2720' : '#6a5f56'
+    const commonProps = {
+      width: 24,
+      height: 24,
+      viewBox: '0 0 24 24',
+      fill: 'none',
+      stroke: strokeColor,
+      strokeWidth: 1.8,
+      strokeLinecap: 'round',
+      strokeLinejoin: 'round',
+      'aria-hidden': true,
+    }
+
+    switch (iconName) {
+      case 'Home':
+        return (
+          <svg {...commonProps}>
+            <path d="M4 11.2 12 4l8 7.2" />
+            <path d="M6.5 10.6V20h11V10.6" />
+            <path d="M10 20v-5h4v5" />
+          </svg>
+        )
+      case 'Heart':
+        return (
+          <svg {...commonProps}>
+            <path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.7A4 4 0 0 1 19 10c0 5.5-7 10-7 10Z" />
+          </svg>
+        )
+      case 'Gallery':
+        return (
+          <svg {...commonProps}>
+            <rect x="4" y="4" width="16" height="16" rx="2.2" />
+            <path d="M8 8h8M8 12h8M8 16h5" />
+          </svg>
+        )
+      case 'Palette':
+        return (
+          <svg {...commonProps}>
+            <path d="M12 4 20 12 12 20 4 12Z" />
+            <path d="M12 7.5v9" />
+          </svg>
+        )
+      case 'User':
+      default:
+        return (
+          <svg {...commonProps}>
+            <circle cx="12" cy="8" r="3.2" />
+            <path d="M5.5 19.2c1.4-3 4.1-4.7 6.5-4.7s5.1 1.7 6.5 4.7" />
+          </svg>
+        )
+    }
+  }
+
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 safe-area-pb"
@@ -161,7 +215,7 @@ function Navigation() {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className="relative flex-1 pt-3 pb-3 flex flex-col items-center gap-1.5 transition-colors"
+              className="relative flex-1 pt-3 pb-3 flex flex-col items-center gap-1 transition-colors"
               style={{ color: isActive ? '#2f2720' : '#6a5f56' }}
             >
               <span
@@ -171,18 +225,14 @@ function Navigation() {
                   background: '#2f2720',
                 }}
               />
-              <span className="nav-icon relative" style={{ fontSize: '21px', lineHeight: 1 }}>
-                {isActive ? (
-                  item.icon === 'Home' ? '○' :
-                  item.icon === 'Heart' ? '♡' :
-                  item.icon === 'Gallery' ? '□' :
-                  item.icon === 'Palette' ? '◇' : '◦'
-                ) : (
-                  item.icon === 'Home' ? '○' :
-                  item.icon === 'Heart' ? '♡' :
-                  item.icon === 'Gallery' ? '□' :
-                  item.icon === 'Palette' ? '◇' : '◦'
-                )}
+              <span
+                className="nav-icon relative flex items-center justify-center transition-transform"
+                style={{
+                  transform: isActive ? 'translateY(-1px) scale(1.08)' : 'scale(1)',
+                  lineHeight: 1,
+                }}
+              >
+                {renderIcon(item.icon, isActive)}
                 {item.path === '/profile' && cartCount > 0 && (
                   <span
                     className="absolute -top-1 -right-1 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center"
@@ -192,7 +242,7 @@ function Navigation() {
                   </span>
                 )}
               </span>
-              <span className="text-[13px] font-semibold tracking-[0.03em]">{item.label}</span>
+              <span className="text-[14px] font-semibold tracking-[0.02em]">{item.label}</span>
             </button>
           )
         })}
