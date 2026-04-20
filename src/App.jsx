@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
+import { createContext, useContext, useEffect, useState } from 'react'
+import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import DiscoverPage from './pages/DiscoverPage'
 import DetailPage from './pages/DetailPage'
@@ -12,49 +12,116 @@ import ExhibitionsPage from './pages/ExhibitionsPage'
 import CharityPage from './pages/CharityPage'
 import CharityArticlePage from './pages/CharityArticlePage'
 import CharityProjectPage from './pages/CharityProjectPage'
+import ArtistDashboardPage from './pages/ArtistDashboardPage'
+import { getStoredCurrentUser, setStoredCurrentUser } from './services/contentApi'
 
+const AppContext = createContext(null)
+const FAVORITES_STORAGE_KEY = 'meiyaji_favorites'
+const CART_STORAGE_KEY = 'meiyaji_cart'
 
-function useApp() {
-  const [favs, setFavs] = useState([])
-  const [cart, setCart] = useState([])
+function readStoredJson(key, fallbackValue) {
+  if (typeof window === 'undefined') return fallbackValue
+
+  try {
+    const rawValue = window.localStorage.getItem(key)
+    return rawValue ? JSON.parse(rawValue) : fallbackValue
+  } catch {
+    return fallbackValue
+  }
+}
+
+function AppProvider({ children }) {
+  const [favs, setFavs] = useState(() => readStoredJson(FAVORITES_STORAGE_KEY, []))
+  const [cart, setCart] = useState(() => readStoredJson(CART_STORAGE_KEY, []))
   const [toast, setToast] = useState(null)
+  const [currentUser, setCurrentUserState] = useState(() => getStoredCurrentUser())
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favs))
+    }
+  }, [favs])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart))
+    }
+  }, [cart])
 
   const toggleFav = (id) => {
-    setFavs(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id])
+    setFavs(prev => prev.includes(id) ? prev.filter(itemId => itemId !== id) : [...prev, id])
   }
 
-  const addToCart = (item) => {
+  const showToast = (msg) => {
+    setToast(msg)
+    window.setTimeout(() => setToast(null), 2000)
+  }
+
+  const addToCart = (artwork) => {
     setCart(prev => {
-      const existing = prev.find(i => i.id === item.id)
+      const existing = prev.find(item => item.art.id === artwork.id)
+
       if (existing) {
-        return prev.map(i => i.id === item.id ? { ...i, qty: i.qty + 1 } : i)
+        return prev.map(item => item.art.id === artwork.id ? { ...item, qty: item.qty + 1 } : item)
       }
-      return [...prev, { ...item, qty: 1 }]
+
+      return [...prev, { art: artwork, qty: 1 }]
     })
-    setToast('已加入购物车')
-    setTimeout(() => setToast(null), 2000)
+
+    showToast('已加入购物车')
   }
 
   const removeFromCart = (id) => {
-    setCart(prev => prev.filter(i => i.id !== id))
+    setCart(prev => prev.filter(item => item.art.id !== id))
   }
 
-  const updateQty = (id, qty) => {
+  const updateCartQty = (id, qty) => {
     if (qty <= 0) {
       removeFromCart(id)
       return
     }
-    setCart(prev => prev.map(i => i.id === id ? { ...i, qty } : i))
+
+    setCart(prev => prev.map(item => item.art.id === id ? { ...item, qty } : item))
   }
 
   const clearCart = () => setCart([])
+  const cartTotal = cart.reduce((sum, item) => sum + item.art.price * item.qty, 0)
 
-  const showToast = (msg) => {
-    setToast(msg)
-    setTimeout(() => setToast(null), 2000)
+  const setCurrentUser = (user) => {
+    setCurrentUserState(user)
+    setStoredCurrentUser(user)
   }
 
-  return { favs, toggleFav, cart, addToCart, removeFromCart, updateQty, clearCart, toast, showToast }
+  return (
+    <AppContext.Provider
+      value={{
+        favs,
+        toggleFav,
+        cart,
+        addToCart,
+        removeFromCart,
+        updateCartQty,
+        clearCart,
+        cartTotal,
+        toast,
+        showToast,
+        currentUser,
+        setCurrentUser,
+      }}
+    >
+      {children}
+    </AppContext.Provider>
+  )
+}
+
+function useApp() {
+  const context = useContext(AppContext)
+
+  if (!context) {
+    throw new Error('useApp must be used within AppProvider')
+  }
+
+  return context
 }
 
 function Navigation() {
@@ -68,16 +135,17 @@ function Navigation() {
     { path: '/charity', icon: 'Heart', label: '公益' },
     { path: '/discover', icon: 'Gallery', label: '作品' },
     { path: '/artists', icon: 'Palette', label: '艺术家' },
-    { path: '/profile', icon: 'User', label: '我的' }
+    { path: '/profile', icon: 'User', label: '我的' },
   ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 safe-area-pb"
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-50 safe-area-pb"
       style={{
         background: 'rgba(248, 244, 239, 0.96)',
         backdropFilter: 'blur(16px)',
         borderTop: '1px solid rgba(215, 205, 194, 0.92)',
-        boxShadow: '0 -10px 28px rgba(27, 23, 19, 0.06)'
+        boxShadow: '0 -10px 28px rgba(27, 23, 19, 0.06)',
       }}
     >
       <div className="max-w-[430px] mx-auto flex px-1">
@@ -85,6 +153,7 @@ function Navigation() {
           const isActive = item.path === '/'
             ? location.pathname === '/'
             : location.pathname.startsWith(item.path)
+
           return (
             <button
               key={item.path}
@@ -101,18 +170,19 @@ function Navigation() {
               />
               <span className="nav-icon relative" style={{ fontSize: '18px', lineHeight: 1 }}>
                 {isActive ? (
-                  item.icon === 'Home' ? '◉' :
-                  item.icon === 'Heart' ? '♥' :
-                  item.icon === 'Gallery' ? '▦' :
-                  item.icon === 'Palette' ? '◈' : '●'
+                  item.icon === 'Home' ? '○' :
+                  item.icon === 'Heart' ? '♡' :
+                  item.icon === 'Gallery' ? '□' :
+                  item.icon === 'Palette' ? '◇' : '◦'
                 ) : (
                   item.icon === 'Home' ? '○' :
                   item.icon === 'Heart' ? '♡' :
-                  item.icon === 'Gallery' ? '▢' :
-                  item.icon === 'Palette' ? '◇' : '○'
+                  item.icon === 'Gallery' ? '□' :
+                  item.icon === 'Palette' ? '◇' : '◦'
                 )}
                 {item.path === '/profile' && cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center"
+                  <span
+                    className="absolute -top-1 -right-1 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center"
                     style={{ background: 'var(--accent)' }}
                   >
                     {cartCount > 9 ? '9+' : cartCount}
@@ -130,6 +200,7 @@ function Navigation() {
 
 function Toast({ msg }) {
   if (!msg) return null
+
   return (
     <div
       className="fixed top-16 left-1/2 -translate-x-1/2 text-sm z-50"
@@ -148,8 +219,6 @@ function Toast({ msg }) {
 
 function AppContent() {
   const { toast } = useApp()
-  const location = useLocation()
-  const isHome = location.pathname === '/'
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)' }}>
@@ -162,6 +231,7 @@ function AppContent() {
           <Route path="/orders" element={<OrdersPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/artist/:id" element={<ArtistPage />} />
+          <Route path="/artist/dashboard" element={<ArtistDashboardPage />} />
           <Route path="/artists" element={<ArtistListPage />} />
           <Route path="/exhibitions" element={<ExhibitionsPage />} />
           <Route path="/charity" element={<CharityPage />} />
@@ -178,7 +248,9 @@ function AppContent() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AppContent />
+      <AppProvider>
+        <AppContent />
+      </AppProvider>
     </BrowserRouter>
   )
 }
