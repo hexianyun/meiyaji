@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  member
+  artist
+  admin
+}
+
+enum ArtistStatus {
+  pending
+  approved
+  rejected
+}
+
+enum InventoryStatus {
+  in_stock
+  sold_out
+  archived
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  passwordHash String
+  username     String?       @unique
+  realName     String?
+  avatarUrl    String?
+  phone        String?
+  role         UserRole      @default(member)
+  artistStatus ArtistStatus?
+  bio          String?       @db.Text
+  artistIntro  String?       @db.Text
+  portfolioUrl String?
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  artworks     Artwork[]
+
+  @@index([role])
+  @@index([artistStatus])
+}
+
+model Artwork {
+  id                 String          @id @default(cuid())
+  artistId           String
+  artist             User            @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  title              String
+  slug               String          @unique
+  imageUrl           String
+  price              Decimal         @db.Decimal(10, 2)
+  stock              Int             @default(1)
+  inventoryStatus    InventoryStatus @default(in_stock)
+  description        String?         @db.Text
+  charitySupportNote String          @db.Text
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  @@index([artistId])
+  @@index([inventoryStatus])
+}
