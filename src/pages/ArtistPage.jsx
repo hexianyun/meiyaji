@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
 import { artists, artworks } from '../data'
+import { getArtistCoverArtwork } from '../artistMedia'
 
 export default function ArtistPage() {
   const { id } = useParams()
@@ -11,6 +12,7 @@ export default function ArtistPage() {
   if (!artist) return null
   
   const artistWorks = artworks.filter(a => a.aid === artist.id)
+  const coverArt = getArtistCoverArtwork(artist.id)
 
   return (
     <div className="pb-20 fade-in">
@@ -29,11 +31,20 @@ export default function ArtistPage() {
           <div className="w-full max-w-[180px] aspect-[4/3] overflow-hidden"
             style={{ borderRadius: '12px', border: '1px solid var(--border)' }}
           >
-            <img src={artist.avatar} alt={artist.name} className="w-full h-full object-cover" />
+            {coverArt ? (
+              <img src={coverArt.img} alt={`${artist.name}作品《${coverArt.title}》`} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full" />
+            )}
           </div>
           <div>
             <p className="text-xl font-bold" style={{ color: 'var(--text)' }}>{artist.name}</p>
             <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>{artist.location}</p>
+            {coverArt && (
+              <p className="text-[11px] mt-2" style={{ color: 'var(--text-weak)' }}>
+                代表作品《{coverArt.title}》
+              </p>
+            )}
           </div>
         </div>
 

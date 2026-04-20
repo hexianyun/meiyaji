@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
 import { artworks, artists, charityActivities } from '../data'
+import { getArtistCoverArtwork } from '../artistMedia'
 
 /* ===== 首页轮播大图（使用首页滚动图片，点击跳转公益栏目）===== */
 const HERO_IMAGES = [
@@ -229,34 +230,42 @@ export default function HomePage() {
           </button>
         </div>
         <div className="grid grid-cols-5 gap-3">
-          {displayedArtists.map(artist => (
-            <div
-              key={artist.id}
-              onClick={() => navigate(`/artist/${artist.id}`)}
-              className="text-center cursor-pointer group"
-            >
+          {displayedArtists.map(artist => {
+            const coverArt = getArtistCoverArtwork(artist.id)
+
+            return (
               <div
-                className="aspect-square overflow-hidden mb-2 transition-transform duration-300 group-active:scale-95"
-                style={{
-                  borderRadius: '16px',
-                  border: '1.5px solid var(--border)',
-                  background: 'var(--surface)',
-                }}
+                key={artist.id}
+                onClick={() => navigate(`/artist/${artist.id}`)}
+                className="text-center cursor-pointer group"
               >
-                <img
-                  src={artist.avatar}
-                  alt={artist.name}
-                  className="w-full h-full object-cover"
-                />
+                <div
+                  className="aspect-square overflow-hidden mb-2 transition-transform duration-300 group-active:scale-95"
+                  style={{
+                    borderRadius: '16px',
+                    border: '1.5px solid var(--border)',
+                    background: 'var(--surface)',
+                  }}
+                >
+                  {coverArt ? (
+                    <img
+                      src={coverArt.img}
+                      alt={`${artist.name}作品《${coverArt.title}》`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full" />
+                  )}
+                </div>
+                <p className="text-[11px] font-medium truncate" style={{ color: 'var(--text)' }}>
+                  {artist.name}
+                </p>
+                <p className="text-[9px] truncate" style={{ color: 'var(--text-weak)' }}>
+                  {artist.location}
+                </p>
               </div>
-              <p className="text-[11px] font-medium truncate" style={{ color: 'var(--text)' }}>
-                {artist.name}
-              </p>
-              <p className="text-[9px] truncate" style={{ color: 'var(--text-weak)' }}>
-                {artist.location}
-              </p>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </div>

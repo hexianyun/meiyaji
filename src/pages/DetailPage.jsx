@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
 import { artworks, artists } from '../data'
+import { getArtistCoverArtwork } from '../artistMedia'
 
 export default function DetailPage() {
   const { id } = useParams()
@@ -13,6 +14,7 @@ export default function DetailPage() {
   if (!art) return null
 
   const artist = artists.find(a => a.id === art.aid)
+  const artistCover = artist ? getArtistCoverArtwork(artist.id) : null
   const isFav = favs.includes(art.id)
 
   return (
@@ -97,8 +99,12 @@ export default function DetailPage() {
             className="flex items-center gap-3.5 py-3 cursor-pointer active:bg-opacity-60 transition-colors"
             style={{ borderBottom: '1px solid var(--border)' }}
           >
-            <div className="w-11 h-11 overflow-hidden" style={{ borderRadius: '50%', border: '1.5px solid var(--border)' }}>
-              <img src={artist.avatar} alt={artist.name} className="w-full h-full object-cover" />
+            <div className="w-11 h-11 overflow-hidden flex-shrink-0" style={{ borderRadius: '12px', border: '1.5px solid var(--border)' }}>
+              {artistCover ? (
+                <img src={artistCover.img} alt={`${artist.name}作品《${artistCover.title}》`} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full" />
+              )}
             </div>
             <div className="flex-1">
               <p className="font-semibold text-sm" style={{ color: 'var(--text)' }}>{artist.name}</p>
