@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { charity, charityActivities, stories } from '../data'
+import { charity, charityActivities } from '../data'
 
 function SectionIntro({ eyebrow, title, description, actionLabel, onAction }) {
   return (
@@ -237,19 +237,23 @@ function ActivitiesSection() {
 }
 
 function StoriesSection() {
+  const navigate = useNavigate()
+  const editorialActivities = [...charityActivities].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 2)
+
   return (
     <section className="px-4 mt-14">
       <SectionIntro
         eyebrow="EDITORIAL"
         title={'用更编辑化的方式\n补充项目的温度与背景'}
-        description="除了活动现场，我们也保留更轻的公益观察与艺术家行动记录，让页面不止有数据，也有情感线索。"
+        description="这一组内容同样来自已有公益活动文章，只是以更轻的编辑式方式再次呈现，让页面不止有数据，也有阅读节奏。"
       />
 
       <div className="grid grid-cols-2 gap-3">
-        {stories.map(story => (
-          <div
+        {editorialActivities.map(story => (
+          <button
             key={story.id}
-            className="border"
+            onClick={() => navigate(`/charity/article/${story.id}`)}
+            className="border text-left"
             style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}
           >
             <div className="aspect-[4/3]">
@@ -257,16 +261,16 @@ function StoriesSection() {
             </div>
             <div className="p-3">
               <p className="text-[10px] tracking-[0.16em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
-                {story.type}
+                {story.tag}
               </p>
               <h3 className="text-[15px] leading-[1.38] font-semibold mb-2" style={{ color: 'var(--text)' }}>
                 {story.title}
               </h3>
               <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                {story.author} · {story.read}
+                {story.location} · {story.date}
               </p>
             </div>
-          </div>
+          </button>
         ))}
       </div>
     </section>

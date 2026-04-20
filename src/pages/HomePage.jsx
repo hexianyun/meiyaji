@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { artworks, artists, charity, charityActivities, stories } from '../data'
+import { artworks, artists, charity, charityActivities } from '../data'
 import { getArtistCoverArtwork } from '../artistMedia'
 
 const HERO_SLIDES = [
@@ -347,9 +347,9 @@ function ArtistsSection() {
 
 function StoriesSection() {
   const navigate = useNavigate()
-  const latestActivities = [...charityActivities].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 3)
+  const latestActivities = [...charityActivities].sort((a, b) => b.date.localeCompare(a.date))
   const leadStory = latestActivities[0]
-  const sideStories = [...stories.slice(0, 2)]
+  const sideStories = latestActivities.slice(1, 3)
 
   if (!leadStory) return null
 
@@ -384,9 +384,10 @@ function StoriesSection() {
 
       <div className="grid grid-cols-2 gap-3">
         {sideStories.map(story => (
-          <div
+          <button
             key={story.id}
-            className="border"
+            onClick={() => navigate(`/charity/article/${story.id}`)}
+            className="border text-left"
             style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}
           >
             <div className="aspect-[4/3]">
@@ -394,16 +395,16 @@ function StoriesSection() {
             </div>
             <div className="p-3">
               <p className="text-[10px] tracking-[0.14em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
-                {story.type}
+                {story.tag}
               </p>
               <p className="text-[15px] leading-[1.4] font-semibold mb-2" style={{ color: 'var(--text)' }}>
                 {story.title}
               </p>
               <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                {story.author} · {story.read}
+                {story.location} · {story.date}
               </p>
             </div>
-          </div>
+          </button>
         ))}
       </div>
     </section>
