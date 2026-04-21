@@ -10,12 +10,36 @@ const initialForm = {
   portfolioUrl: '',
 }
 
+const artistNoticeSections = [
+  {
+    title: '一、核心收益分配机制',
+    body: [
+      '为了兼顾艺术家的创作权益与公益项目的长远发展，我们确立了极其清晰、克制的收益分配规则。当您的作品在平台成功售出后，收益将按以下比例进行分配：',
+      '40% 用于艺术创作（归艺术家所有）',
+      '我们深知并尊重每一份创作背后的艰辛。这部分收益将直接交予艺术家本人，为您持续的艺术探索提供最实质的支持与回报。',
+      '50% 专项用于乡村公益',
+      '这是“美芽集”的核心使命。该款项将 100% 转化为乡村孩子们的画材、美育课堂和艺术启蒙，为贫瘠的土壤播撒美的种子。',
+      '10% 用于项目运营',
+      '该部分资金仅用于维持平台的日常运转（如网站维护、作品宣发）以及公益项目的差旅落地，确保这座连接艺术与爱的桥梁能够坚固长久。',
+    ],
+  },
+  {
+    title: '二、我们的透明承诺',
+    body: [
+      '信任是公益的基石。“美芽集”郑重承诺：',
+      '所有款项的流向全程公开透明，平台将定期向入驻艺术家及公众公示资金去向。我们保证让每一份善意，都真正抵达孩子身边。',
+    ],
+  },
+]
+
 export default function ArtistApplyPage() {
   const navigate = useNavigate()
   const { currentUser, setCurrentUser, showToast } = useApp()
   const [formData, setFormData] = useState(initialForm)
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [hasAcceptedNotice, setHasAcceptedNotice] = useState(false)
+  const [hasConfirmedAgreement, setHasConfirmedAgreement] = useState(false)
 
   const isApprovedArtist = currentUser?.role === 'artist' && currentUser?.artistStatus === 'approved'
 
@@ -155,6 +179,86 @@ export default function ArtistApplyPage() {
             style={{ background: 'var(--text)', color: 'white' }}
           >
             进入艺术家后台
+          </button>
+        </section>
+      </div>
+    )
+  }
+
+  if (!hasAcceptedNotice) {
+    return (
+      <div className="px-4 pt-5 pb-24 fade-in">
+        <div className="flex items-center justify-between gap-3 mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="w-10 h-10 flex items-center justify-center border"
+            style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+          >
+            ←
+          </button>
+          <p className="text-[10px] tracking-[0.28em] uppercase" style={{ color: 'var(--text-weak)' }}>
+            Artist Apply
+          </p>
+          <span className="w-10" />
+        </div>
+
+        <section
+          className="border p-6"
+          style={{ background: 'rgba(251,248,244,0.95)', borderColor: 'rgba(232,225,216,0.92)' }}
+        >
+          <p className="text-[10px] tracking-[0.24em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
+            Entry Notice
+          </p>
+          <h1 className="text-[28px] leading-[1.18] font-semibold mb-3" style={{ color: 'var(--text)' }}>
+            「美芽集」艺术家入驻申请须知
+          </h1>
+          <p className="text-[13px] leading-6 mb-6" style={{ color: 'var(--text-muted)' }}>
+            欢迎来到“美芽集”。我们是一个致力于“以艺术品售卖支援乡村美育公益”的平台。在这里，您的每一件作品不仅是美的表达，更将化作点亮乡村孩子艺术梦想的星光。
+          </p>
+          <p className="text-[13px] leading-6 mb-6" style={{ color: 'var(--text-muted)' }}>
+            在您提交入驻申请前，请详细阅读以下须知与平台核心机制：
+          </p>
+
+          <div className="space-y-5">
+            {artistNoticeSections.map(section => (
+              <div key={section.title}>
+                <h2 className="text-[16px] font-semibold mb-3" style={{ color: 'var(--text)' }}>
+                  {section.title}
+                </h2>
+                <div className="space-y-3">
+                  {section.body.map((paragraph, index) => (
+                    <p key={`${section.title}-${index}`} className="text-[13px] leading-6" style={{ color: 'var(--text-muted)' }}>
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <label className="flex items-start gap-3 mt-8 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={hasConfirmedAgreement}
+              onChange={(event) => setHasConfirmedAgreement(event.target.checked)}
+              className="mt-1"
+            />
+            <span className="text-[13px] leading-6" style={{ color: 'var(--text)' }}>
+              我已完整阅读并同意以上入驻须知、收益分配机制及平台透明承诺。
+            </span>
+          </label>
+
+          <button
+            type="button"
+            disabled={!hasConfirmedAgreement}
+            onClick={() => {
+              setHasAcceptedNotice(true)
+              setErrorMessage('')
+            }}
+            className="w-full py-3.5 text-[15px] font-medium disabled:opacity-50 mt-6"
+            style={{ background: 'var(--text)', color: 'white' }}
+          >
+            同意并填写申请表
           </button>
         </section>
       </div>
