@@ -3,6 +3,30 @@ import { useApp } from '../App'
 import { orders } from '../data'
 import { clearAuthSession } from '../services/contentApi'
 
+function ProfileHero() {
+  return (
+    <div className="mx-4 pt-6">
+      <div className="relative overflow-hidden border" style={{ borderColor: 'rgba(232,225,216,0.92)', background: '#d8d0c7' }}>
+        <div className="aspect-[16/7]">
+          <img src="/hero-carousel/1710908245.jpg" alt="美芽集个人中心横幅" className="w-full h-full object-cover" />
+        </div>
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(180deg, rgba(20,18,16,0.08) 0%, rgba(20,18,16,0.42) 100%)' }}
+        />
+        <div className="absolute left-4 right-4 bottom-4">
+          <p className="text-[10px] tracking-[0.24em] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.76)' }}>
+            MY MEIYAJI
+          </p>
+          <p className="text-[18px] font-semibold" style={{ color: 'white' }}>
+            收藏、订单与艺术家入驻
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function AuthEntryCard({ onLogin, onRegister }) {
   return (
     <div
@@ -81,7 +105,7 @@ function LoggedInCard({ currentUser, onLogout }) {
   )
 }
 
-function ArtistEntryCard({ currentUser, onApply, onDashboard }) {
+function ArtistEntryCard({ currentUser, onApply, onDashboard, compact = false }) {
   const isApprovedArtist = currentUser?.role === 'artist' && currentUser?.artistStatus === 'approved'
   const isApplyingArtist = currentUser?.role === 'artist' && currentUser?.artistStatus === 'pending'
   const isRejectedArtist = currentUser?.role === 'artist' && currentUser?.artistStatus === 'rejected'
@@ -108,24 +132,24 @@ function ArtistEntryCard({ currentUser, onApply, onDashboard }) {
 
   return (
     <div
-      className="mx-4 mt-4 border p-5"
+      className={`mx-4 border ${compact ? 'mt-6 p-4' : 'mt-4 p-5'}`}
       style={{ background: 'rgba(255,255,255,0.88)', borderColor: 'rgba(232,225,216,0.92)' }}
     >
-      <div className="flex items-start justify-between gap-4 mb-4">
+      <div className={`flex items-start justify-between gap-4 ${compact ? 'mb-3' : 'mb-4'}`}>
         <div>
           <p className="text-[10px] tracking-[0.24em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
             Artist Entry
           </p>
-          <h3 className="text-[18px] font-semibold mb-2" style={{ color: 'var(--text)' }}>
+          <h3 className={`${compact ? 'text-[16px]' : 'text-[18px]'} font-semibold mb-2`} style={{ color: 'var(--text)' }}>
             {title}
           </h3>
-          <p className="text-[13px] leading-6" style={{ color: 'var(--text-muted)' }}>
+          <p className={`${compact ? 'text-[12px] leading-5 max-w-[240px]' : 'text-[13px] leading-6'}`} style={{ color: 'var(--text-muted)' }}>
             {description}
           </p>
         </div>
 
         <span
-          className="shrink-0 text-[11px] px-2.5 py-1 border"
+          className={`shrink-0 text-[11px] px-2.5 ${compact ? 'py-0.5' : 'py-1'} border`}
           style={{ color: 'var(--text)', borderColor: 'var(--border)', background: 'var(--surface)' }}
         >
           {isApprovedArtist ? '已开通' : currentUser ? '可申请' : '需登录'}
@@ -134,7 +158,7 @@ function ArtistEntryCard({ currentUser, onApply, onDashboard }) {
 
       <button
         onClick={buttonHandler}
-        className="w-full py-3 text-[14px] font-medium border"
+        className={`w-full ${compact ? 'py-2.5 text-[13px]' : 'py-3 text-[14px]'} font-medium border`}
         style={{
           background: isApprovedArtist ? 'var(--text)' : 'var(--surface)',
           borderColor: 'var(--border)',
@@ -168,7 +192,9 @@ export default function ProfilePage() {
 
   return (
     <div className="pb-20 fade-in">
-      <div className="pt-12 pb-6 px-6 text-center">
+      <ProfileHero />
+
+      <div className="pt-8 pb-6 px-6 text-center">
         <div
           className="w-20 h-20 rounded-full mx-auto mb-4 overflow-hidden"
           style={{ background: 'var(--surface-2)', border: '2px solid var(--border)' }}
@@ -193,12 +219,6 @@ export default function ProfilePage() {
       ) : (
         <AuthEntryCard onLogin={() => navigate('/login')} onRegister={() => navigate('/register')} />
       )}
-
-      <ArtistEntryCard
-        currentUser={currentUser}
-        onApply={() => (currentUser ? navigate('/artist/apply') : navigate('/login'))}
-        onDashboard={() => navigate('/artist/dashboard')}
-      />
 
       <div
         className="flex rounded-2xl mx-4 mt-5 p-5 relative z-10 gap-0"
@@ -250,26 +270,12 @@ export default function ProfilePage() {
       </div>
 
       <div className="px-4 mt-6">
-        <div className="rounded-2xl p-5" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}>
-          <p className="text-sm font-semibold mb-4" style={{ color: 'var(--text)' }}>关注我们</p>
-          <div className="flex justify-center gap-8">
-            {[
-              { name: '微信', icon: '◌' },
-              { name: '微博', icon: '◌' },
-              { name: '小红书', icon: '◌' },
-            ].map((platform, i) => (
-              <div key={i} className="text-center">
-                <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center text-lg mx-auto mb-1.5"
-                  style={{ background: 'var(--surface-2)' }}
-                >
-                  <span style={{ color: 'var(--primary)' }}>{platform.icon}</span>
-                </div>
-                <p className="text-[10px]" style={{ color: 'var(--text-weak)' }}>{platform.name}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <ArtistEntryCard
+          compact
+          currentUser={currentUser}
+          onApply={() => (currentUser ? navigate('/artist/apply') : navigate('/login'))}
+          onDashboard={() => navigate('/artist/dashboard')}
+        />
       </div>
     </div>
   )
