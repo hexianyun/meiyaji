@@ -416,6 +416,43 @@ export async function getMemberOrders() {
   })
 }
 
+export async function getArtistDashboardArtworks() {
+  const payload = await requestJson('/api/artist/artworks', {
+    auth: true,
+  })
+
+  return (payload.artworks || []).map(normalizeRemoteArtwork)
+}
+
+export async function createArtistArtwork(payload) {
+  const response = await requestJson('/api/artist/artworks', {
+    method: 'POST',
+    body: payload,
+    auth: true,
+  })
+
+  return response.artwork ? normalizeRemoteArtwork(response.artwork) : null
+}
+
+export async function updateArtistArtwork(id, payload) {
+  const response = await requestJson(`/api/artist/artworks/${id}`, {
+    method: 'PATCH',
+    body: payload,
+    auth: true,
+  })
+
+  return response.artwork ? normalizeRemoteArtwork(response.artwork) : null
+}
+
+export async function unpublishArtistArtwork(id) {
+  const response = await requestJson(`/api/artist/artworks/${id}/unpublish`, {
+    method: 'PATCH',
+    auth: true,
+  })
+
+  return response.artwork ? normalizeRemoteArtwork(response.artwork) : null
+}
+
 export async function getAdminOverview() {
   return requestJson('/api/admin/overview', { auth: true })
 }

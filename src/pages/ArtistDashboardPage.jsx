@@ -1,122 +1,437 @@
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
-import { artworks } from '../data'
+import {
+  createArtistArtwork,
+  getArtistDashboardArtworks,
+  unpublishArtistArtwork,
+  updateArtistArtwork,
+} from '../services/contentApi'
+
+const initialArtworkForm = {
+  title: '',
+  imageUrl: '',
+  price: '',
+  stock: '1',
+  charitySupportNote: '',
+  description: '',
+}
+
+function SurfaceCard({ children, className = '', style = {} }) {
+  return (
+    <section
+      className={`border ${className}`}
+      style={{
+        background: 'rgba(251,248,244,0.95)',
+        borderColor: 'rgba(224,214,202,0.96)',
+        ...style,
+      }}
+    >
+      {children}
+    </section>
+  )
+}
+
+function SectionCard({ title, intro, extra, children }) {
+  return (
+    <SurfaceCard className="p-4 md:p-5">
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <div>
+          <p className="text-[11px] tracking-[0.24em] uppercase" style={{ color: 'var(--text-weak)' }}>
+            Artist Workspace
+          </p>
+          <h2 className="text-[20px] font-semibold mt-1" style={{ color: 'var(--text)' }}>
+            {title}
+          </h2>
+          {intro ? (
+            <p className="text-[13px] mt-2 leading-6 max-w-[560px]" style={{ color: 'var(--text-muted)' }}>
+              {intro}
+            </p>
+          ) : null}
+        </div>
+        {extra}
+      </div>
+      {children}
+    </SurfaceCard>
+  )
+}
+
+function Field({ label, hint, children }) {
+  return (
+    <label className="block">
+      <div className="flex items-center justify-between gap-3 mb-2">
+        <span className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
+          {label}
+        </span>
+        {hint ? (
+          <span className="text-[11px]" style={{ color: 'var(--text-weak)' }}>
+            {hint}
+          </span>
+        ) : null}
+      </div>
+      {children}
+    </label>
+  )
+}
+
+function Input(props) {
+  return (
+    <input
+      {...props}
+      className="w-full px-3 py-3 border text-[14px] outline-none"
+      style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+    />
+  )
+}
+
+function Textarea(props) {
+  return (
+    <textarea
+      {...props}
+      className="w-full px-3 py-3 border text-[14px] outline-none min-h-[120px]"
+      style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+    />
+  )
+}
+
+function Select(props) {
+  return (
+    <select
+      {...props}
+      className="w-full px-3 py-3 border text-[14px] outline-none"
+      style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+    />
+  )
+}
+
+function ActionButton({ children, onClick, type = 'button', variant = 'primary', className = '' }) {
+  const styles = {
+    primary: {
+      background: 'var(--text)',
+      color: 'white',
+      borderColor: 'var(--text)',
+    },
+    secondary: {
+      background: 'var(--surface)',
+      color: 'var(--text)',
+      borderColor: 'var(--border)',
+    },
+    danger: {
+      background: 'rgba(201,143,134,0.1)',
+      color: '#8A5B52',
+      borderColor: 'rgba(201,143,134,0.45)',
+    },
+  }
+
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      className={`border px-4 py-3 text-[13px] ${className}`}
+      style={styles[variant]}
+    >
+      {children}
+    </button>
+  )
+}
+
+function MetaPill({ children, tone = 'default' }) {
+  const tones = {
+    default: {
+      background: 'rgba(197,162,144,0.14)',
+      color: '#8A5B52',
+    },
+    success: {
+      background: 'rgba(84,119,94,0.12)',
+      color: '#54775E',
+    },
+    dark: {
+      background: 'rgba(38,46,56,0.08)',
+      color: '#2C3440',
+    },
+    warn: {
+      background: 'rgba(167,110,76,0.12)',
+      color: '#A76E4C',
+    },
+  }
+
+  return (
+    <span className="inline-flex px-2 py-1 text-[11px]" style={tones[tone]}>
+      {children}
+    </span>
+  )
+}
+
+function SummaryCard({ label, value, detail }) {
+  return (
+    <div className="border px-4 py-4 min-h-[108px] flex flex-col justify-between" style={{ borderColor: 'rgba(214,201,187,0.95)' }}>
+      <div className="text-[11px] tracking-[0.18em] uppercase" style={{ color: 'var(--text-weak)' }}>
+        {label}
+      </div>
+      <div>
+        <div className="text-[28px] font-semibold leading-none" style={{ color: 'var(--text)' }}>
+          {value}
+        </div>
+        <p className="text-[12px] mt-3 leading-5" style={{ color: 'var(--text-muted)' }}>
+          {detail}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function inventoryLabel(status) {
+  switch (status) {
+    case 'in_stock':
+      return '可售'
+    case 'sold_out':
+      return '售罄'
+    case 'archived':
+      return '已下架'
+    default:
+      return status || '未设置'
+  }
+}
 
 export default function ArtistDashboardPage() {
   const navigate = useNavigate()
-  const { currentUser } = useApp()
-
-  const myWorks = currentUser?.artistProfileId
-    ? artworks.filter(item => item.aid === currentUser.artistProfileId)
-    : []
+  const { currentUser, showToast } = useApp()
+  const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
+  const [editingArtworkId, setEditingArtworkId] = useState('')
+  const [artworkForm, setArtworkForm] = useState(initialArtworkForm)
+  const [myWorks, setMyWorks] = useState([])
 
   const isApprovedArtist = currentUser?.role === 'artist' && currentUser?.artistStatus === 'approved'
+
+  const activeWorks = useMemo(
+    () => myWorks.filter(item => item.inventoryStatus !== 'archived').length,
+    [myWorks],
+  )
+
+  const archivedWorks = useMemo(
+    () => myWorks.filter(item => item.inventoryStatus === 'archived').length,
+    [myWorks],
+  )
+
+  async function loadMyWorks() {
+    if (!isApprovedArtist) {
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
+    try {
+      const artworks = await getArtistDashboardArtworks()
+      setMyWorks(artworks)
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : '作品数据加载失败，请稍后再试。')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadMyWorks()
+  }, [currentUser?.id, currentUser?.role, currentUser?.artistStatus])
+
+  const resetForm = () => {
+    setEditingArtworkId('')
+    setArtworkForm(initialArtworkForm)
+  }
+
+  const startEdit = (artwork) => {
+    setEditingArtworkId(artwork.id)
+    setArtworkForm({
+      title: artwork.title || '',
+      imageUrl: artwork.img || artwork.imageUrl || '',
+      price: String(artwork.price ?? ''),
+      stock: String(artwork.stock ?? 1),
+      charitySupportNote: artwork.charitySupportNote || '',
+      description: artwork.desc || artwork.description || '',
+    })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    setSubmitting(true)
+
+    const payload = {
+      title: artworkForm.title,
+      imageUrl: artworkForm.imageUrl,
+      price: Number(artworkForm.price),
+      stock: Number(artworkForm.stock),
+      charitySupportNote: artworkForm.charitySupportNote,
+      description: artworkForm.description,
+    }
+
+    try {
+      if (editingArtworkId) {
+        await updateArtistArtwork(editingArtworkId, payload)
+        showToast('作品已更新')
+      } else {
+        await createArtistArtwork(payload)
+        showToast('作品已发布')
+      }
+
+      resetForm()
+      await loadMyWorks()
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : '作品保存失败，请稍后再试。')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleUnpublish = async (id) => {
+    try {
+      await unpublishArtistArtwork(id)
+      showToast('作品已下架')
+      await loadMyWorks()
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : '作品下架失败，请稍后再试。')
+    }
+  }
 
   if (!isApprovedArtist) {
     return (
       <div className="pb-24 px-4 pt-5 fade-in">
-        <button
-          onClick={() => navigate(-1)}
-          className="w-10 h-10 mb-6 flex items-center justify-center border"
-          style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+        <SectionCard
+          title="艺术家后台"
+          intro="只有审核通过的艺术家账号，才可以进入作品发布与管理后台。"
+          extra={<MetaPill tone="warn">未开放</MetaPill>}
         >
-          ←
-        </button>
-
-        <div
-          className="border p-6"
-          style={{ background: 'rgba(251,248,244,0.95)', borderColor: 'rgba(232,225,216,0.92)' }}
-        >
-          <p className="text-[10px] tracking-[0.28em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
-            Artist Dashboard
-          </p>
-          <h1 className="text-[24px] leading-[1.2] font-semibold mb-3" style={{ color: 'var(--text)' }}>
-            当前账号还没有艺术家后台权限
-          </h1>
-          <p className="text-[13px] leading-6 mb-6" style={{ color: 'var(--text-muted)' }}>
-            只有已通过审核的艺术家账号，才可以进入作品管理后台。
-          </p>
-          <button
-            onClick={() => navigate('/profile')}
-            className="px-4 py-3 text-[13px] font-medium"
-            style={{ background: 'var(--text)', color: 'white' }}
-          >
-            返回我的页面
-          </button>
-        </div>
+          <ActionButton onClick={() => navigate('/profile')}>返回我的页面</ActionButton>
+        </SectionCard>
       </div>
     )
   }
 
   return (
-    <div className="pb-24 px-4 pt-5 fade-in">
-      <div className="flex items-center justify-between gap-3 mb-6">
-        <button
-          onClick={() => navigate(-1)}
-          className="w-10 h-10 flex items-center justify-center border"
-          style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
-        >
-          ←
-        </button>
-        <p className="text-[10px] tracking-[0.28em] uppercase" style={{ color: 'var(--text-weak)' }}>
-          Artist Dashboard
-        </p>
-        <button
-          onClick={() => navigate('/discover')}
-          className="px-3 py-2 text-[12px] border"
-          style={{ borderColor: 'var(--border)', color: 'var(--text)' }}
-        >
-          浏览前台
-        </button>
-      </div>
-
-      <section
-        className="border p-6 mb-4"
-        style={{ background: 'rgba(251,248,244,0.95)', borderColor: 'rgba(232,225,216,0.92)' }}
+    <div className="pb-24 px-4 pt-5 fade-in space-y-5">
+      <SurfaceCard
+        className="p-4 md:p-5 overflow-hidden"
+        style={{
+          background: 'linear-gradient(160deg, rgba(247,242,235,0.96) 0%, rgba(239,231,220,0.96) 42%, rgba(233,223,210,0.96) 100%)',
+        }}
       >
-        <p className="text-[10px] tracking-[0.28em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
-          Welcome Back
-        </p>
-        <h1 className="text-[26px] leading-[1.18] font-semibold mb-3" style={{ color: 'var(--text)' }}>
-          进入艺术家专属后台
-        </h1>
-        <p className="text-[13px] leading-6 mb-6" style={{ color: 'var(--text-muted)' }}>
-          这里将接入发布作品、编辑信息、管理库存与公益说明等后台功能。
-        </p>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div className="border p-4" style={{ borderColor: 'rgba(232,225,216,0.92)' }}>
-            <p className="text-[11px] mb-2" style={{ color: 'var(--text-weak)' }}>
-              已发布作品
+        <div className="flex items-start justify-between gap-3">
+          <button
+            onClick={() => navigate('/profile')}
+            className="w-10 h-10 flex items-center justify-center border shrink-0"
+            style={{ background: 'rgba(255,255,255,0.5)', borderColor: 'rgba(214,201,187,0.95)', color: 'var(--text)' }}
+          >
+            ←
+          </button>
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] tracking-[0.34em] uppercase" style={{ color: 'var(--text-weak)' }}>
+              Artist Control Room
             </p>
-            <p className="text-[28px] leading-none font-semibold" style={{ color: 'var(--text)' }}>
-              {myWorks.length}
+            <h1 className="text-[25px] font-semibold mt-2 leading-tight" style={{ color: 'var(--text)' }}>
+              艺术家作品后台
+            </h1>
+            <p className="text-[13px] leading-6 mt-3 max-w-[620px]" style={{ color: 'var(--text-muted)' }}>
+              在这里你可以自行发布作品、修改价格与库存、补充公益说明，并管理已经上架的艺术作品。
             </p>
           </div>
-          <div className="border p-4" style={{ borderColor: 'rgba(232,225,216,0.92)' }}>
-            <p className="text-[11px] mb-2" style={{ color: 'var(--text-weak)' }}>
-              当前身份
-            </p>
-            <p className="text-[18px] font-semibold" style={{ color: 'var(--text)' }}>
-              已认证艺术家
-            </p>
-          </div>
+          <ActionButton onClick={loadMyWorks} variant="secondary" className="shrink-0 px-3 py-2 text-[12px]">
+            刷新
+          </ActionButton>
         </div>
-      </section>
 
-      <section
-        className="border p-6"
-        style={{ background: 'rgba(248,244,239,0.95)', borderColor: 'rgba(232,225,216,0.92)' }}
-      >
-        <p className="text-[10px] tracking-[0.28em] uppercase mb-4" style={{ color: 'var(--text-weak)' }}>
-          Next Step
-        </p>
-        <div className="space-y-3 text-[13px] leading-6" style={{ color: 'var(--text-muted)' }}>
-          <p>发布艺术品：录入作品名称、图片、价格与公益说明。</p>
-          <p>管理我的作品：查看、编辑、下架自己发布的全部作品。</p>
-          <p>后续我们可以直接把这里接入你刚建好的艺术家 RESTful API。</p>
+        <div className="grid grid-cols-2 gap-3 mt-5">
+          <SummaryCard label="我的作品" value={myWorks.length} detail="当前账号名下的全部作品数量，包括已下架作品。" />
+          <SummaryCard label="可售作品" value={activeWorks} detail="仍在前台展示并可继续售卖的作品数量。" />
+          <SummaryCard label="已下架" value={archivedWorks} detail="已从前台撤下，但仍保留在后台中的作品。" />
+          <SummaryCard label="当前身份" value="已认证" detail="你已通过平台审核，可以自行管理和发布作品。" />
         </div>
-      </section>
+      </SurfaceCard>
+
+      <SectionCard
+        title={editingArtworkId ? '编辑作品' : '发布新作品'}
+        intro="每件作品都需要包含名称、图片、价格和公益说明。公益说明会直接呈现在前台作品详情页。"
+        extra={editingArtworkId ? (
+          <ActionButton onClick={resetForm} variant="secondary" className="px-3 py-2 text-[12px]">
+            取消编辑
+          </ActionButton>
+        ) : <MetaPill tone="success">可自助发布</MetaPill>}
+      >
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <Field label="作品名称">
+            <Input value={artworkForm.title} onChange={(event) => setArtworkForm(prev => ({ ...prev, title: event.target.value }))} />
+          </Field>
+          <Field label="作品图片 URL">
+            <Input value={artworkForm.imageUrl} onChange={(event) => setArtworkForm(prev => ({ ...prev, imageUrl: event.target.value }))} />
+          </Field>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Field label="价格">
+              <Input type="number" min="0" step="0.01" value={artworkForm.price} onChange={(event) => setArtworkForm(prev => ({ ...prev, price: event.target.value }))} />
+            </Field>
+            <Field label="库存">
+              <Input type="number" min="0" step="1" value={artworkForm.stock} onChange={(event) => setArtworkForm(prev => ({ ...prev, stock: event.target.value }))} />
+            </Field>
+          </div>
+          <Field label="公益说明" hint="至少写清楚这件作品如何支持乡村美育">
+            <Textarea value={artworkForm.charitySupportNote} onChange={(event) => setArtworkForm(prev => ({ ...prev, charitySupportNote: event.target.value }))} />
+          </Field>
+          <Field label="作品描述">
+            <Textarea value={artworkForm.description} onChange={(event) => setArtworkForm(prev => ({ ...prev, description: event.target.value }))} />
+          </Field>
+          <ActionButton type="submit" className="w-full" variant="primary">
+            {submitting ? '正在保存...' : editingArtworkId ? '保存作品修改' : '发布作品'}
+          </ActionButton>
+        </form>
+      </SectionCard>
+
+      <SectionCard title="我的作品列表" intro="可以随时继续编辑已有作品，或者将作品下架。">
+        {loading ? (
+          <p className="text-[14px]" style={{ color: 'var(--text-muted)' }}>
+            正在同步你的作品数据...
+          </p>
+        ) : myWorks.length === 0 ? (
+          <p className="text-[14px] leading-7" style={{ color: 'var(--text-muted)' }}>
+            你还没有发布作品。现在就可以在上方填写信息并发布第一件作品。
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {myWorks.map(artwork => (
+              <div key={artwork.id} className="border p-4" style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="text-[15px] font-semibold" style={{ color: 'var(--text)' }}>
+                        {artwork.title}
+                      </p>
+                      <MetaPill tone={artwork.inventoryStatus === 'archived' ? 'warn' : artwork.inventoryStatus === 'sold_out' ? 'dark' : 'success'}>
+                        {inventoryLabel(artwork.inventoryStatus)}
+                      </MetaPill>
+                    </div>
+                    <p className="text-[12px] mt-2" style={{ color: 'var(--text-muted)' }}>
+                      ￥{Number(artwork.price).toLocaleString()} · 库存 {artwork.stock}
+                    </p>
+                    {artwork.charitySupportNote ? (
+                      <p className="text-[13px] leading-6 mt-3" style={{ color: 'var(--text-muted)' }}>
+                        {artwork.charitySupportNote}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="flex flex-col gap-2 shrink-0">
+                    <ActionButton onClick={() => startEdit(artwork)} variant="secondary" className="px-3 py-2 text-[12px]">
+                      编辑
+                    </ActionButton>
+                    {artwork.inventoryStatus !== 'archived' ? (
+                      <ActionButton onClick={() => handleUnpublish(artwork.id)} variant="danger" className="px-3 py-2 text-[12px]">
+                        下架
+                      </ActionButton>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </SectionCard>
     </div>
   )
 }
