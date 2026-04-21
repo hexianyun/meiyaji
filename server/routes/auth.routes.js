@@ -25,6 +25,14 @@ const artistApplicationSchema = z.object({
   portfolioUrl: z.string().url('作品集链接格式不正确').optional(),
 })
 
+const avatarUpdateSchema = z.object({
+  avatarUrl: z
+    .string()
+    .min(1, '头像内容不能为空。')
+    .max(2_000_000, '头像内容过大，请重新选择图片。')
+    .regex(/^data:image\/(png|jpeg|jpg|webp);base64,/i, '头像格式不支持，请使用 JPG、PNG 或 WEBP。'),
+})
+
 router.post('/register', async (req, res) => {
   try {
     const data = registerSchema.parse(req.body)
@@ -155,6 +163,35 @@ router.post('/artist/apply', verifyMember, async (req, res) => {
 
     return res.status(500).json({
       message: '提交申请失败，请稍后再试。',
+    })
+  }
+})
+
+router.post('/member/avatar', verifyMember, async (req, res) => {
+  try {
+    const data = avatarUpdateSchema.parse(req.body)
+
+    const user = await prisma.user.update({
+      where: { id: req.user.id },
+      data: {
+        avatarUrl: data.avatarUrl,
+      },
+    })
+
+    return res.json({
+      message: '头像更新成功。',
+      user: serializeUser(user),
+    })
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        message: '头像参数不合法。',
+        errors: error.flatten(),
+      })
+    }
+
+    return res.status(500).json({
+      message: '头像保存失败，请稍后再试。',
     })
   }
 })

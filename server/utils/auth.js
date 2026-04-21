@@ -32,6 +32,7 @@ export function serializeUser(user) {
     email: user.email,
     username: user.username,
     realName: user.realName,
+    avatarUrl: user.avatarUrl,
     role: user.role,
     artistStatus: user.artistStatus,
     bio: user.bio,

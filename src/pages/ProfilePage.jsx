@@ -1,7 +1,8 @@
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
 import { orders } from '../data'
-import { clearAuthSession } from '../services/contentApi'
+import { clearAuthSession, updateMemberAvatar } from '../services/contentApi'
 
 function getRoleMeta(currentUser) {
   if (!currentUser) {
@@ -38,12 +39,66 @@ function getRoleMeta(currentUser) {
   }
 }
 
-function HeroAvatar({ currentUser }) {
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = () => reject(new Error('图片读取失败，请重新选择。'))
+    reader.readAsDataURL(file)
+  })
+}
+
+function loadImage(dataUrl) {
+  return new Promise((resolve, reject) => {
+    const image = new Image()
+
+    image.onload = () => resolve(image)
+    image.onerror = () => reject(new Error('图片解析失败，请重新选择。'))
+    image.src = dataUrl
+  })
+}
+
+async function buildAvatarDataUrl(file) {
+  const originalDataUrl = await readFileAsDataUrl(file)
+  const image = await loadImage(originalDataUrl)
+  const size = 320
+  const canvas = document.createElement('canvas')
+  const context = canvas.getContext('2d')
+
+  if (!context) {
+    throw new Error('当前设备暂不支持头像处理，请稍后再试。')
+  }
+
+  canvas.width = size
+  canvas.height = size
+
+  const sourceSize = Math.min(image.width, image.height)
+  const sourceX = (image.width - sourceSize) / 2
+  const sourceY = (image.height - sourceSize) / 2
+
+  context.drawImage(
+    image,
+    sourceX,
+    sourceY,
+    sourceSize,
+    sourceSize,
+    0,
+    0,
+    size,
+    size,
+  )
+
+  return canvas.toDataURL('image/jpeg', 0.86)
+}
+
+function HeroAvatar({ currentUser, onUploadClick, isUploading }) {
   const initial = currentUser?.name?.trim()?.charAt(0) || '芽'
+  const avatarUrl = currentUser?.avatarUrl || ''
 
   return (
     <div
-      className="relative w-[76px] h-[76px] border shrink-0"
+      className="relative w-[88px] h-[88px] border shrink-0 overflow-hidden"
       style={{
         background: 'rgba(255,255,255,0.12)',
         borderColor: 'rgba(255,255,255,0.32)',
@@ -55,14 +110,33 @@ function HeroAvatar({ currentUser }) {
         className="absolute inset-[7px] border"
         style={{ borderColor: 'rgba(255,255,255,0.18)' }}
       />
-      <div className="w-full h-full flex items-center justify-center" style={{ color: 'white', fontSize: '30px', fontWeight: 600, letterSpacing: '0.04em' }}>
-        {initial}
-      </div>
+      {avatarUrl ? (
+        <img src={avatarUrl} alt={`${currentUser?.name || '美芽集用户'}头像`} className="w-full h-full object-cover" />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center" style={{ color: 'white', fontSize: '30px', fontWeight: 600, letterSpacing: '0.04em' }}>
+          {initial}
+        </div>
+      )}
+      {currentUser && (
+        <button
+          type="button"
+          onClick={onUploadClick}
+          disabled={isUploading}
+          className="absolute inset-x-[7px] bottom-[7px] h-7 text-[10px] tracking-[0.1em] uppercase disabled:opacity-60"
+          style={{
+            background: 'rgba(17, 21, 19, 0.58)',
+            color: 'rgba(255,255,255,0.92)',
+            borderTop: '1px solid rgba(255,255,255,0.1)',
+          }}
+        >
+          {isUploading ? '上传中...' : '更换头像'}
+        </button>
+      )}
     </div>
   )
 }
 
-function ProfileHero({ currentUser }) {
+function ProfileHero({ currentUser, onAvatarUploadClick, isUploadingAvatar }) {
   const roleMeta = getRoleMeta(currentUser)
   const heroImageSrc = '/profile/my-banner-hero.jpg'
   const profileLabel = currentUser ? roleMeta.label : '美芽集用户中心'
@@ -106,34 +180,39 @@ function ProfileHero({ currentUser }) {
             }}
           >
             <div className="flex items-end gap-4">
-            <HeroAvatar currentUser={currentUser} />
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2 mb-2">
-                <span
-                  className="px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase"
-                  style={{ color: 'rgba(255,255,255,0.78)', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
-                >
-                  My Profile
-                </span>
-                <span
-                  className="px-2.5 py-1 text-[10px]"
-                  style={{ color: 'rgba(255,255,255,0.78)', background: 'rgba(18, 88, 63, 0.22)', border: '1px solid rgba(255,255,255,0.12)' }}
-                >
-                  {profileLabel}
-                </span>
+              <HeroAvatar currentUser={currentUser} onUploadClick={onAvatarUploadClick} isUploading={isUploadingAvatar} />
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <span
+                    className="px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase"
+                    style={{ color: 'rgba(255,255,255,0.78)', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
+                  >
+                    My Profile
+                  </span>
+                  <span
+                    className="px-2.5 py-1 text-[10px]"
+                    style={{ color: 'rgba(255,255,255,0.78)', background: 'rgba(18, 88, 63, 0.22)', border: '1px solid rgba(255,255,255,0.12)' }}
+                  >
+                    {profileLabel}
+                  </span>
+                </div>
+                <h1 className="text-[28px] leading-[1.05] font-semibold mb-1.5" style={{ color: 'white' }}>
+                  {currentUser ? (currentUser.name || '美芽集用户') : '欢迎来到美芽集'}
+                </h1>
+                <p className="text-[12px] leading-5 mb-2" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                  {profileMeta}
+                </p>
+                <p className="text-[11px] leading-5" style={{ color: 'rgba(255,255,255,0.64)' }}>
+                  {currentUser ? roleMeta.note : '在这里统一管理收藏、订单与艺术家入驻申请'}
+                </p>
+                {currentUser && (
+                  <p className="text-[10px] mt-2" style={{ color: 'rgba(255,255,255,0.56)' }}>
+                    点击头像即可上传新的个人头像
+                  </p>
+                )}
               </div>
-              <h1 className="text-[28px] leading-[1.05] font-semibold mb-1.5" style={{ color: 'white' }}>
-                {currentUser ? (currentUser.name || '美芽集用户') : '欢迎来到美芽集'}
-              </h1>
-              <p className="text-[12px] leading-5 mb-2" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                {profileMeta}
-              </p>
-              <p className="text-[11px] leading-5" style={{ color: 'rgba(255,255,255,0.64)' }}>
-                {currentUser ? roleMeta.note : '在这里统一管理收藏、订单与艺术家入驻申请'}
-              </p>
             </div>
           </div>
-        </div>
         </div>
       </div>
     </div>
@@ -411,6 +490,8 @@ function ArtistEntryRow({ currentUser, onApply, onDashboard }) {
 export default function ProfilePage() {
   const navigate = useNavigate()
   const { favs, currentUser, setCurrentUser, showToast } = useApp()
+  const fileInputRef = useRef(null)
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
 
   const collectionItems = [
     { icon: 'orders', label: '我的订单', meta: '查看购买记录与订单状态', badge: orders.length, path: '/orders' },
@@ -439,9 +520,70 @@ export default function ProfilePage() {
     navigate(currentUser ? '/artist/apply' : '/login')
   }
 
+  const handleAvatarUploadClick = () => {
+    if (!currentUser) {
+      showToast('请先登录后再上传头像')
+      navigate('/login')
+      return
+    }
+
+    fileInputRef.current?.click()
+  }
+
+  const handleAvatarChange = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+
+    if (!file || !currentUser) return
+
+    if (!file.type.startsWith('image/')) {
+      showToast('请选择 JPG、PNG 或 WEBP 图片')
+      return
+    }
+
+    if (file.size > 8 * 1024 * 1024) {
+      showToast('图片不能超过 8MB')
+      return
+    }
+
+    setIsUploadingAvatar(true)
+
+    try {
+      const avatarUrl = await buildAvatarDataUrl(file)
+
+      try {
+        const updatedUser = await updateMemberAvatar(avatarUrl)
+        setCurrentUser(updatedUser)
+        showToast('头像已更新')
+      } catch {
+        setCurrentUser({
+          ...currentUser,
+          avatarUrl,
+        })
+        showToast('头像已保存到当前设备')
+      }
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : '头像上传失败，请稍后再试。')
+    } finally {
+      setIsUploadingAvatar(false)
+    }
+  }
+
   return (
     <div className="pb-20 fade-in">
-      <ProfileHero currentUser={currentUser} />
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        className="hidden"
+        onChange={handleAvatarChange}
+      />
+
+      <ProfileHero
+        currentUser={currentUser}
+        onAvatarUploadClick={handleAvatarUploadClick}
+        isUploadingAvatar={isUploadingAvatar}
+      />
 
       <AccountPanel
         currentUser={currentUser}

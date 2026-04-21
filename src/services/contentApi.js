@@ -35,6 +35,7 @@ function normalizeCurrentUser(user) {
     email: user.email ?? '',
     username: user.username ?? '',
     realName: user.realName ?? '',
+    avatarUrl: user.avatarUrl ?? '',
     role: user.role ?? 'member',
     artistStatus: user.artistStatus ?? 'pending',
     bio: user.bio ?? '',
@@ -167,6 +168,36 @@ export async function applyArtistApplication(payload) {
     }
 
     throw new Error('网络连接失败，请稍后再试。')
+  }
+}
+
+export async function updateMemberAvatar(avatarUrl) {
+  const apiBaseUrl = getApiBaseUrl()
+  const token = getStoredAuthToken()
+
+  if (!apiBaseUrl || !token) {
+    throw new Error('当前头像将先保存在本地。')
+  }
+
+  try {
+    const response = await fetch(`${apiBaseUrl}/api/auth/member/avatar`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ avatarUrl }),
+    })
+
+    const payload = await parseApiResponse(response)
+    setStoredCurrentUser(payload?.user || null)
+    return normalizeCurrentUser(payload?.user || null)
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error
+    }
+
+    throw new Error('头像上传失败，请稍后再试。')
   }
 }
 
