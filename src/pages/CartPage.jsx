@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
+import { createOrder } from '../services/contentApi'
 
 export default function CartPage() {
   const navigate = useNavigate()
-  const { cart, updateCartQty, removeFromCart, cartTotal } = useApp()
+  const { cart, updateCartQty, removeFromCart, cartTotal, clearCart, currentUser, showToast } = useApp()
 
   if (cart.length === 0) {
     return (
@@ -32,6 +33,33 @@ export default function CartPage() {
         </div>
       </div>
     )
+  }
+
+  const handleCheckout = async () => {
+    if (!currentUser) {
+      showToast('请先登录后再下单')
+      navigate('/login')
+      return
+    }
+
+    try {
+      await createOrder({
+        items: cart.map(item => ({
+          id: item.art.id,
+          title: item.art.title,
+          artist: item.art.artist,
+          img: item.art.img,
+          price: item.art.price,
+          qty: item.qty,
+        })),
+      })
+
+      clearCart()
+      showToast('下单成功')
+      navigate('/orders')
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : '下单失败，请稍后再试。')
+    }
   }
 
   return (
@@ -104,11 +132,11 @@ export default function CartPage() {
           <p className="text-xl font-bold" style={{ color: 'var(--primary)' }}>¥{cartTotal.toLocaleString()}</p>
         </div>
         <button
-          onClick={() => navigate('/orders')}
+          onClick={handleCheckout}
           className="px-6 py-3 rounded-xl font-medium text-sm"
           style={{ background: 'var(--text)', color: 'white' }}
         >
-          去结算
+          提交订单
         </button>
       </div>
     </div>

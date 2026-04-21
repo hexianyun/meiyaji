@@ -1,14 +1,41 @@
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { charity, charityProjectDetails } from '../data'
+import { charity } from '../data'
+import { getPublicContentById } from '../services/contentApi'
 
 export default function CharityProjectPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const projectId = parseInt(id, 10)
-  const project = charity.find(item => item.id === projectId)
-  const article = charityProjectDetails[projectId]
+  const [article, setArticle] = useState(null)
+  const [loading, setLoading] = useState(true)
 
-  if (!project || !article) {
+  useEffect(() => {
+    let isActive = true
+
+    async function loadProject() {
+      setLoading(true)
+      const nextArticle = await getPublicContentById('project', id)
+
+      if (!isActive) return
+
+      setArticle(nextArticle)
+      setLoading(false)
+    }
+
+    loadProject()
+
+    return () => {
+      isActive = false
+    }
+  }, [id])
+
+  const fallbackProject = charity.find(item => String(item.id) === String(id))
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center text-sm" style={{ color: 'var(--text-muted)' }}>正在加载项目...</div>
+  }
+
+  if (!article) {
     return (
       <div className="min-h-screen flex items-center justify-center px-6" style={{ background: 'var(--bg)' }}>
         <div className="text-center max-w-[280px]">
@@ -73,13 +100,13 @@ export default function CharityProjectPage() {
           </div>
           <div className="px-4 py-5">
             <p className="text-[10px] tracking-[0.26em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
-              {project.tag}
+              {article.tag}
             </p>
             <h1 className="text-[28px] leading-[1.14] font-semibold mb-4" style={{ color: 'var(--text)' }}>
               {article.title}
             </h1>
             <p className="text-[14px] leading-7 mb-5" style={{ color: 'var(--text-muted)' }}>
-              {project.desc}
+              {article.summary || fallbackProject?.desc || '这是一项持续推进中的乡村美育公益项目。'}
             </p>
 
             <div
@@ -96,38 +123,6 @@ export default function CharityProjectPage() {
       </section>
 
       <section className="max-w-[430px] mx-auto px-4 py-8">
-        <div className="mb-8">
-          <p className="text-[10px] tracking-[0.26em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
-            Project Story
-          </p>
-          <div className="grid grid-cols-3 gap-3">
-            <div className="border p-3" style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}>
-              <p className="text-[24px] leading-none font-semibold mb-2" style={{ color: 'var(--text)' }}>
-                ¥{project.raised.toLocaleString()}
-              </p>
-              <p className="text-[11px] leading-5" style={{ color: 'var(--text-muted)' }}>
-                当前项目筹集
-              </p>
-            </div>
-            <div className="border p-3" style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}>
-              <p className="text-[24px] leading-none font-semibold mb-2" style={{ color: 'var(--text)' }}>
-                {project.beneficiaries}
-              </p>
-              <p className="text-[11px] leading-5" style={{ color: 'var(--text-muted)' }}>
-                累计受益人次
-              </p>
-            </div>
-            <div className="border p-3" style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}>
-              <p className="text-[24px] leading-none font-semibold mb-2" style={{ color: 'var(--text)' }}>
-                {article.images.length}
-              </p>
-              <p className="text-[11px] leading-5" style={{ color: 'var(--text-muted)' }}>
-                项目现场图像
-              </p>
-            </div>
-          </div>
-        </div>
-
         <div className="space-y-7">
           {article.sections.map((section, index) => (
             <div key={index} className="space-y-4">
@@ -163,9 +158,6 @@ export default function CharityProjectPage() {
         )}
 
         <div className="mt-10 pt-6 border-t" style={{ borderColor: 'rgba(232,225,216,0.9)' }}>
-          <p className="text-[13px] leading-6 mb-5" style={{ color: 'var(--text-muted)' }}>
-            这篇项目文章已接入公益栏目与首页入口，后续如果你要继续补“儿童写生活动支持计划”，我也可以按同样结构直接扩展。
-          </p>
           <div className="flex gap-3">
             <button
               onClick={() => navigate('/charity')}

@@ -14,8 +14,9 @@ const registerSchema = z.object({
 })
 
 const loginSchema = z.object({
-  email: z.string().email('请输入有效邮箱地址'),
-  password: z.string().min(6, '密码至少 6 位'),
+  account: z.string().min(1, '请输入邮箱或用户名').optional(),
+  email: z.string().optional(),
+  password: z.string().min(1, '请输入密码'),
 })
 
 const artistApplicationSchema = z.object({
@@ -88,9 +89,21 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const data = loginSchema.parse(req.body)
+    const account = (data.account || data.email || '').trim()
 
-    const user = await prisma.user.findUnique({
-      where: { email: data.email },
+    if (!account) {
+      return res.status(400).json({
+        message: '请输入邮箱或用户名。',
+      })
+    }
+
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: account },
+          { username: account },
+        ],
+      },
     })
 
     if (!user) {
@@ -142,6 +155,7 @@ router.post('/artist/apply', verifyMember, async (req, res) => {
       where: { id: req.user.id },
       data: {
         realName: data.realName,
+        role: 'artist',
         bio: data.bio,
         artistIntro: data.artistIntro ?? data.bio,
         portfolioUrl: data.portfolioUrl,

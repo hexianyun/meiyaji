@@ -16,6 +16,7 @@ import ArtistDashboardPage from './pages/ArtistDashboardPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import ArtistApplyPage from './pages/ArtistApplyPage'
+import AdminDashboardPage from './pages/AdminDashboardPage'
 import { getStoredCurrentUser, setStoredCurrentUser } from './services/contentApi'
 
 const AppContext = createContext(null)
@@ -288,6 +289,7 @@ function AppContent() {
           <Route path="/artist/apply" element={<ArtistApplyPage />} />
           <Route path="/artist/:id" element={<ArtistPage />} />
           <Route path="/artist/dashboard" element={<ArtistDashboardPage />} />
+          <Route path="/admin" element={<AdminDashboardPage />} />
           <Route path="/artists" element={<ArtistListPage />} />
           <Route path="/exhibitions" element={<ExhibitionsPage />} />
           <Route path="/charity" element={<CharityPage />} />

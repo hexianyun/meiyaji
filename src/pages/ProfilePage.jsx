@@ -12,6 +12,13 @@ function getRoleMeta(currentUser) {
     }
   }
 
+  if (currentUser.role === 'admin') {
+    return {
+      label: '平台管理员',
+      note: '可审核艺术家入驻、管理用户、文章、作品与订单物流。',
+    }
+  }
+
   if (currentUser.role === 'artist' && currentUser.artistStatus === 'approved') {
     return {
       label: '已认证艺术家',
@@ -294,7 +301,11 @@ function AccountPanel({ currentUser, onLogin, onRegister, onLogout, onArtistEntr
           className="py-3 text-[13px] font-medium border"
           style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
         >
-          {currentUser.role === 'artist' && currentUser.artistStatus === 'approved' ? '进入艺术家后台' : '艺术家入驻'}
+          {currentUser.role === 'admin'
+            ? '进入管理员后台'
+            : currentUser.role === 'artist' && currentUser.artistStatus === 'approved'
+              ? '进入艺术家后台'
+              : '艺术家入驻'}
         </button>
         <button
           onClick={onLogout}
@@ -450,11 +461,14 @@ function MenuRow({ icon, label, meta, badge, onClick }) {
 }
 
 function ArtistEntryRow({ currentUser, onApply, onDashboard }) {
+  const isAdmin = currentUser?.role === 'admin'
   const isApprovedArtist = currentUser?.role === 'artist' && currentUser?.artistStatus === 'approved'
   const isApplyingArtist = currentUser?.role === 'artist' && currentUser?.artistStatus === 'pending'
   const isRejectedArtist = currentUser?.role === 'artist' && currentUser?.artistStatus === 'rejected'
 
-  const statusText = isApprovedArtist
+  const statusText = isAdmin
+    ? '已开通'
+    : isApprovedArtist
     ? '已开通'
     : isApplyingArtist
       ? '审核中'
@@ -464,8 +478,10 @@ function ArtistEntryRow({ currentUser, onApply, onDashboard }) {
           ? '可申请'
           : '需登录'
 
-  const label = isApprovedArtist ? '艺术家后台' : '艺术家入驻申请'
-  const meta = isApprovedArtist
+  const label = isAdmin ? '管理员后台' : isApprovedArtist ? '艺术家后台' : '艺术家入驻申请'
+  const meta = isAdmin
+    ? '进入后台处理审核、文章、作品与物流'
+    : isApprovedArtist
     ? '进入创作者后台继续管理作品'
     : '阅读入驻须知后提交申请资料'
 
@@ -476,7 +492,7 @@ function ArtistEntryRow({ currentUser, onApply, onDashboard }) {
         label={label}
         meta={meta}
         badge={null}
-        onClick={() => (isApprovedArtist ? onDashboard() : onApply())}
+        onClick={() => ((isAdmin || isApprovedArtist) ? onDashboard() : onApply())}
       />
       <div className="flex justify-end pr-4 pt-2">
         <span className="text-[11px]" style={{ color: 'var(--text-weak)' }}>
@@ -512,6 +528,11 @@ export default function ProfilePage() {
   }
 
   const handleArtistEntry = () => {
+    if (currentUser?.role === 'admin') {
+      navigate('/admin')
+      return
+    }
+
     if (currentUser?.role === 'artist' && currentUser?.artistStatus === 'approved') {
       navigate('/artist/dashboard')
       return
@@ -612,7 +633,7 @@ export default function ProfilePage() {
         <ArtistEntryRow
           currentUser={currentUser}
           onApply={() => navigate(currentUser ? '/artist/apply' : '/login')}
-          onDashboard={() => navigate('/artist/dashboard')}
+          onDashboard={() => navigate(currentUser?.role === 'admin' ? '/admin' : '/artist/dashboard')}
         />
       </div>
 

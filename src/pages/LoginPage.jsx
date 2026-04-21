@@ -6,7 +6,7 @@ import { loginUser, persistAuthSession } from '../services/contentApi'
 export default function LoginPage() {
   const navigate = useNavigate()
   const { setCurrentUser, showToast } = useApp()
-  const [email, setEmail] = useState('')
+  const [account, setAccount] = useState('')
   const [password, setPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -17,12 +17,12 @@ export default function LoginPage() {
     setSubmitting(true)
 
     try {
-      const payload = await loginUser({ email, password })
+      const payload = await loginUser({ account, password })
       const normalizedUser = persistAuthSession(payload)
 
       setCurrentUser(normalizedUser)
       showToast('登录成功')
-      navigate('/profile')
+      navigate(normalizedUser?.role === 'admin' ? '/admin' : '/profile')
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : '登录失败，请稍后再试。')
     } finally {
@@ -63,13 +63,13 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <label className="block">
             <span className="block text-[12px] mb-2" style={{ color: 'var(--text-muted)' }}>
-              邮箱
+              邮箱 / 用户名
             </span>
             <input
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="请输入注册邮箱"
+              type="text"
+              value={account}
+              onChange={(event) => setAccount(event.target.value)}
+              placeholder="请输入邮箱或用户名"
               className="w-full px-4 py-3 border text-[14px] outline-none"
               style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
               required

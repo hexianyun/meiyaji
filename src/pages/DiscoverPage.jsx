@@ -1,12 +1,30 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
-import { artworks } from '../data'
+import { getPublicArtworks } from '../services/contentApi'
 
 export default function DiscoverPage() {
   const [searchQ, setSearchQ] = useState('')
+  const [artworks, setArtworks] = useState([])
   const navigate = useNavigate()
   const { favs, toggleFav, addToCart, showToast } = useApp()
+
+  useEffect(() => {
+    let isActive = true
+
+    async function loadArtworks() {
+      const nextArtworks = await getPublicArtworks()
+      if (isActive) {
+        setArtworks(nextArtworks)
+      }
+    }
+
+    loadArtworks()
+
+    return () => {
+      isActive = false
+    }
+  }, [])
 
   const filtered = artworks.filter(art => {
     if (searchQ && !art.title.includes(searchQ) && !art.artist.includes(searchQ)) return false

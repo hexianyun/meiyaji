@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { charity, charityActivities, charityProjectDetails } from '../data'
+import { getPublicContents } from '../services/contentApi'
 
 function SectionIntro({ eyebrow, title, description, actionLabel, onAction }) {
   return (
@@ -31,9 +33,9 @@ function SectionIntro({ eyebrow, title, description, actionLabel, onAction }) {
   )
 }
 
-function CharityHero() {
+function CharityHero({ activities }) {
   const navigate = useNavigate()
-  const leadActivity = [...charityActivities].sort((a, b) => b.date.localeCompare(a.date))[0]
+  const leadActivity = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0]
 
   if (!leadActivity) return null
 
@@ -77,7 +79,7 @@ function CharityHero() {
               {leadActivity.title}
             </h2>
             <p className="text-[13px] leading-6 max-w-[300px] mb-5" style={{ color: 'rgba(255,255,255,0.8)' }}>
-              {leadActivity.desc}
+              {leadActivity.desc || leadActivity.summary}
             </p>
             <div className="flex gap-2.5">
               <button
@@ -143,7 +145,7 @@ function ImpactSection() {
   )
 }
 
-function InitiativesSection() {
+function InitiativesSection({ projects }) {
   const navigate = useNavigate()
 
   return (
@@ -155,7 +157,7 @@ function InitiativesSection() {
       />
 
       <div className="space-y-3">
-        {charity.map(item => (
+        {projects.map(item => (
           <div
             key={item.id}
             className="border"
@@ -175,14 +177,14 @@ function InitiativesSection() {
                   </h3>
                 </div>
                 <div className="text-right text-[11px]" style={{ color: 'var(--text-muted)' }}>
-                  <div>筹集 ¥{item.raised.toLocaleString()}</div>
-                  <div>{item.beneficiaries} 人受益</div>
+                  <div>项目类型 · {item.kind === 'project' ? '长期项目' : '公益内容'}</div>
+                  <div>{item.date}</div>
                 </div>
               </div>
               <p className="text-[13px] leading-6" style={{ color: 'var(--text-muted)' }}>
-                {item.desc}
+                {item.desc || item.summary}
               </p>
-              {charityProjectDetails[item.id] && (
+              {item.id && (
                 <button
                   onClick={() => navigate(`/charity/project/${item.id}`)}
                   className="mt-4 text-[12px] pb-1"
@@ -199,9 +201,9 @@ function InitiativesSection() {
   )
 }
 
-function ActivitiesSection() {
+function ActivitiesSection({ activities }) {
   const navigate = useNavigate()
-  const activities = [...charityActivities].sort((a, b) => b.date.localeCompare(a.date))
+  const sortedActivities = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date)))
 
   return (
     <section className="px-4 mt-14">
@@ -212,7 +214,7 @@ function ActivitiesSection() {
       />
 
       <div className="space-y-3">
-        {activities.map(activity => (
+        {sortedActivities.map(activity => (
           <button
             key={activity.id}
             onClick={() => navigate(`/charity/article/${activity.id}`)}
@@ -231,10 +233,10 @@ function ActivitiesSection() {
                 {activity.title}
               </h3>
               <p className="text-[13px] leading-6 mb-4" style={{ color: 'var(--text-muted)' }}>
-                {activity.desc}
+                {activity.desc || activity.summary}
               </p>
               <div className="flex items-center justify-between text-[12px]">
-                <span style={{ color: 'var(--text-weak)' }}>{activity.participants} 人参与</span>
+                <span style={{ color: 'var(--text-weak)' }}>{activity.participants ? `${activity.participants} 人参与` : '查看项目现场'}</span>
                 <span style={{ color: 'var(--text)', borderBottom: '1px solid var(--text)', paddingBottom: '4px' }}>
                   查看现场记录
                 </span>
@@ -247,9 +249,9 @@ function ActivitiesSection() {
   )
 }
 
-function StoriesSection() {
+function StoriesSection({ activities }) {
   const navigate = useNavigate()
-  const editorialActivities = [...charityActivities].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 2)
+  const editorialActivities = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 2)
 
   return (
     <section className="px-4 mt-14">
@@ -331,13 +333,41 @@ function CharityFooter() {
 }
 
 export default function CharityPage() {
+  const [activities, setActivities] = useState(charityActivities)
+  const [projects, setProjects] = useState(charity.map(item => ({
+    ...item,
+    id: String(item.id),
+  })))
+
+  useEffect(() => {
+    let isActive = true
+
+    async function loadContent() {
+      const [nextActivities, nextProjects] = await Promise.all([
+        getPublicContents('activity'),
+        getPublicContents('project'),
+      ])
+
+      if (!isActive) return
+
+      setActivities(nextActivities)
+      setProjects(nextProjects)
+    }
+
+    loadContent()
+
+    return () => {
+      isActive = false
+    }
+  }, [])
+
   return (
     <div className="pb-20 fade-in">
-      <CharityHero />
+      <CharityHero activities={activities} />
       <ImpactSection />
-      <InitiativesSection />
-      <ActivitiesSection />
-      <StoriesSection />
+      <InitiativesSection projects={projects} />
+      <ActivitiesSection activities={activities} />
+      <StoriesSection activities={activities} />
       <CharityFooter />
     </div>
   )

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { artworks, artists, charity, charityActivities } from '../data'
 import { getArtistCoverArtwork } from '../artistMedia'
 import { useApp } from '../App'
+import { getPublicArtworks, getPublicContents } from '../services/contentApi'
 
 const HERO_SLIDES = [
   {
@@ -319,10 +320,10 @@ function MissionBlock() {
   )
 }
 
-function FeaturedWorksSection() {
+function FeaturedWorksSection({ artworksData }) {
   const navigate = useNavigate()
   const { addToCart } = useApp()
-  const curatedWorks = artworks.slice(0, 20)
+  const curatedWorks = artworksData.slice(0, 20)
 
   if (!curatedWorks.length) return null
 
@@ -402,9 +403,9 @@ function ArtistsSection() {
   )
 }
 
-function StoriesSection() {
+function StoriesSection({ activities }) {
   const navigate = useNavigate()
-  const latestActivities = [...charityActivities].sort((a, b) => b.date.localeCompare(a.date))
+  const latestActivities = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date)))
   const leadStory = latestActivities[0]
   const sideStories = latestActivities.slice(1, 3)
 
@@ -433,7 +434,7 @@ function StoriesSection() {
               {leadStory.title}
             </h3>
             <p className="text-[13px] leading-6" style={{ color: 'var(--text-muted)' }}>
-              {leadStory.desc}
+              {leadStory.desc || leadStory.summary}
             </p>
           </div>
         </button>
@@ -511,13 +512,38 @@ function FooterSection() {
 }
 
 export default function HomePage() {
+  const [publicArtworks, setPublicArtworks] = useState(artworks)
+  const [publicActivities, setPublicActivities] = useState(charityActivities)
+
+  useEffect(() => {
+    let isActive = true
+
+    async function loadPublicData() {
+      const [nextArtworks, nextActivities] = await Promise.all([
+        getPublicArtworks(),
+        getPublicContents('activity'),
+      ])
+
+      if (!isActive) return
+
+      setPublicArtworks(nextArtworks)
+      setPublicActivities(nextActivities)
+    }
+
+    loadPublicData()
+
+    return () => {
+      isActive = false
+    }
+  }, [])
+
   return (
     <div className="pb-20 fade-in">
       <HeroShowcase />
       <MissionBlock />
-      <FeaturedWorksSection />
+      <FeaturedWorksSection artworksData={publicArtworks} />
       <ArtistsSection />
-      <StoriesSection />
+      <StoriesSection activities={publicActivities} />
       <FooterSection />
     </div>
   )

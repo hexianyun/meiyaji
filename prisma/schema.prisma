@@ -27,6 +27,19 @@ enum InventoryStatus {
   archived
 }
 
+enum CharityContentType {
+  activity
+  project
+}
+
+enum OrderStatus {
+  pending_payment
+  pending_shipment
+  in_transit
+  completed
+  cancelled
+}
+
 model User {
   id           String        @id @default(cuid())
   email        String        @unique
@@ -44,6 +57,7 @@ model User {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   artworks     Artwork[]
+  orders       Order[]
 
   @@index([role])
   @@index([artistStatus])
@@ -66,4 +80,50 @@ model Artwork {
 
   @@index([artistId])
   @@index([inventoryStatus])
+}
+
+model CharityContent {
+  id        String             @id @default(cuid())
+  legacyId  Int?
+  kind      CharityContentType
+  slug      String             @unique
+  title     String
+  cover     String
+  dateLabel String
+  author    String
+  location  String?
+  tag       String?
+  summary   String?            @db.Text
+  sections  Json
+  images    Json
+  published Boolean            @default(true)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  @@unique([kind, legacyId])
+  @@index([kind, published])
+}
+
+model Order {
+  id               String      @id @default(cuid())
+  orderNo          String      @unique
+  userId           String?
+  user             User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  buyerName        String
+  buyerEmail       String
+  buyerPhone       String?
+  shippingAddress  String?
+  status           OrderStatus @default(pending_shipment)
+  totalAmount      Decimal     @db.Decimal(10, 2)
+  items            Json
+  logisticsCompany String?
+  logisticsNumber  String?
+  trackingNote     String?     @db.Text
+  shippedAt        DateTime?
+  deliveredAt      DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  @@index([userId, createdAt])
+  @@index([status, createdAt])
 }

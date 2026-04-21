@@ -1,12 +1,36 @@
+import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { charityArticleDetails, charityActivities } from '../data'
+import { getPublicContentById } from '../services/contentApi'
 
 export default function CharityArticlePage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const articleId = parseInt(id)
-  const article = charityArticleDetails[articleId]
-  const activity = charityActivities.find(a => a.id === articleId)
+  const [article, setArticle] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let isActive = true
+
+    async function loadArticle() {
+      setLoading(true)
+      const nextArticle = await getPublicContentById('activity', id)
+
+      if (!isActive) return
+
+      setArticle(nextArticle)
+      setLoading(false)
+    }
+
+    loadArticle()
+
+    return () => {
+      isActive = false
+    }
+  }, [id])
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center text-sm" style={{ color: 'var(--text-muted)' }}>正在加载文章...</div>
+  }
 
   if (!article) {
     return (
@@ -28,12 +52,11 @@ export default function CharityArticlePage() {
 
   return (
     <div className="pb-20 fade-in" style={{ minHeight: '100vh', background: 'var(--bg)' }}>
-      {/* 顶部导航 */}
       <div className="sticky top-0 z-30"
         style={{
           background: 'rgba(246,241,234,0.92)',
           backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid var(--border)'
+          borderBottom: '1px solid var(--border)',
         }}
       >
         <div className="max-w-[430px] mx-auto flex items-center justify-between px-4 py-3">
@@ -49,19 +72,17 @@ export default function CharityArticlePage() {
         </div>
       </div>
 
-      {/* 头图 */}
       <div className="aspect-[16/10] relative overflow-hidden">
         <img src={article.cover} alt={article.title} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-5">
-          <span className="tag-sage inline-block mb-2">{article.tag || activity?.tag}</span>
+          <span className="tag-sage inline-block mb-2">{article.tag}</span>
           <h1 className="text-white font-bold text-lg leading-snug drop-shadow-sm">
             {article.title}
           </h1>
         </div>
       </div>
 
-      {/* 元信息栏 */}
       <div className="max-w-[430px] mx-auto px-4 py-3 flex items-center gap-4 text-[11px]"
         style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-weak)' }}
       >
@@ -70,7 +91,6 @@ export default function CharityArticlePage() {
         {article.location && (<span>📍 {article.location}</span>)}
       </div>
 
-      {/* 正文内容 */}
       <div className="max-w-[430px] mx-auto px-4 py-6 space-y-6">
         {article.sections.map((section, idx) => (
           <div key={idx} className="space-y-3">
@@ -85,7 +105,6 @@ export default function CharityArticlePage() {
           </div>
         ))}
 
-        {/* 剩余图片画廊 */}
         {article.images.length > article.sections.length && (
           <div className="grid grid-cols-2 gap-2.5 pt-2">
             {article.images.slice(article.sections.length).map((img, idx) => (
@@ -96,7 +115,6 @@ export default function CharityArticlePage() {
           </div>
         )}
 
-        {/* 结尾 */}
         <div className="pt-6 mt-8" style={{ borderTop: '1px solid var(--border)' }}>
           <p className="text-center text-xs leading-loose" style={{ color: 'var(--text-weak)' }}>
             — 本文完 —<br />
@@ -104,10 +122,9 @@ export default function CharityArticlePage() {
           </p>
         </div>
 
-        {/* 返回按钮 */}
         <button
           onClick={() => navigate('/charity')}
-          className="w-full py-3 rounded-xl font-medium text-sm active:scale-[0.98] transition-transform"
+          className="w-full py-3 font-medium text-sm"
           style={{ background: 'var(--primary)', color: 'white' }}
         >
           返回公益活动列表
