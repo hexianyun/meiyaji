@@ -64,7 +64,7 @@ function HeroAvatar({ currentUser }) {
 
 function ProfileHero({ currentUser }) {
   const roleMeta = getRoleMeta(currentUser)
-  const heroImageSrc = encodeURI('/artists/shenghui/生辉《夏日田野之一》  60x80cm 布面丙烯油画 2023年.jpg')
+  const heroImageSrc = '/profile/my-banner-hero.jpg'
   const profileLabel = currentUser ? roleMeta.label : '美芽集用户中心'
   const profileMeta = currentUser
     ? (currentUser.email || currentUser.username || `ID: ${currentUser.id || '未分配'}`)
