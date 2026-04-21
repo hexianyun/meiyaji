@@ -209,7 +209,7 @@ export default function ArtistApplyPage() {
           <p className="text-[10px] tracking-[0.24em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
             Entry Notice
           </p>
-          <h1 className="text-[28px] leading-[1.18] font-semibold mb-3" style={{ color: 'var(--text)' }}>
+          <h1 className="text-[24px] leading-[1.22] font-semibold mb-3" style={{ color: 'var(--text)' }}>
             「美芽集」艺术家入驻申请须知
           </h1>
           <p className="text-[13px] leading-6 mb-6" style={{ color: 'var(--text-muted)' }}>
