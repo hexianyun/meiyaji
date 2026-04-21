@@ -236,19 +236,6 @@ function StatsPanel({ favsCount, ordersCount }) {
   )
 }
 
-function SectionHeader({ eyebrow, title }) {
-  return (
-    <div className="px-4 mt-8 mb-3">
-      <p className="text-[10px] tracking-[0.24em] uppercase mb-1" style={{ color: 'var(--text-weak)' }}>
-        {eyebrow}
-      </p>
-      <h2 className="text-[18px] font-semibold" style={{ color: 'var(--text)' }}>
-        {title}
-      </h2>
-    </div>
-  )
-}
-
 function MenuIcon({ glyph }) {
   return (
     <span
@@ -376,8 +363,7 @@ export default function ProfilePage() {
 
       <StatsPanel favsCount={favs.length} ordersCount={orders.length} />
 
-      <SectionHeader eyebrow="Collection" title="我的收藏与订单" />
-      <div className="px-4 space-y-2.5">
+      <div className="px-4 mt-6 space-y-2.5">
         {collectionItems.map(item => (
           <MenuRow
             key={item.label}
@@ -390,15 +376,15 @@ export default function ProfilePage() {
         ))}
       </div>
 
-      <SectionHeader eyebrow="Creator" title="艺术家通道" />
-      <ArtistEntryRow
-        currentUser={currentUser}
-        onApply={() => navigate(currentUser ? '/artist/apply' : '/login')}
-        onDashboard={() => navigate('/artist/dashboard')}
-      />
+      <div className="mt-6">
+        <ArtistEntryRow
+          currentUser={currentUser}
+          onApply={() => navigate(currentUser ? '/artist/apply' : '/login')}
+          onDashboard={() => navigate('/artist/dashboard')}
+        />
+      </div>
 
-      <SectionHeader eyebrow="Service" title="账户与服务" />
-      <div className="px-4 space-y-2.5">
+      <div className="px-4 mt-6 space-y-2.5">
         {serviceItems.map(item => (
           <MenuRow
             key={item.label}
