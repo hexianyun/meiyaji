@@ -3,24 +3,42 @@ import { useApp } from '../App'
 import { orders } from '../data'
 import { clearAuthSession } from '../services/contentApi'
 
-function ProfileHero() {
+function ProfileHero({ currentUser }) {
   return (
     <div className="mx-4 pt-6">
       <div className="relative overflow-hidden border" style={{ borderColor: 'rgba(232,225,216,0.92)', background: '#d8d0c7' }}>
-        <div className="aspect-[16/7]">
+        <div className="aspect-[16/8]">
           <img src="/hero-carousel/1710908245.jpg" alt="美芽集个人中心横幅" className="w-full h-full object-cover" />
         </div>
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(180deg, rgba(20,18,16,0.08) 0%, rgba(20,18,16,0.42) 100%)' }}
+          style={{ background: 'linear-gradient(180deg, rgba(20,18,16,0.08) 0%, rgba(20,18,16,0.58) 100%)' }}
         />
-        <div className="absolute left-4 right-4 bottom-4">
-          <p className="text-[10px] tracking-[0.24em] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.76)' }}>
-            MY MEIYAJI
-          </p>
-          <p className="text-[18px] font-semibold" style={{ color: 'white' }}>
-            收藏、订单与艺术家入驻
-          </p>
+        <div className="absolute inset-x-0 bottom-0 px-5 pb-5">
+          <div className="flex items-end gap-3">
+            <div
+              className="w-16 h-16 overflow-hidden border shrink-0"
+              style={{ background: 'rgba(255,255,255,0.18)', borderColor: 'rgba(255,255,255,0.42)' }}
+            >
+              <div
+                className="w-full h-full flex items-center justify-center"
+                style={{ color: 'rgba(255,255,255,0.82)', fontSize: '24px' }}
+              >
+                •
+              </div>
+            </div>
+            <div className="min-w-0 pb-1">
+              <p className="text-[10px] tracking-[0.24em] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.76)' }}>
+                MY MEIYAJI
+              </p>
+              <p className="text-[22px] font-semibold leading-[1.15]" style={{ color: 'white' }}>
+                {currentUser ? (currentUser.name || '美芽集用户') : '欢迎来到美芽集'}
+              </p>
+              <p className="text-[12px] mt-1" style={{ color: 'rgba(255,255,255,0.76)' }}>
+                {currentUser ? `ID: ${currentUser.id || '未分配'}` : '登录后可同步收藏与订单信息'}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -214,27 +232,7 @@ export default function ProfilePage() {
 
   return (
     <div className="pb-20 fade-in">
-      <ProfileHero />
-
-      <div className="pt-8 pb-6 px-6 text-center">
-        <div
-          className="w-20 h-20 rounded-full mx-auto mb-4 overflow-hidden"
-          style={{ background: 'var(--surface-2)', border: '2px solid var(--border)' }}
-        >
-          <div
-            className="w-full h-full flex items-center justify-center"
-            style={{ color: 'var(--text-weak)', fontSize: '28px' }}
-          >
-            •
-          </div>
-        </div>
-        <p className="text-lg font-bold mb-1" style={{ color: 'var(--text)' }}>
-          {currentUser ? (currentUser.name || '美芽集用户') : '欢迎来到美芽集'}
-        </p>
-        <p className="text-xs" style={{ color: 'var(--text-weak)' }}>
-          {currentUser ? `ID: ${currentUser.id || '未分配'}` : '登录后可同步收藏与订单信息'}
-        </p>
-      </div>
+      <ProfileHero currentUser={currentUser} />
 
       {currentUser ? (
         <LoggedInCard currentUser={currentUser} onLogout={handleLogout} />
