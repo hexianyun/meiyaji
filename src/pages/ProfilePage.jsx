@@ -58,6 +58,7 @@ function HeroAvatar({ currentUser }) {
 
 function ProfileHero({ currentUser }) {
   const roleMeta = getRoleMeta(currentUser)
+  const heroImageSrc = encodeURI('/artists/shenghui/生辉《夏日田野之一》  60x80cm 布面丙烯油画 2023年.jpg')
 
   return (
     <div className="mx-4 pt-6">
@@ -66,7 +67,7 @@ function ProfileHero({ currentUser }) {
         style={{ borderColor: 'rgba(232,225,216,0.92)', background: '#d8d0c7' }}
       >
         <div className="aspect-[16/9]">
-          <img src="/hero-carousel/1710908245.jpg" alt="美芽集个人中心背景" className="w-full h-full object-cover" />
+          <img src={heroImageSrc} alt="美芽集个人中心横幅作品" className="w-full h-full object-cover" />
         </div>
 
         <div
