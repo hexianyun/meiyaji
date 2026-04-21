@@ -6,9 +6,18 @@ import { verifyArtist } from '../middleware/auth.js'
 
 const router = Router()
 
+const imageInputSchema = z
+  .string()
+  .min(1, '作品图片不能为空')
+  .max(8_000_000, '作品图片内容过大，请重新上传')
+  .refine(
+    (value) => /^https?:\/\//i.test(value) || /^data:image\/(png|jpeg|jpg|webp);base64,/i.test(value),
+    '请上传 JPG、PNG、WEBP 图片，或提供有效图片链接',
+  )
+
 const createArtworkSchema = z.object({
   title: z.string().min(1, '作品名称不能为空').max(120, '作品名称不能超过 120 个字符'),
-  imageUrl: z.string().url('图片 URL 格式不正确'),
+  imageUrl: imageInputSchema,
   price: z.coerce.number().positive('价格必须大于 0'),
   stock: z.coerce.number().int().min(0, '库存不能小于 0').default(1),
   description: z.string().max(5000, '作品描述不能超过 5000 个字符').optional(),
@@ -17,7 +26,7 @@ const createArtworkSchema = z.object({
 
 const updateArtworkSchema = z.object({
   title: z.string().min(1, '作品名称不能为空').max(120, '作品名称不能超过 120 个字符').optional(),
-  imageUrl: z.string().url('图片 URL 格式不正确').optional(),
+  imageUrl: imageInputSchema.optional(),
   price: z.coerce.number().positive('价格必须大于 0').optional(),
   stock: z.coerce.number().int().min(0, '库存不能小于 0').optional(),
   description: z.string().max(5000, '作品描述不能超过 5000 个字符').optional(),
@@ -115,7 +124,7 @@ router.get('/', async (req, res) => {
       message: '获取我的作品列表成功。',
       artworks: artworks.map(serializeArtwork),
     })
-  } catch (error) {
+  } catch {
     return res.status(500).json({
       message: '获取作品列表失败，请稍后再试。',
     })
@@ -201,7 +210,7 @@ router.patch('/:id/unpublish', async (req, res) => {
       message: '作品已下架。',
       artwork: serializeArtwork(artwork),
     })
-  } catch (error) {
+  } catch {
     return res.status(500).json({
       message: '下架作品失败，请稍后再试。',
     })

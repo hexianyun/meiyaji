@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
 import {
@@ -15,6 +15,54 @@ const initialArtworkForm = {
   stock: '1',
   charitySupportNote: '',
   description: '',
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = () => reject(new Error('图片读取失败，请重新选择。'))
+    reader.readAsDataURL(file)
+  })
+}
+
+function loadImage(dataUrl) {
+  return new Promise((resolve, reject) => {
+    const image = new Image()
+    image.onload = () => resolve(image)
+    image.onerror = () => reject(new Error('图片解析失败，请重新选择。'))
+    image.src = dataUrl
+  })
+}
+
+async function buildArtworkImageDataUrl(file) {
+  const originalDataUrl = await readFileAsDataUrl(file)
+  const image = await loadImage(originalDataUrl)
+  const maxSide = 1600
+  const longestSide = Math.max(image.width, image.height)
+  const scale = longestSide > maxSide ? maxSide / longestSide : 1
+  const width = Math.max(1, Math.round(image.width * scale))
+  const height = Math.max(1, Math.round(image.height * scale))
+  const canvas = document.createElement('canvas')
+  const context = canvas.getContext('2d')
+
+  if (!context) {
+    throw new Error('当前设备暂不支持图片处理，请稍后再试。')
+  }
+
+  canvas.width = width
+  canvas.height = height
+  context.fillStyle = '#f7f2eb'
+  context.fillRect(0, 0, width, height)
+  context.drawImage(image, 0, 0, width, height)
+
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.86)
+
+  if (dataUrl.length > 7_500_000) {
+    throw new Error('图片仍然过大，请换一张更小的图片。')
+  }
+
+  return dataUrl
 }
 
 function SurfaceCard({ children, className = '', style = {} }) {
@@ -89,16 +137,6 @@ function Textarea(props) {
     <textarea
       {...props}
       className="w-full px-3 py-3 border text-[14px] outline-none min-h-[120px]"
-      style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
-    />
-  )
-}
-
-function Select(props) {
-  return (
-    <select
-      {...props}
-      className="w-full px-3 py-3 border text-[14px] outline-none"
       style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
     />
   )
@@ -196,8 +234,10 @@ function inventoryLabel(status) {
 export default function ArtistDashboardPage() {
   const navigate = useNavigate()
   const { currentUser, showToast } = useApp()
+  const fileInputRef = useRef(null)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+  const [processingImage, setProcessingImage] = useState(false)
   const [editingArtworkId, setEditingArtworkId] = useState('')
   const [artworkForm, setArtworkForm] = useState(initialArtworkForm)
   const [myWorks, setMyWorks] = useState([])
@@ -238,6 +278,9 @@ export default function ArtistDashboardPage() {
   const resetForm = () => {
     setEditingArtworkId('')
     setArtworkForm(initialArtworkForm)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
   const startEdit = (artwork) => {
@@ -253,8 +296,47 @@ export default function ArtistDashboardPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const handlePickImage = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleImageChange = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      showToast('请选择 JPG、PNG 或 WEBP 图片')
+      return
+    }
+
+    if (file.size > 8 * 1024 * 1024) {
+      showToast('图片不能超过 8MB')
+      return
+    }
+
+    setProcessingImage(true)
+
+    try {
+      const imageUrl = await buildArtworkImageDataUrl(file)
+      setArtworkForm(prev => ({ ...prev, imageUrl }))
+      showToast('作品图片已载入')
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : '图片处理失败，请稍后再试。')
+    } finally {
+      setProcessingImage(false)
+    }
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
+
+    if (!artworkForm.imageUrl) {
+      showToast('请先上传作品图片')
+      return
+    }
+
     setSubmitting(true)
 
     const payload = {
@@ -310,6 +392,14 @@ export default function ArtistDashboardPage() {
 
   return (
     <div className="pb-24 px-4 pt-5 fade-in space-y-5">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+        className="hidden"
+        onChange={handleImageChange}
+      />
+
       <SurfaceCard
         className="p-4 md:p-5 overflow-hidden"
         style={{
@@ -332,7 +422,7 @@ export default function ArtistDashboardPage() {
               艺术家作品后台
             </h1>
             <p className="text-[13px] leading-6 mt-3 max-w-[620px]" style={{ color: 'var(--text-muted)' }}>
-              在这里你可以自行发布作品、修改价格与库存、补充公益说明，并管理已经上架的艺术作品。
+              在这里你可以自行发布作品、修改价格与库存、上传作品图片，并管理已经上架的艺术作品。
             </p>
           </div>
           <ActionButton onClick={loadMyWorks} variant="secondary" className="shrink-0 px-3 py-2 text-[12px]">
@@ -350,7 +440,7 @@ export default function ArtistDashboardPage() {
 
       <SectionCard
         title={editingArtworkId ? '编辑作品' : '发布新作品'}
-        intro="每件作品都需要包含名称、图片、价格和公益说明。公益说明会直接呈现在前台作品详情页。"
+        intro="每件作品都需要包含名称、图片、价格和公益说明。作品图片现在可以直接上传，不需要再填写链接。"
         extra={editingArtworkId ? (
           <ActionButton onClick={resetForm} variant="secondary" className="px-3 py-2 text-[12px]">
             取消编辑
@@ -361,9 +451,43 @@ export default function ArtistDashboardPage() {
           <Field label="作品名称">
             <Input value={artworkForm.title} onChange={(event) => setArtworkForm(prev => ({ ...prev, title: event.target.value }))} />
           </Field>
-          <Field label="作品图片 URL">
-            <Input value={artworkForm.imageUrl} onChange={(event) => setArtworkForm(prev => ({ ...prev, imageUrl: event.target.value }))} />
+
+          <Field label="作品图片" hint="支持 JPG / PNG / WEBP">
+            <div className="space-y-3">
+              <div
+                className="border p-3"
+                style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
+              >
+                {artworkForm.imageUrl ? (
+                  <img
+                    src={artworkForm.imageUrl}
+                    alt="作品预览"
+                    className="w-full h-auto block"
+                    style={{ maxHeight: '320px', objectFit: 'contain', background: '#f7f2eb' }}
+                  />
+                ) : (
+                  <div
+                    className="w-full flex items-center justify-center text-[13px]"
+                    style={{ minHeight: '180px', color: 'var(--text-weak)', background: '#f7f2eb' }}
+                  >
+                    上传后将在这里预览作品图片
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-2">
+                <ActionButton onClick={handlePickImage} variant="secondary" className="flex-1">
+                  {processingImage ? '正在处理图片...' : artworkForm.imageUrl ? '更换图片' : '上传图片'}
+                </ActionButton>
+                {artworkForm.imageUrl ? (
+                  <ActionButton onClick={() => setArtworkForm(prev => ({ ...prev, imageUrl: '' }))} variant="danger" className="px-4">
+                    删除图片
+                  </ActionButton>
+                ) : null}
+              </div>
+            </div>
           </Field>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <Field label="价格">
               <Input type="number" min="0" step="0.01" value={artworkForm.price} onChange={(event) => setArtworkForm(prev => ({ ...prev, price: event.target.value }))} />
