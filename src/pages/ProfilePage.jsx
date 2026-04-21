@@ -129,27 +129,49 @@ function ArtistEntryCard({ currentUser, onApply, onDashboard, compact = false })
       : '登录后申请'
 
   const buttonHandler = isApprovedArtist ? onDashboard : onApply
+  const compactLabel = isApprovedArtist ? '艺术家后台' : '艺术家入驻申请'
+  const compactStatus = isApprovedArtist ? '已开通' : currentUser ? '可申请' : '需登录'
+
+  if (compact) {
+    return (
+      <button
+        onClick={buttonHandler}
+        className="w-full rounded-xl overflow-hidden cursor-pointer active:bg-opacity-70 transition-colors"
+        style={{
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+        }}
+      >
+        <div className="flex items-center gap-3.5 px-4 py-3.5">
+          <span className="text-base" style={{ color: 'var(--primary)' }}>•</span>
+          <span className="flex-1 text-sm text-left" style={{ color: 'var(--text)' }}>{compactLabel}</span>
+          <span className="text-[11px]" style={{ color: 'var(--text-weak)' }}>{compactStatus}</span>
+          <span className="text-sm" style={{ color: 'var(--text-weak)' }}>›</span>
+        </div>
+      </button>
+    )
+  }
 
   return (
     <div
-      className={`mx-4 border ${compact ? 'mt-6 p-4' : 'mt-4 p-5'}`}
+      className="mx-4 mt-4 border p-5"
       style={{ background: 'rgba(255,255,255,0.88)', borderColor: 'rgba(232,225,216,0.92)' }}
     >
-      <div className={`flex items-start justify-between gap-4 ${compact ? 'mb-3' : 'mb-4'}`}>
+      <div className="flex items-start justify-between gap-4 mb-4">
         <div>
           <p className="text-[10px] tracking-[0.24em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
             Artist Entry
           </p>
-          <h3 className={`${compact ? 'text-[16px]' : 'text-[18px]'} font-semibold mb-2`} style={{ color: 'var(--text)' }}>
+          <h3 className="text-[18px] font-semibold mb-2" style={{ color: 'var(--text)' }}>
             {title}
           </h3>
-          <p className={`${compact ? 'text-[12px] leading-5 max-w-[240px]' : 'text-[13px] leading-6'}`} style={{ color: 'var(--text-muted)' }}>
+          <p className="text-[13px] leading-6" style={{ color: 'var(--text-muted)' }}>
             {description}
           </p>
         </div>
 
         <span
-          className={`shrink-0 text-[11px] px-2.5 ${compact ? 'py-0.5' : 'py-1'} border`}
+          className="shrink-0 text-[11px] px-2.5 py-1 border"
           style={{ color: 'var(--text)', borderColor: 'var(--border)', background: 'var(--surface)' }}
         >
           {isApprovedArtist ? '已开通' : currentUser ? '可申请' : '需登录'}
@@ -158,7 +180,7 @@ function ArtistEntryCard({ currentUser, onApply, onDashboard, compact = false })
 
       <button
         onClick={buttonHandler}
-        className={`w-full ${compact ? 'py-2.5 text-[13px]' : 'py-3 text-[14px]'} font-medium border`}
+        className="w-full py-3 text-[14px] font-medium border"
         style={{
           background: isApprovedArtist ? 'var(--text)' : 'var(--surface)',
           borderColor: 'var(--border)',
