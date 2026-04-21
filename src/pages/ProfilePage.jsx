@@ -43,13 +43,19 @@ function HeroAvatar({ currentUser }) {
 
   return (
     <div
-      className="w-[70px] h-[70px] border shrink-0"
+      className="relative w-[76px] h-[76px] border shrink-0"
       style={{
-        background: 'rgba(255,255,255,0.16)',
-        borderColor: 'rgba(255,255,255,0.45)',
+        background: 'rgba(255,255,255,0.12)',
+        borderColor: 'rgba(255,255,255,0.32)',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 14px 28px rgba(15, 18, 16, 0.22)',
       }}
     >
-      <div className="w-full h-full flex items-center justify-center" style={{ color: 'white', fontSize: '28px', fontWeight: 600 }}>
+      <div
+        className="absolute inset-[7px] border"
+        style={{ borderColor: 'rgba(255,255,255,0.18)' }}
+      />
+      <div className="w-full h-full flex items-center justify-center" style={{ color: 'white', fontSize: '30px', fontWeight: 600, letterSpacing: '0.04em' }}>
         {initial}
       </div>
     </div>
@@ -59,6 +65,10 @@ function HeroAvatar({ currentUser }) {
 function ProfileHero({ currentUser }) {
   const roleMeta = getRoleMeta(currentUser)
   const heroImageSrc = encodeURI('/artists/shenghui/生辉《夏日田野之一》  60x80cm 布面丙烯油画 2023年.jpg')
+  const profileLabel = currentUser ? roleMeta.label : '美芽集用户中心'
+  const profileMeta = currentUser
+    ? (currentUser.email || currentUser.username || `ID: ${currentUser.id || '未分配'}`)
+    : '登录后可查看收藏、订单与艺术家申请状态'
 
   return (
     <div className="mx-4 pt-6">
@@ -72,7 +82,7 @@ function ProfileHero({ currentUser }) {
 
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(180deg, rgba(18,17,15,0.14) 0%, rgba(18,17,15,0.72) 100%)' }}
+          style={{ background: 'linear-gradient(180deg, rgba(12,18,15,0.12) 0%, rgba(16,22,18,0.58) 58%, rgba(16,18,16,0.8) 100%)' }}
         />
 
         <div
@@ -87,20 +97,43 @@ function ProfileHero({ currentUser }) {
         </div>
 
         <div className="absolute inset-x-0 bottom-0 px-5 pb-5">
-          <div className="flex items-end gap-4">
+          <div
+            className="border px-4 py-4"
+            style={{
+              background: 'linear-gradient(180deg, rgba(22,26,24,0.14) 0%, rgba(22,26,24,0.26) 100%)',
+              borderColor: 'rgba(255,255,255,0.14)',
+              backdropFilter: 'blur(6px)',
+            }}
+          >
+            <div className="flex items-end gap-4">
             <HeroAvatar currentUser={currentUser} />
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] tracking-[0.18em] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.68)' }}>
-                My Profile
-              </p>
-              <h1 className="text-[26px] leading-[1.1] font-semibold mb-1" style={{ color: 'white' }}>
+              <div className="flex flex-wrap items-center gap-2 mb-2">
+                <span
+                  className="px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase"
+                  style={{ color: 'rgba(255,255,255,0.78)', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
+                >
+                  My Profile
+                </span>
+                <span
+                  className="px-2.5 py-1 text-[10px]"
+                  style={{ color: 'rgba(255,255,255,0.78)', background: 'rgba(18, 88, 63, 0.22)', border: '1px solid rgba(255,255,255,0.12)' }}
+                >
+                  {profileLabel}
+                </span>
+              </div>
+              <h1 className="text-[28px] leading-[1.05] font-semibold mb-1.5" style={{ color: 'white' }}>
                 {currentUser ? (currentUser.name || '美芽集用户') : '欢迎来到美芽集'}
               </h1>
-              <p className="text-[12px] leading-5" style={{ color: 'rgba(255,255,255,0.76)' }}>
-                {currentUser ? `ID: ${currentUser.id || '未分配'}` : roleMeta.note}
+              <p className="text-[12px] leading-5 mb-2" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                {profileMeta}
+              </p>
+              <p className="text-[11px] leading-5" style={{ color: 'rgba(255,255,255,0.64)' }}>
+                {currentUser ? roleMeta.note : '在这里统一管理收藏、订单与艺术家入驻申请'}
               </p>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -237,18 +270,74 @@ function StatsPanel({ favsCount, ordersCount }) {
   )
 }
 
-function MenuIcon({ glyph }) {
+function MenuIcon({ icon }) {
+  const iconProps = {
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: '1.7',
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+  }
+
   return (
     <span
-      className="w-8 h-8 border flex items-center justify-center text-[13px] shrink-0"
-      style={{ background: 'var(--surface-2)', borderColor: 'var(--border)', color: 'var(--text)' }}
+      className="w-10 h-10 border flex items-center justify-center shrink-0"
+      style={{ background: 'rgba(248,244,238,0.92)', borderColor: 'rgba(228,220,208,0.96)', color: 'var(--text)' }}
     >
-      {glyph}
+      {icon === 'orders' && (
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" {...iconProps}>
+          <path d="M7 3.5h7l3 3V20.5H7z" />
+          <path d="M14 3.5v3h3" />
+          <path d="M10 11h4" />
+          <path d="M10 15h4" />
+        </svg>
+      )}
+      {icon === 'favorites' && (
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" {...iconProps}>
+          <path d="M12 20.5s-6.5-4.2-8.4-8C2.1 9.8 3.2 6.8 6 5.7c2-.8 4.1-.1 6 2 1.9-2.1 4-2.8 6-2 2.8 1.1 3.9 4.1 2.4 6.8-1.9 3.8-8.4 8-8.4 8z" />
+        </svg>
+      )}
+      {icon === 'artist' && (
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" {...iconProps}>
+          <path d="M12 4.5a7.5 7.5 0 1 0 0 15c1.8 0 3-.8 3-2.1 0-.8-.5-1.4-.5-2 0-.9.6-1.4 1.6-1.4h.6A3.8 3.8 0 0 0 20.5 10 5.5 5.5 0 0 0 15 4.5z" />
+          <path d="M8 10h.01" />
+          <path d="M12 8h.01" />
+          <path d="M15 11h.01" />
+          <path d="M10 14h.01" />
+        </svg>
+      )}
+      {icon === 'address' && (
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" {...iconProps}>
+          <path d="M12 20s5-5.3 5-9a5 5 0 1 0-10 0c0 3.7 5 9 5 9z" />
+          <circle cx="12" cy="11" r="1.8" />
+        </svg>
+      )}
+      {icon === 'payment' && (
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" {...iconProps}>
+          <rect x="3.5" y="6" width="17" height="12" rx="1.5" />
+          <path d="M3.5 10h17" />
+          <path d="M7 14.5h3.5" />
+        </svg>
+      )}
+      {icon === 'settings' && (
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" {...iconProps}>
+          <circle cx="12" cy="12" r="2.6" />
+          <path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4.8a7.4 7.4 0 0 0-1.7-1L14.5 3h-5l-.3 2.9a7.4 7.4 0 0 0-1.7 1l-2.4-.8-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-.8a7.4 7.4 0 0 0 1.7 1l.3 2.9h5l.3-2.9a7.4 7.4 0 0 0 1.7-1l2.4.8 2-3.4-2-1.5c.1-.3.1-.7.1-1z" />
+        </svg>
+      )}
+      {icon === 'support' && (
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" {...iconProps}>
+          <path d="M5.5 13.5v-1.7A6.5 6.5 0 0 1 12 5.3a6.5 6.5 0 0 1 6.5 6.5v1.7" />
+          <path d="M5.5 14.2A1.7 1.7 0 0 0 7.2 16h.8v-4h-.8a1.7 1.7 0 0 0-1.7 1.7z" />
+          <path d="M18.5 14.2a1.7 1.7 0 0 1-1.7 1.8H16v-4h.8a1.7 1.7 0 0 1 1.7 1.7z" />
+          <path d="M12 18.5h2.5" />
+        </svg>
+      )}
     </span>
   )
 }
 
-function MenuRow({ glyph, label, meta, badge, onClick }) {
+function MenuRow({ icon, label, meta, badge, onClick }) {
   return (
     <button
       onClick={onClick}
@@ -256,7 +345,7 @@ function MenuRow({ glyph, label, meta, badge, onClick }) {
       style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
     >
       <div className="flex items-center gap-3.5 px-4 py-3.5">
-        <MenuIcon glyph={glyph} />
+        <MenuIcon icon={icon} />
         <div className="min-w-0 flex-1 text-left">
           <p className="text-[14px] font-medium" style={{ color: 'var(--text)' }}>
             {label}
@@ -304,7 +393,7 @@ function ArtistEntryRow({ currentUser, onApply, onDashboard }) {
   return (
     <div className="px-4">
       <MenuRow
-        glyph="艺"
+        icon="artist"
         label={label}
         meta={meta}
         badge={null}
@@ -324,15 +413,15 @@ export default function ProfilePage() {
   const { favs, currentUser, setCurrentUser, showToast } = useApp()
 
   const collectionItems = [
-    { glyph: '单', label: '我的订单', meta: '查看购买记录与订单状态', badge: orders.length, path: '/orders' },
-    { glyph: '藏', label: '我的收藏', meta: '保存你想再次细看的作品', badge: favs.length, path: '/discover' },
+    { icon: 'orders', label: '我的订单', meta: '查看购买记录与订单状态', badge: orders.length, path: '/orders' },
+    { icon: 'favorites', label: '我的收藏', meta: '保存你想再次细看的作品', badge: favs.length, path: '/discover' },
   ]
 
   const serviceItems = [
-    { glyph: '址', label: '收货地址', meta: '管理收件信息', badge: null, path: '/profile' },
-    { glyph: '付', label: '支付管理', meta: '查看支付与结算方式', badge: null, path: '/profile' },
-    { glyph: '设', label: '设置', meta: '管理通知与账号偏好', badge: null, path: '/profile' },
-    { glyph: '服', label: '联系客服', meta: '获取人工帮助与支持', badge: null, path: '/profile' },
+    { icon: 'address', label: '收货地址', meta: '管理收件信息', badge: null, path: '/profile' },
+    { icon: 'payment', label: '支付管理', meta: '查看支付与结算方式', badge: null, path: '/profile' },
+    { icon: 'settings', label: '设置', meta: '管理通知与账号偏好', badge: null, path: '/profile' },
+    { icon: 'support', label: '联系客服', meta: '获取人工帮助与支持', badge: null, path: '/profile' },
   ]
 
   const handleLogout = () => {
@@ -368,7 +457,7 @@ export default function ProfilePage() {
         {collectionItems.map(item => (
           <MenuRow
             key={item.label}
-            glyph={item.glyph}
+            icon={item.icon}
             label={item.label}
             meta={item.meta}
             badge={item.badge}
@@ -389,7 +478,7 @@ export default function ProfilePage() {
         {serviceItems.map(item => (
           <MenuRow
             key={item.label}
-            glyph={item.glyph}
+            icon={item.icon}
             label={item.label}
             meta={item.meta}
             badge={item.badge}
