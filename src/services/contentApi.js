@@ -59,7 +59,7 @@ async function parseApiResponse(response) {
   const contentType = response.headers.get('content-type') || ''
 
   if (!contentType.includes('application/json')) {
-    throw new Error('当前线上认证接口暂未连通，请先部署后端接口。')
+    throw new Error(`接口返回异常，当前请求未拿到有效数据：${response.status}`)
   }
 
   const data = await response.json()

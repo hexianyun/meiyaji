@@ -1,6 +1,26 @@
 {
   "rewrites": [
     {
+      "source": "/api/admin/(.*)",
+      "destination": "/api/admin/[...path]?path=$1"
+    },
+    {
+      "source": "/api/auth/(.*)",
+      "destination": "/api/auth/[...path]?path=$1"
+    },
+    {
+      "source": "/api/public/(.*)",
+      "destination": "/api/public/[...path]?path=$1"
+    },
+    {
+      "source": "/api/artist/(.*)",
+      "destination": "/api/artist/[...path]?path=$1"
+    },
+    {
+      "source": "/api/member/(.*)",
+      "destination": "/api/member/[...path]?path=$1"
+    },
+    {
       "source": "/((?!api/|artists-safe/|artists/|charity-articles/|hero-carousel/).*)",
       "destination": "/"
     }
