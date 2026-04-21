@@ -21,8 +21,8 @@ const loginSchema = z.object({
 
 const artistApplicationSchema = z.object({
   realName: z.string().min(2, '真实姓名至少 2 个字符'),
-  bio: z.string().min(20, '艺术家介绍至少 20 个字符'),
-  artistIntro: z.string().min(20, '申请说明至少 20 个字符').optional(),
+  bio: z.string().min(8, '艺术家介绍至少 8 个字符'),
+  artistIntro: z.string().min(8, '补充说明至少 8 个字符').optional(),
   portfolioUrl: z.string().url('作品集链接格式不正确').optional(),
 })
 

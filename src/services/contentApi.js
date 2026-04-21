@@ -65,7 +65,12 @@ async function parseApiResponse(response) {
   const data = await response.json()
 
   if (!response.ok) {
-    throw new Error(data?.message || '请求失败，请稍后再试。')
+    const fieldErrors = data?.errors?.fieldErrors
+    const firstFieldError = fieldErrors
+      ? Object.values(fieldErrors).flat().find(Boolean)
+      : ''
+
+    throw new Error(firstFieldError || data?.message || '请求失败，请稍后再试。')
   }
 
   return data
