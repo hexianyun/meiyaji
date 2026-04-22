@@ -182,7 +182,7 @@ function HeroShowcase() {
           MEIYAJI
         </p>
         <h1 className="text-[16px] leading-[1.28] font-semibold whitespace-nowrap" style={{ color: '#3a3029' }}>
-          美芽集 收藏艺术之美 灌溉乡村美育之芽
+          美芽集
         </h1>
       </div>
 
