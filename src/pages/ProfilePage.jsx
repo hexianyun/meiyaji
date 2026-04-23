@@ -317,6 +317,13 @@ function MenuIcon({ icon }) {
       className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
       style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}
     >
+      {icon === 'cart' && (
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" {...iconProps}>
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <path d="M16 10a4 4 0 0 1-8 0" />
+        </svg>
+      )}
       {icon === 'orders' && (
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" {...iconProps}>
           <path d="M7 3.5h7l3 3V20.5H7z" />
@@ -407,7 +414,7 @@ function MenuRow({ icon, label, meta, badge, onClick, isLast }) {
 
 export default function ProfilePage() {
   const navigate = useNavigate()
-  const { favs, currentUser, setCurrentUser, showToast } = useApp()
+  const { favs, currentUser, setCurrentUser, showToast, cart } = useApp()
   const fileInputRef = useRef(null)
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
   const [ordersCount, setOrdersCount] = useState(0)
@@ -437,6 +444,7 @@ export default function ProfilePage() {
   }, [currentUser])
 
   const collectionItems = [
+    { icon: 'cart', label: '我的购物车', meta: '查看并结算挑选的艺术作品', badge: cart.length, path: '/cart' },
     { icon: 'orders', label: '我的订单', meta: '查看购买记录与物流状态', badge: currentUser ? ordersCount : null, path: '/orders' },
     { icon: 'favorites', label: '我的收藏', meta: '保存你想再次细看的作品', badge: favs.length, path: '/discover' },
   ]

@@ -4,7 +4,7 @@ import { createOrder } from '../services/contentApi'
 
 export default function CartPage() {
   const navigate = useNavigate()
-  const { cart, updateCartQty, removeFromCart, cartTotal, clearCart, currentUser, showToast } = useApp()
+  const { cart, removeFromCart, cartTotal, clearCart, currentUser, showToast } = useApp()
 
   if (cart.length === 0) {
     return (
@@ -90,34 +90,21 @@ export default function CartPage() {
             >
               <img src={item.art.img} alt={item.art.title} className="w-full h-full object-cover" />
             </div>
-            <div className="flex-1 flex flex-col">
-              <p className="text-xs font-semibold truncate" style={{ color: 'var(--text)' }}>{item.art.title}</p>
-              <p className="text-[10px] mb-2" style={{ color: 'var(--text-muted)' }}>{item.art.artist}</p>
+            <div className="flex-1 flex flex-col pt-1 pb-1">
+              <p className="text-[14px] font-bold truncate mb-1" style={{ color: 'var(--text)' }}>{item.art.title}</p>
+              <p className="text-[11px] font-medium" style={{ color: 'var(--text-muted)' }}>{item.art.artist}</p>
               <div className="flex items-center justify-between mt-auto">
-                <span className="text-sm font-bold" style={{ color: 'var(--primary)' }}>
+                <span className="text-[16px] font-bold tracking-tight" style={{ color: 'var(--accent)' }}>
                   ¥{item.art.price.toLocaleString()}
                 </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => updateCartQty(item.art.id, item.qty - 1)}
-                    className="w-6 h-6 rounded-lg flex items-center justify-center text-xs"
-                    style={{ border: '1px solid var(--border)', color: 'var(--text-muted)' }}
-                  >−</button>
-                  <span className="text-xs font-semibold min-w-[18px] text-center" style={{ color: 'var(--text)' }}>{item.qty}</span>
-                  <button
-                    onClick={() => updateCartQty(item.art.id, item.qty + 1)}
-                    className="w-6 h-6 rounded-lg flex items-center justify-center text-xs"
-                    style={{ border: '1px solid var(--border)', color: 'var(--text-muted)' }}
-                  >+</button>
-                </div>
+                <button
+                  onClick={() => removeFromCart(item.art.id)}
+                  className="text-[12px] font-medium transition-opacity hover:opacity-70 px-2 py-1"
+                  style={{ color: 'var(--text-weak)' }}
+                >
+                  删除
+                </button>
               </div>
-              <button
-                onClick={() => removeFromCart(item.art.id)}
-                className="text-[10px] mt-1.5 text-left"
-                style={{ color: 'var(--text-weak)' }}
-              >
-                删除
-              </button>
             </div>
           </div>
         ))}

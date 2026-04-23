@@ -163,16 +163,45 @@ export default function DetailPage() {
 
       {/* 核心信息区 */}
       <div className="px-5 pt-6">
-        <div className="mb-8">
-          <p className="text-[32px] font-bold mb-2 tracking-tight" style={{ color: 'var(--accent)' }}>
-            ¥{art.price.toLocaleString()}
-          </p>
-          <h1 className="text-[26px] leading-[1.3] font-bold mb-2" style={{ color: 'var(--text)' }}>
-            {art.title}
-          </h1>
-          <p className="text-[13px] font-medium" style={{ color: 'var(--text-muted)' }}>
-            {art.year} · {art.size} · {art.mat}
-          </p>
+        <div className="mb-8 flex items-end justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <p className="text-[32px] font-bold mb-2 tracking-tight" style={{ color: 'var(--accent)' }}>
+              ¥{art.price.toLocaleString()}
+            </p>
+            <h1 className="text-[26px] leading-[1.3] font-bold mb-2 break-words pr-2" style={{ color: 'var(--text)' }}>
+              {art.title}
+            </h1>
+            <p className="text-[13px] font-medium" style={{ color: 'var(--text-muted)' }}>
+              {art.year} · {art.size} · {art.mat}
+            </p>
+          </div>
+
+          {!isOwner && (
+            <div className="flex flex-col gap-2.5 shrink-0 w-[110px] pb-1">
+              <button
+                onClick={() => {
+                  addToCart(art)
+                  navigate('/cart')
+                }}
+                className="w-full h-[40px] rounded-full flex items-center justify-center text-[13px] font-bold transition-transform active:scale-95"
+                style={{ background: 'var(--text)', color: 'var(--surface)', boxShadow: 'var(--shadow-sm)' }}
+              >
+                立即购买
+              </button>
+              <button
+                onClick={() => addToCart(art)}
+                className="w-full h-[40px] rounded-full flex items-center justify-center gap-1.5 text-[13px] font-bold transition-transform active:scale-95"
+                style={{ background: 'var(--surface-2)', color: 'var(--text)', border: '1px solid var(--border)' }}
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="w-[14px] h-[14px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                  <line x1="3" y1="6" x2="21" y2="6" />
+                  <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                加购物车
+              </button>
+            </div>
+          )}
         </div>
 
         {/* 艺术家信息卡片 */}
