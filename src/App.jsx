@@ -137,16 +137,16 @@ function Navigation() {
   const navItems = [
     { path: '/', icon: 'Home', label: '首页' },
     { path: '/charity', icon: 'Heart', label: '公益' },
-    { path: '/discover', icon: 'Gallery', label: '作品' },
-    { path: '/artists', icon: 'Palette', label: '艺术家' },
+    { path: '/discover', icon: 'Gallery', label: '藏品' },
+    { path: '/artists', icon: 'Palette', label: '作者' },
     { path: '/profile', icon: 'User', label: '我的' },
   ]
 
   const renderIcon = (iconName, isActive) => {
-    const strokeColor = isActive ? '#2f2720' : '#6a5f56'
+    const strokeColor = isActive ? '#171717' : '#A3A3A3'
     const commonProps = {
-      width: 24,
-      height: 24,
+      width: 22,
+      height: 22,
       viewBox: '0 0 24 24',
       fill: 'none',
       stroke: strokeColor,
@@ -154,43 +154,46 @@ function Navigation() {
       strokeLinecap: 'round',
       strokeLinejoin: 'round',
       'aria-hidden': true,
+      style: { transition: 'stroke 0.3s ease' }
     }
 
     switch (iconName) {
       case 'Home':
         return (
           <svg {...commonProps}>
-            <path d="M4 11.2 12 4l8 7.2" />
-            <path d="M6.5 10.6V20h11V10.6" />
-            <path d="M10 20v-5h4v5" />
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
           </svg>
         )
       case 'Heart':
         return (
           <svg {...commonProps}>
-            <path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.7A4 4 0 0 1 19 10c0 5.5-7 10-7 10Z" />
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
           </svg>
         )
       case 'Gallery':
         return (
           <svg {...commonProps}>
-            <rect x="4" y="4" width="16" height="16" rx="2.2" />
-            <path d="M8 8h8M8 12h8M8 16h5" />
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
           </svg>
         )
       case 'Palette':
         return (
           <svg {...commonProps}>
-            <path d="M12 4 20 12 12 20 4 12Z" />
-            <path d="M12 7.5v9" />
+            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
+            <circle cx="7.5" cy="10.5" r=".5" fill={isActive ? '#171717' : 'currentColor'} stroke="none" />
+            <circle cx="10.5" cy="5.5" r=".5" fill={isActive ? '#171717' : 'currentColor'} stroke="none" />
+            <circle cx="15.5" cy="7.5" r=".5" fill={isActive ? '#171717' : 'currentColor'} stroke="none" />
           </svg>
         )
       case 'User':
       default:
         return (
           <svg {...commonProps}>
-            <circle cx="12" cy="8" r="3.2" />
-            <path d="M5.5 19.2c1.4-3 4.1-4.7 6.5-4.7s5.1 1.7 6.5 4.7" />
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
           </svg>
         )
     }
@@ -200,13 +203,13 @@ function Navigation() {
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 safe-area-pb"
       style={{
-        background: 'rgba(248, 244, 239, 0.96)',
-        backdropFilter: 'blur(16px)',
-        borderTop: '1px solid rgba(215, 205, 194, 0.92)',
-        boxShadow: '0 -10px 28px rgba(27, 23, 19, 0.06)',
+        background: 'rgba(255, 255, 255, 0.85)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        borderTop: '1px solid rgba(255, 255, 255, 0.4)',
+        boxShadow: '0 -4px 30px rgba(0, 0, 0, 0.04)',
       }}
     >
-      <div className="max-w-[430px] mx-auto flex px-1">
+      <div className="max-w-[430px] mx-auto flex px-2 py-1">
         {navItems.map(item => {
           const isActive = item.path === '/'
             ? location.pathname === '/'
@@ -216,34 +219,44 @@ function Navigation() {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className="relative flex-1 pt-3 pb-3 flex flex-col items-center gap-1 transition-colors"
-              style={{ color: isActive ? '#2f2720' : '#6a5f56' }}
+              className="relative flex-1 pt-2 pb-3 flex flex-col items-center gap-1.5 transition-all duration-300"
+              style={{ color: isActive ? '#171717' : '#A3A3A3' }}
             >
-              <span
-                className="absolute top-0 left-1/2 -translate-x-1/2 h-[3px] transition-all"
-                style={{
-                  width: isActive ? '26px' : '0px',
-                  background: '#2f2720',
-                }}
-              />
-              <span
-                className="nav-icon relative flex items-center justify-center transition-transform"
-                style={{
-                  transform: isActive ? 'translateY(-1px) scale(1.08)' : 'scale(1)',
-                  lineHeight: 1,
-                }}
-              >
-                {renderIcon(item.icon, isActive)}
-                {item.path === '/profile' && cartCount > 0 && (
-                  <span
-                    className="absolute -top-1 -right-1 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center"
-                    style={{ background: 'var(--accent)' }}
-                  >
-                    {cartCount > 9 ? '9+' : cartCount}
-                  </span>
-                )}
+              <div className="relative flex items-center justify-center w-10 h-10">
+                {/* Active Highlight Background Bubble */}
+                <div 
+                  className="absolute inset-0 rounded-full transition-all duration-300"
+                  style={{
+                    background: isActive ? 'rgba(0,0,0,0.04)' : 'transparent',
+                    transform: isActive ? 'scale(1)' : 'scale(0.8)',
+                    opacity: isActive ? 1 : 0
+                  }}
+                />
+                
+                <span
+                  className="relative z-10 transition-transform duration-300"
+                  style={{
+                    transform: isActive ? 'translateY(-1px)' : 'translateY(0)'
+                  }}
+                >
+                  {renderIcon(item.icon, isActive)}
+                  {item.path === '/profile' && cartCount > 0 && (
+                    <span
+                      className="absolute -top-1 -right-1 text-white text-[9px] w-[14px] h-[14px] rounded-full flex items-center justify-center font-bold"
+                      style={{ background: 'var(--danger)', boxShadow: '0 2px 4px rgba(181, 108, 97, 0.3)' }}
+                    >
+                      {cartCount > 9 ? '9+' : cartCount}
+                    </span>
+                  )}
+                </span>
+              </div>
+              <span className="text-[10px] font-medium tracking-[0.03em] transition-all duration-300"
+                style={{ 
+                  opacity: isActive ? 1 : 0.7,
+                  transform: isActive ? 'translateY(-2px)' : 'translateY(0)'
+                }}>
+                {item.label}
               </span>
-              <span className="text-[14px] font-semibold tracking-[0.02em]">{item.label}</span>
             </button>
           )
         })}
@@ -257,13 +270,18 @@ function Toast({ msg }) {
 
   return (
     <div
-      className="fixed top-16 left-1/2 -translate-x-1/2 text-sm z-50"
+      className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] blur-reveal"
       style={{
-        background: 'var(--text)',
+        background: 'rgba(23, 23, 23, 0.85)',
+        backdropFilter: 'blur(12px)',
         color: 'white',
-        padding: '10px 22px',
-        borderRadius: '999px',
-        fontSize: '13px',
+        padding: '12px 28px',
+        borderRadius: 'var(--radius-full)',
+        fontSize: '14px',
+        fontWeight: '500',
+        letterSpacing: '0.02em',
+        boxShadow: 'var(--shadow-lg)',
+        border: '1px solid rgba(255,255,255,0.1)'
       }}
     >
       {msg}

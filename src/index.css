@@ -2,25 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ===== 莫兰迪设计变量 ===== */
+/* ===== 高阶艺术感设计变量 ===== */
 :root {
-  --bg: #F6F1EA;
-  --surface: #FBF8F4;
-  --surface-2: #F1ECE4;
-  --primary: #A9B8A8;
-  --secondary: #AAB6C5;
-  --accent: #C7A49A;
-  --text: #3E3A37;
-  --text-muted: #7C736C;
-  --text-weak: #A59B92;
-  --border: #E8E1D8;
-  --success: #9FB3A8;
-  --warning: #D8B58A;
-  --danger: #C98F86;
+  /* 基础背景色：极简的高级温润白 */
+  --bg: #FAFAFA;
+  --surface: #FFFFFF;
+  --surface-2: #F3F4F6;
+  
+  /* 主色调：深邃的艺术黑/深棕与莫兰迪点缀 */
+  --primary: #1A1A1A;
+  --secondary: #E5E7EB;
+  --accent: #B0937A; /* 温暖的高级褐 */
+  
+  /* 文字层级 */
+  --text: #171717;
+  --text-muted: #525252;
+  --text-weak: #A3A3A3;
+  
+  /* 边框与辅助 */
+  --border: #EEEEEE;
+  --success: #6B8E7D;
+  --warning: #C1996B;
+  --danger: #B56C61;
 
-  --radius-sm: 12px;
+  /* 精致圆角体系 */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
   --radius-md: 16px;
-  --radius-lg: 20px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+
+  /* 高级光影弥散阴影 */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.08);
+  --shadow-float: 0 20px 48px rgba(0, 0, 0, 0.12);
 }
 
 * {
@@ -32,13 +49,13 @@
 html, body {
   height: 100%;
   overflow-x: hidden;
+  background-color: var(--bg);
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
-  background-color: var(--bg);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
   color: var(--text);
-  line-height: 1.65;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -53,7 +70,7 @@ button {
   background: none;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 input, textarea {
@@ -65,121 +82,112 @@ input, textarea {
   height: 0;
 }
 
-/* ===== 去除卡片与图片圆角 ===== */
-img,
-.art-card,
-div[class*="rounded"],
-a[class*="rounded"],
-[style*="borderRadius"]:not(button):not(span) {
-  border-radius: 0 !important;
-}
-
 .app-container {
   max-width: 430px;
   margin: 0 auto;
   min-height: 100vh;
   position: relative;
   background-color: var(--bg);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.03); /* 在大屏上显得像个手机壳悬浮 */
 }
 
-/* ===== 动画 ===== */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
+/* ===== 全局微动画关键帧 ===== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes blurReveal {
+  from { opacity: 0; filter: blur(8px); transform: scale(0.98); }
+  to { opacity: 1; filter: blur(0); transform: scale(1); }
+}
+
 .fade-in {
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* ===== 莫兰迪标签系统 ===== */
-.tag-sage {
-  background: rgba(169, 184, 168, 0.18);
-  color: #5C6B5C;
+.blur-reveal {
+  animation: blurReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ===== 艺术感标签系统 ===== */
+.tag-sage, .tag-mist, .tag-accent, .tag-neutral {
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
   font-size: 10px;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  backdrop-filter: blur(8px);
 }
 
-.tag-mist {
-  background: rgba(170, 182, 197, 0.18);
-  color: #5A6677;
-  font-size: 10px;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-}
+.tag-sage { background: rgba(107, 142, 125, 0.1); color: #4A6B5B; }
+.tag-mist { background: rgba(163, 163, 163, 0.1); color: #525252; }
+.tag-accent { background: rgba(176, 147, 122, 0.1); color: #8C705B; }
+.tag-neutral { background: rgba(243, 244, 246, 0.8); color: var(--text-muted); }
 
-.tag-accent {
-  background: rgba(199, 164, 154, 0.18);
-  color: #8B6A62;
-  font-size: 10px;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-}
-
-.tag-neutral {
-  background: rgba(232, 225, 216, 0.6);
-  color: var(--text-muted);
-  font-size: 10px;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-weight: 500;
-}
-
-/* ===== 莫兰迪按钮 ===== */
+/* ===== 高级按钮体系 ===== */
 .btn-primary {
   background: var(--primary);
   color: white;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
+  border-radius: var(--radius-full);
+  font-size: 14px;
   font-weight: 500;
-  padding: 10px 20px;
-  transition: opacity 0.2s;
+  padding: 12px 28px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-.btn-primary:hover { opacity: 0.85; }
-.btn-primary:active { opacity: 0.75; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); }
+.btn-primary:active { transform: translateY(1px); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
 
 .btn-outline {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.8);
   color: var(--text);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
   font-size: 13px;
   font-weight: 500;
-  padding: 9px 18px;
-  transition: all 0.2s;
+  padding: 10px 24px;
+  backdrop-filter: blur(8px);
 }
-.btn-outline:hover { border-color: var(--text-muted); }
-.btn-outline:active { background: var(--surface); }
+.btn-outline:hover { border-color: var(--text-muted); background: var(--surface); }
 
-.btn-ghost {
-  background: transparent;
-  color: var(--text-muted);
-  font-size: 12px;
-  padding: 6px 14px;
-  transition: color 0.2s;
-}
-.btn-ghost:hover { color: var(--text); }
-
-/* ===== 艺术品卡片样式 ===== */
+/* ===== 画廊级别艺术品卡片 ===== */
 .art-card {
   background: var(--surface);
+  border-radius: var(--radius-md);
   overflow: hidden;
-  border: 1px solid var(--border);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(0,0,0,0.03);
 }
-.art-card:active { transform: scale(0.98); }
 
-/* ===== 底部导航图标 ===== */
-.nav-icon {
-  font-size: 18px;
-  transition: color 0.2s;
-  color: var(--text-weak);
+.art-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
 }
-.nav-icon.active { color: var(--primary); }
+
+.art-card:active {
+  transform: scale(0.98);
+}
+
+.art-card .img-wrapper {
+  overflow: hidden;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.art-card img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.art-card:hover img {
+  transform: scale(1.05);
+}
+
+/* 隐藏原生滚动条并保持滚动功能 */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

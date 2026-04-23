@@ -105,39 +105,32 @@ function HeroAvatar({ currentUser, onUploadClick, isUploading }) {
 
   return (
     <div
-      className="relative w-[88px] h-[88px] border shrink-0 overflow-hidden"
+      className="relative w-[80px] h-[80px] shrink-0 overflow-hidden rounded-full cursor-pointer transition-transform duration-300 hover:scale-105"
       style={{
-        background: 'rgba(255,255,255,0.12)',
-        borderColor: 'rgba(255,255,255,0.32)',
-        backdropFilter: 'blur(10px)',
-        boxShadow: '0 14px 28px rgba(15, 18, 16, 0.22)',
+        background: 'rgba(255,255,255,0.15)',
+        border: '3px solid rgba(255,255,255,0.4)',
+        backdropFilter: 'blur(12px)',
+        boxShadow: '0 10px 24px rgba(0, 0, 0, 0.15)',
       }}
+      onClick={onUploadClick}
     >
-      <div
-        className="absolute inset-[7px] border"
-        style={{ borderColor: 'rgba(255,255,255,0.18)' }}
-      />
       {avatarUrl ? (
         <img src={avatarUrl} alt={`${currentUser?.name || '美芽集用户'}头像`} className="w-full h-full object-cover" />
       ) : (
-        <div className="w-full h-full flex items-center justify-center" style={{ color: 'white', fontSize: '30px', fontWeight: 600, letterSpacing: '0.04em' }}>
+        <div className="w-full h-full flex items-center justify-center" style={{ color: 'white', fontSize: '28px', fontWeight: 'bold' }}>
           {initial}
         </div>
       )}
       {currentUser && (
-        <button
-          type="button"
-          onClick={onUploadClick}
-          disabled={isUploading}
-          className="absolute inset-x-[7px] bottom-[7px] h-7 text-[10px] tracking-[0.1em] uppercase disabled:opacity-60"
+        <div
+          className="absolute inset-x-0 bottom-0 h-6 flex items-center justify-center text-[9px] tracking-widest uppercase"
           style={{
-            background: 'rgba(17, 21, 19, 0.58)',
-            color: 'rgba(255,255,255,0.92)',
-            borderTop: '1px solid rgba(255,255,255,0.1)',
+            background: 'rgba(0, 0, 0, 0.5)',
+            color: 'rgba(255,255,255,0.95)',
           }}
         >
-          {isUploading ? '上传中...' : '更换头像'}
-        </button>
+          {isUploading ? '上传中' : '更换'}
+        </div>
       )}
     </div>
   )
@@ -149,75 +142,48 @@ function ProfileHero({ currentUser, onAvatarUploadClick, isUploadingAvatar }) {
   const profileLabel = currentUser ? roleMeta.label : '美芽集用户中心'
   const profileMeta = currentUser
     ? (currentUser.email || currentUser.username || `ID: ${currentUser.id || '未分配'}`)
-    : '登录后可查看收藏、订单与艺术家申请状态'
+    : '登录后可查看收藏、订单与申请状态'
 
   return (
-    <div className="mx-4 pt-6">
+    <div className="mx-4 pt-5">
       <div
-        className="relative overflow-hidden border"
-        style={{ borderColor: 'rgba(232,225,216,0.92)', background: '#d8d0c7' }}
+        className="relative overflow-hidden"
+        style={{ borderRadius: 'var(--radius-xl)', boxShadow: 'var(--shadow-md)' }}
       >
-        <div className="aspect-[16/9]">
+        <div className="aspect-[16/11]">
           <img src={heroImageSrc} alt="美芽集个人中心横幅作品" className="w-full h-full object-cover" />
         </div>
 
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(180deg, rgba(12,18,15,0.12) 0%, rgba(16,22,18,0.58) 58%, rgba(16,18,16,0.8) 100%)' }}
+          style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%)' }}
         />
 
         <div
-          className="absolute -top-8 -right-8 w-28 h-28 border"
-          style={{ borderColor: 'rgba(255,255,255,0.16)' }}
-        />
-        <div
-          className="absolute top-5 right-5 text-[10px] tracking-[0.26em] uppercase"
-          style={{ color: 'rgba(255,255,255,0.66)' }}
+          className="absolute top-5 right-5 text-[10px] font-bold tracking-[0.25em] uppercase"
+          style={{ color: 'rgba(255,255,255,0.8)' }}
         >
-          MEIYAJI ACCOUNT
+          ACCOUNT
         </div>
 
-        <div className="absolute inset-x-0 bottom-0 px-5 pb-5">
-          <div
-            className="border px-4 py-4"
-            style={{
-              background: 'linear-gradient(180deg, rgba(22,26,24,0.14) 0%, rgba(22,26,24,0.26) 100%)',
-              borderColor: 'rgba(255,255,255,0.14)',
-              backdropFilter: 'blur(6px)',
-            }}
-          >
-            <div className="flex items-end gap-4">
-              <HeroAvatar currentUser={currentUser} onUploadClick={onAvatarUploadClick} isUploading={isUploadingAvatar} />
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2 mb-2">
-                  <span
-                    className="px-2.5 py-1 text-[10px] tracking-[0.18em] uppercase"
-                    style={{ color: 'rgba(255,255,255,0.78)', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
-                  >
-                    My Profile
-                  </span>
-                  <span
-                    className="px-2.5 py-1 text-[10px]"
-                    style={{ color: 'rgba(255,255,255,0.78)', background: 'rgba(18, 88, 63, 0.22)', border: '1px solid rgba(255,255,255,0.12)' }}
-                  >
-                    {profileLabel}
-                  </span>
-                </div>
-                <h1 className="text-[28px] leading-[1.05] font-semibold mb-1.5" style={{ color: 'white' }}>
-                  {currentUser ? (currentUser.name || '美芽集用户') : '欢迎来到美芽集'}
-                </h1>
-                <p className="text-[12px] leading-5 mb-2" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                  {profileMeta}
-                </p>
-                <p className="text-[11px] leading-5" style={{ color: 'rgba(255,255,255,0.64)' }}>
-                  {currentUser ? roleMeta.note : '在这里统一管理收藏、订单与艺术家入驻申请'}
-                </p>
-                {currentUser && (
-                  <p className="text-[10px] mt-2" style={{ color: 'rgba(255,255,255,0.56)' }}>
-                    点击头像即可上传新的个人头像
-                  </p>
-                )}
+        <div className="absolute inset-x-0 bottom-0 p-6">
+          <div className="flex items-center gap-5">
+            <HeroAvatar currentUser={currentUser} onUploadClick={onAvatarUploadClick} isUploading={isUploadingAvatar} />
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <span
+                  className="px-2.5 py-1 text-[10px] font-bold tracking-wider rounded-full"
+                  style={{ color: 'white', background: 'var(--accent)', boxShadow: '0 2px 8px rgba(176,147,122,0.4)' }}
+                >
+                  {profileLabel}
+                </span>
               </div>
+              <h1 className="text-[26px] leading-[1.2] font-bold mb-1.5 truncate" style={{ color: 'white', textShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
+                {currentUser ? (currentUser.name || '美芽集用户') : '欢迎来到美芽集'}
+              </h1>
+              <p className="text-[12px] font-medium truncate" style={{ color: 'rgba(255,255,255,0.85)' }}>
+                {profileMeta}
+              </p>
             </div>
           </div>
         </div>
@@ -232,31 +198,29 @@ function AccountPanel({ currentUser, onLogin, onRegister, onLogout, onArtistEntr
   if (!currentUser) {
     return (
       <div
-        className="mx-4 mt-5 border p-5"
-        style={{ background: 'rgba(251,248,244,0.95)', borderColor: 'rgba(232,225,216,0.92)' }}
+        className="mx-4 mt-5 p-6"
+        style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
       >
-        <p className="text-[10px] tracking-[0.24em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
+        <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-2" style={{ color: 'var(--accent)' }}>
           Account Access
         </p>
-        <h2 className="text-[22px] leading-[1.18] font-semibold mb-2" style={{ color: 'var(--text)' }}>
+        <h2 className="text-[20px] font-bold mb-3" style={{ color: 'var(--text)' }}>
           登录后开启完整个人中心
         </h2>
-        <p className="text-[13px] leading-6 mb-5" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-[13px] leading-relaxed mb-6" style={{ color: 'var(--text-muted)' }}>
           收藏作品、查看订单、同步艺术家申请状态，都将在这里统一呈现。
         </p>
 
-        <div className="flex gap-2.5">
+        <div className="flex gap-3">
           <button
             onClick={onLogin}
-            className="flex-1 py-3 text-[14px] font-medium"
-            style={{ background: 'var(--text)', color: 'white' }}
+            className="btn-primary flex-1 py-3"
           >
             登录
           </button>
           <button
             onClick={onRegister}
-            className="flex-1 py-3 text-[14px] font-medium border"
-            style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+            className="btn-outline flex-1 py-3"
           >
             注册
           </button>
@@ -267,39 +231,28 @@ function AccountPanel({ currentUser, onLogin, onRegister, onLogout, onArtistEntr
 
   return (
     <div
-      className="mx-4 mt-5 border p-5"
-      style={{ background: 'rgba(251,248,244,0.95)', borderColor: 'rgba(232,225,216,0.92)' }}
+      className="mx-4 mt-5 p-6"
+      style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-[10px] tracking-[0.24em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
-            Account Status
+          <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
+            Status
           </p>
-          <h2 className="text-[20px] font-semibold mb-1" style={{ color: 'var(--text)' }}>
+          <h2 className="text-[20px] font-bold mb-2" style={{ color: 'var(--text)' }}>
             {roleMeta.label}
           </h2>
-          <p className="text-[12px] leading-5 mb-2" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-[13px] leading-relaxed mb-3" style={{ color: 'var(--text-muted)' }}>
             {roleMeta.note}
           </p>
-          <p className="text-[11px]" style={{ color: 'var(--text-weak)' }}>
-            当前账号：{currentUser.email || currentUser.username || currentUser.id || '未分配'}
-          </p>
         </div>
-
-        <button
-          onClick={onLogout}
-          className="px-3 py-2 text-[12px] border shrink-0"
-          style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
-        >
-          退出登录
-        </button>
       </div>
 
-      <div className="grid grid-cols-2 gap-2.5 mt-5">
+      <div className="flex gap-3 mt-4 pt-5" style={{ borderTop: '1px solid var(--border)' }}>
         <button
           onClick={onArtistEntry}
-          className="py-3 text-[13px] font-medium border"
-          style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+          className="btn-outline flex-1 py-3 text-[13px] font-semibold"
+          style={{ background: 'var(--bg)' }}
         >
           {currentUser.role === 'admin'
             ? '进入管理员后台'
@@ -309,8 +262,8 @@ function AccountPanel({ currentUser, onLogin, onRegister, onLogout, onArtistEntr
         </button>
         <button
           onClick={onLogout}
-          className="py-3 text-[13px] font-medium border"
-          style={{ background: 'transparent', borderColor: 'var(--border)', color: 'var(--text-muted)' }}
+          className="btn-outline flex-1 py-3 text-[13px] font-medium"
+          style={{ border: '1px solid transparent', color: 'var(--text-muted)' }}
         >
           退出当前账号
         </button>
@@ -328,18 +281,9 @@ function StatsPanel({ favsCount, ordersCount }) {
 
   return (
     <div
-      className="mx-4 mt-5 border px-4 py-5"
-      style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
+      className="mx-4 mt-5 px-4 py-5"
+      style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
     >
-      <div className="flex items-center justify-between gap-3 mb-4">
-        <p className="text-[10px] tracking-[0.24em] uppercase" style={{ color: 'var(--text-weak)' }}>
-          Snapshot
-        </p>
-        <p className="text-[11px]" style={{ color: 'var(--text-weak)' }}>
-          今日概览
-        </p>
-      </div>
-
       <div className="grid grid-cols-3 gap-0">
         {stats.map((stat, index) => (
           <div
@@ -347,10 +291,10 @@ function StatsPanel({ favsCount, ordersCount }) {
             className="text-center px-2"
             style={index === 1 ? { borderLeft: '1px solid var(--border)', borderRight: '1px solid var(--border)' } : undefined}
           >
-            <p className="text-[24px] leading-none font-semibold mb-2" style={{ color: 'var(--text)' }}>
+            <p className="text-[24px] leading-none font-bold mb-2" style={{ color: 'var(--text)' }}>
               {stat.value}
             </p>
-            <p className="text-[11px]" style={{ color: 'var(--text-weak)' }}>
+            <p className="text-[12px] font-medium" style={{ color: 'var(--text-muted)' }}>
               {stat.label}
             </p>
           </div>
@@ -364,15 +308,15 @@ function MenuIcon({ icon }) {
   const iconProps = {
     fill: 'none',
     stroke: 'currentColor',
-    strokeWidth: '1.7',
+    strokeWidth: '1.8',
     strokeLinecap: 'round',
     strokeLinejoin: 'round',
   }
 
   return (
     <span
-      className="w-10 h-10 border flex items-center justify-center shrink-0"
-      style={{ background: 'rgba(248,244,238,0.92)', borderColor: 'rgba(228,220,208,0.96)', color: 'var(--text)' }}
+      className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+      style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}
     >
       {icon === 'orders' && (
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" {...iconProps}>
@@ -399,12 +343,12 @@ function MenuIcon({ icon }) {
       {icon === 'address' && (
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" {...iconProps}>
           <path d="M12 20s5-5.3 5-9a5 5 0 1 0-10 0c0 3.7 5 9 5 9z" />
-          <circle cx="12" cy="11" r="1.8" />
+          <circle cx="12" cy="11" r="2" />
         </svg>
       )}
       {icon === 'payment' && (
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" {...iconProps}>
-          <rect x="3.5" y="6" width="17" height="12" rx="1.5" />
+          <rect x="3.5" y="6" width="17" height="12" rx="2" />
           <path d="M3.5 10h17" />
           <path d="M7 14.5h3.5" />
         </svg>
@@ -427,79 +371,38 @@ function MenuIcon({ icon }) {
   )
 }
 
-function MenuRow({ icon, label, meta, badge, onClick }) {
+function MenuRow({ icon, label, meta, badge, onClick, isLast }) {
   return (
     <button
       onClick={onClick}
-      className="w-full overflow-hidden cursor-pointer active:bg-opacity-70 transition-colors"
-      style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}
+      className="w-full cursor-pointer active:bg-gray-50 transition-colors flex items-center justify-between py-3.5 px-4"
+      style={{ borderBottom: isLast ? 'none' : '1px solid var(--border)' }}
     >
-      <div className="flex items-center gap-3.5 px-4 py-3.5">
+      <div className="flex items-center gap-3.5">
         <MenuIcon icon={icon} />
-        <div className="min-w-0 flex-1 text-left">
-          <p className="text-[14px] font-medium" style={{ color: 'var(--text)' }}>
+        <div className="text-left">
+          <p className="text-[15px] font-bold" style={{ color: 'var(--text)' }}>
             {label}
           </p>
           {meta && (
-            <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-weak)' }}>
+            <p className="text-[11px] font-medium mt-0.5" style={{ color: 'var(--text-weak)' }}>
               {meta}
             </p>
           )}
         </div>
+      </div>
+      <div className="flex items-center gap-2">
         {badge !== null && badge > 0 && (
           <span
-            className="text-white text-[10px] px-2 py-0.5 font-medium shrink-0"
+            className="text-white text-[11px] px-2 py-0.5 rounded-full font-bold shadow-sm"
             style={{ background: 'var(--accent)' }}
           >
             {badge}
           </span>
         )}
-        <span className="text-sm shrink-0" style={{ color: 'var(--text-weak)' }}>›</span>
+        <span className="text-lg" style={{ color: 'var(--text-weak)' }}>›</span>
       </div>
     </button>
-  )
-}
-
-function ArtistEntryRow({ currentUser, onApply, onDashboard }) {
-  const isAdmin = currentUser?.role === 'admin'
-  const isApprovedArtist = currentUser?.role === 'artist' && currentUser?.artistStatus === 'approved'
-  const isApplyingArtist = currentUser?.role === 'artist' && currentUser?.artistStatus === 'pending'
-  const isRejectedArtist = currentUser?.role === 'artist' && currentUser?.artistStatus === 'rejected'
-
-  const statusText = isAdmin
-    ? '已开通'
-    : isApprovedArtist
-    ? '已开通'
-    : isApplyingArtist
-      ? '审核中'
-      : isRejectedArtist
-        ? '未通过'
-        : currentUser
-          ? '可申请'
-          : '需登录'
-
-  const label = isAdmin ? '管理员后台' : isApprovedArtist ? '艺术家后台' : '艺术家入驻申请'
-  const meta = isAdmin
-    ? '进入后台处理审核、文章、作品与物流'
-    : isApprovedArtist
-    ? '进入创作者后台继续管理作品'
-    : '阅读入驻须知后提交申请资料'
-
-  return (
-    <div className="px-4">
-      <MenuRow
-        icon="artist"
-        label={label}
-        meta={meta}
-        badge={null}
-        onClick={() => ((isAdmin || isApprovedArtist) ? onDashboard() : onApply())}
-      />
-      <div className="flex justify-end pr-4 pt-2">
-        <span className="text-[11px]" style={{ color: 'var(--text-weak)' }}>
-          {statusText}
-        </span>
-      </div>
-    </div>
   )
 }
 
@@ -510,12 +413,12 @@ export default function ProfilePage() {
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
 
   const collectionItems = [
-    { icon: 'orders', label: '我的订单', meta: '查看购买记录与订单状态', badge: orders.length, path: '/orders' },
+    { icon: 'orders', label: '我的订单', meta: '查看购买记录与物流状态', badge: orders.length, path: '/orders' },
     { icon: 'favorites', label: '我的收藏', meta: '保存你想再次细看的作品', badge: favs.length, path: '/discover' },
   ]
 
   const serviceItems = [
-    { icon: 'address', label: '收货地址', meta: '管理收件信息', badge: null, path: '/profile' },
+    { icon: 'address', label: '收货地址', meta: '管理收件与物流信息', badge: null, path: '/profile' },
     { icon: 'payment', label: '支付管理', meta: '查看支付与结算方式', badge: null, path: '/profile' },
     { icon: 'settings', label: '设置', meta: '管理通知与账号偏好', badge: null, path: '/profile' },
     { icon: 'support', label: '联系客服', meta: '获取人工帮助与支持', badge: null, path: '/profile' },
@@ -591,7 +494,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="pb-20 fade-in">
+    <div className="pb-20 fade-in min-h-screen">
       <input
         ref={fileInputRef}
         type="file"
@@ -614,40 +517,57 @@ export default function ProfilePage() {
         onArtistEntry={handleArtistEntry}
       />
 
-      <StatsPanel favsCount={favs.length} ordersCount={orders.length} />
+      {currentUser && <StatsPanel favsCount={favs.length} ordersCount={orders.length} />}
 
-      <div className="px-4 mt-6 space-y-2.5">
-        {collectionItems.map(item => (
-          <MenuRow
-            key={item.label}
-            icon={item.icon}
-            label={item.label}
-            meta={item.meta}
-            badge={item.badge}
-            onClick={() => navigate(item.path)}
-          />
-        ))}
+      <div className="px-4 mt-5">
+        <div className="overflow-hidden" style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
+          {collectionItems.map((item, idx) => (
+            <MenuRow
+              key={item.label}
+              icon={item.icon}
+              label={item.label}
+              meta={item.meta}
+              badge={item.badge}
+              onClick={() => navigate(item.path)}
+              isLast={idx === collectionItems.length - 1}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="mt-6">
-        <ArtistEntryRow
-          currentUser={currentUser}
-          onApply={() => navigate(currentUser ? '/artist/apply' : '/login')}
-          onDashboard={() => navigate(currentUser?.role === 'admin' ? '/admin' : '/artist/dashboard')}
-        />
+      <div className="px-4 mt-5">
+        <div className="overflow-hidden" style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
+          {serviceItems.map((item, idx) => (
+            <MenuRow
+              key={item.label}
+              icon={item.icon}
+              label={item.label}
+              meta={item.meta}
+              badge={item.badge}
+              onClick={() => item.path && navigate(item.path)}
+              isLast={idx === serviceItems.length - 1}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="px-4 mt-6 space-y-2.5">
-        {serviceItems.map(item => (
+      <div className="px-4 mt-5 mb-8">
+        <div className="overflow-hidden" style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
           <MenuRow
-            key={item.label}
-            icon={item.icon}
-            label={item.label}
-            meta={item.meta}
-            badge={item.badge}
-            onClick={() => item.path && navigate(item.path)}
+            icon="artist"
+            label={
+              currentUser?.role === 'admin' ? '管理员后台' : 
+              currentUser?.role === 'artist' && currentUser?.artistStatus === 'approved' ? '艺术家后台' : '艺术家入驻申请'
+            }
+            meta={
+              currentUser?.role === 'admin' ? '处理审核、文章与作品' : 
+              currentUser?.role === 'artist' && currentUser?.artistStatus === 'approved' ? '进入创作者后台继续管理作品' : '阅读入驻须知后提交申请资料'
+            }
+            badge={null}
+            onClick={handleArtistEntry}
+            isLast={true}
           />
-        ))}
+        </div>
       </div>
     </div>
   )

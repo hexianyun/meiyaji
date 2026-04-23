@@ -43,10 +43,12 @@ const initialArtworkForm = {
 function SurfaceCard({ children, className = '', style = {} }) {
   return (
     <section
-      className={`border ${className}`}
+      className={`p-6 ${className}`}
       style={{
-        background: 'rgba(251,248,244,0.95)',
-        borderColor: 'rgba(224,214,202,0.96)',
+        background: 'var(--surface)',
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: 'var(--shadow-sm)',
+        border: '1px solid var(--border)',
         ...style,
       }}
     >
@@ -57,17 +59,17 @@ function SurfaceCard({ children, className = '', style = {} }) {
 
 function SectionCard({ title, intro, extra, children }) {
   return (
-    <SurfaceCard className="p-4 md:p-5">
-      <div className="flex items-start justify-between gap-3 mb-4">
+    <SurfaceCard className="p-5">
+      <div className="flex items-start justify-between gap-3 mb-5">
         <div>
-          <p className="text-[11px] tracking-[0.24em] uppercase" style={{ color: 'var(--text-weak)' }}>
+          <p className="text-[10px] font-bold tracking-[0.24em] uppercase" style={{ color: 'var(--text-weak)' }}>
             Admin Workspace
           </p>
-          <h2 className="text-[20px] font-semibold mt-1" style={{ color: 'var(--text)' }}>
+          <h2 className="text-[20px] font-bold mt-1.5" style={{ color: 'var(--text)' }}>
             {title}
           </h2>
           {intro && (
-            <p className="text-[13px] mt-2 leading-6 max-w-[560px]" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-[13px] mt-2.5 leading-relaxed max-w-[560px] font-medium" style={{ color: 'var(--text-muted)' }}>
               {intro}
             </p>
           )}
@@ -82,12 +84,12 @@ function SectionCard({ title, intro, extra, children }) {
 function Field({ label, hint, children }) {
   return (
     <label className="block">
-      <div className="flex items-center justify-between gap-3 mb-2">
-        <span className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
+      <div className="flex items-center justify-between gap-3 mb-2.5">
+        <span className="text-[12px] font-bold" style={{ color: 'var(--text-muted)' }}>
           {label}
         </span>
         {hint ? (
-          <span className="text-[11px]" style={{ color: 'var(--text-weak)' }}>
+          <span className="text-[11px] font-medium" style={{ color: 'var(--text-weak)' }}>
             {hint}
           </span>
         ) : null}
@@ -101,8 +103,8 @@ function Input(props) {
   return (
     <input
       {...props}
-      className="w-full px-3 py-3 border text-[14px] outline-none"
-      style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+      className="w-full px-4 py-3.5 text-[14px] outline-none transition-colors"
+      style={{ background: 'var(--bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', color: 'var(--text)' }}
     />
   )
 }
@@ -111,8 +113,8 @@ function Textarea(props) {
   return (
     <textarea
       {...props}
-      className="w-full px-3 py-3 border text-[14px] outline-none min-h-[120px]"
-      style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+      className="w-full px-4 py-3.5 text-[14px] outline-none transition-colors min-h-[120px]"
+      style={{ background: 'var(--bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', color: 'var(--text)' }}
     />
   )
 }
@@ -121,23 +123,23 @@ function Select(props) {
   return (
     <select
       {...props}
-      className="w-full px-3 py-3 border text-[14px] outline-none"
-      style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+      className="w-full px-4 py-3.5 text-[14px] outline-none transition-colors"
+      style={{ background: 'var(--bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', color: 'var(--text)' }}
     />
   )
 }
 
 function SummaryCard({ label, value, detail }) {
   return (
-    <div className="border px-4 py-4 min-h-[108px] flex flex-col justify-between" style={{ borderColor: 'rgba(214,201,187,0.95)' }}>
-      <div className="text-[11px] tracking-[0.18em] uppercase" style={{ color: 'var(--text-weak)' }}>
+    <div className="p-4 min-h-[108px] flex flex-col justify-between" style={{ background: 'var(--bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
+      <div className="text-[11px] font-bold tracking-[0.18em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
         {label}
       </div>
       <div>
-        <div className="text-[28px] font-semibold leading-none" style={{ color: 'var(--text)' }}>
+        <div className="text-[28px] font-bold leading-none mb-2" style={{ color: 'var(--text)' }}>
           {value}
         </div>
-        <p className="text-[12px] mt-3 leading-5" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-[12px] leading-relaxed font-medium" style={{ color: 'var(--text-muted)' }}>
           {detail}
         </p>
       </div>
@@ -149,28 +151,31 @@ function TabButton({ active, label, note, count, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="border px-4 py-3 text-left min-w-[132px] transition-colors"
+      className="p-4 text-left min-w-[132px] transition-all duration-300"
       style={{
-        background: active ? 'rgba(38, 46, 56, 0.96)' : 'rgba(251,248,244,0.92)',
-        borderColor: active ? 'rgba(38, 46, 56, 0.96)' : 'rgba(214,201,187,0.95)',
-        color: active ? '#F6F0E7' : 'var(--text)',
+        background: active ? 'var(--text)' : 'var(--bg)',
+        border: '1px solid var(--border)',
+        borderColor: active ? 'var(--text)' : 'var(--border)',
+        borderRadius: 'var(--radius-md)',
+        color: active ? 'white' : 'var(--text)',
+        boxShadow: active ? '0 4px 12px rgba(0,0,0,0.1)' : 'none',
       }}
     >
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-[14px] font-medium">{label}</span>
+      <div className="flex items-center justify-between gap-3 mb-2">
+        <span className="text-[14px] font-bold">{label}</span>
         {typeof count === 'number' ? (
           <span
-            className="text-[11px] px-2 py-[3px]"
+            className="text-[10px] font-bold px-2 py-0.5 rounded-full"
             style={{
-              background: active ? 'rgba(246,240,231,0.14)' : 'rgba(197,162,144,0.14)',
-              color: active ? '#F6F0E7' : '#8A5B52',
+              background: active ? 'rgba(255,255,255,0.2)' : 'rgba(197,162,144,0.14)',
+              color: active ? 'white' : '#8A5B52',
             }}
           >
             {count}
           </span>
         ) : null}
       </div>
-      <div className="text-[11px] mt-2 leading-5" style={{ color: active ? 'rgba(246,240,231,0.75)' : 'var(--text-weak)' }}>
+      <div className="text-[11px] leading-relaxed font-medium" style={{ color: active ? 'rgba(255,255,255,0.8)' : 'var(--text-weak)' }}>
         {note}
       </div>
     </button>
@@ -184,8 +189,8 @@ function MetaPill({ children, tone = 'default' }) {
       color: '#8A5B52',
     },
     dark: {
-      background: 'rgba(38,46,56,0.08)',
-      color: '#2C3440',
+      background: 'var(--text)',
+      color: 'white',
     },
     success: {
       background: 'rgba(84,119,94,0.12)',
@@ -198,37 +203,33 @@ function MetaPill({ children, tone = 'default' }) {
   }
 
   return (
-    <span className="inline-flex px-2 py-1 text-[11px]" style={tones[tone]}>
+    <span className="inline-flex px-2.5 py-1 text-[11px] font-bold rounded-full" style={tones[tone]}>
       {children}
     </span>
   )
 }
 
 function ActionButton({ children, onClick, variant = 'primary', className = '', type = 'button' }) {
-  const styles = {
-    primary: {
-      background: 'var(--text)',
-      color: 'white',
-      borderColor: 'var(--text)',
-    },
-    secondary: {
-      background: 'var(--surface)',
-      color: 'var(--text)',
-      borderColor: 'var(--border)',
-    },
-    danger: {
-      background: 'rgba(201,143,134,0.1)',
-      color: '#8A5B52',
-      borderColor: 'rgba(201,143,134,0.45)',
-    },
+  if (variant === 'primary') {
+    return (
+      <button type={type} onClick={onClick} className={`btn-primary ${className}`}>
+        {children}
+      </button>
+    )
   }
-
+  if (variant === 'secondary') {
+    return (
+      <button type={type} onClick={onClick} className={`btn-outline ${className}`}>
+        {children}
+      </button>
+    )
+  }
   return (
     <button
       type={type}
       onClick={onClick}
-      className={`border px-4 py-3 text-[13px] ${className}`}
-      style={styles[variant]}
+      className={`px-4 py-3 text-[13px] font-medium rounded-full transition-all active:scale-95 border ${className}`}
+      style={{ background: 'rgba(201,143,134,0.08)', color: '#8A5B52', borderColor: 'rgba(201,143,134,0.3)' }}
     >
       {children}
     </button>
@@ -780,7 +781,7 @@ export default function AdminDashboardPage() {
       <SectionCard title="用户管理" intro="查看当前所有用户的身份状态，并按需删除无效或不再需要的账号。">
         <div className="space-y-3">
           {users.map(user => (
-            <div key={user.id} className="border p-4 flex items-start justify-between gap-4" style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}>
+            <div key={user.id} className="border p-4 flex items-start justify-between gap-4 rounded-xl" style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}>
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="text-[15px] font-semibold" style={{ color: 'var(--text)' }}>

@@ -68,10 +68,12 @@ async function buildArtworkImageDataUrl(file) {
 function SurfaceCard({ children, className = '', style = {} }) {
   return (
     <section
-      className={`border ${className}`}
+      className={`p-6 ${className}`}
       style={{
-        background: 'rgba(251,248,244,0.95)',
-        borderColor: 'rgba(224,214,202,0.96)',
+        background: 'var(--surface)',
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: 'var(--shadow-sm)',
+        border: '1px solid var(--border)',
         ...style,
       }}
     >
@@ -82,17 +84,17 @@ function SurfaceCard({ children, className = '', style = {} }) {
 
 function SectionCard({ title, intro, extra, children }) {
   return (
-    <SurfaceCard className="p-4 md:p-5">
-      <div className="flex items-start justify-between gap-3 mb-4">
+    <SurfaceCard className="p-5">
+      <div className="flex items-start justify-between gap-3 mb-5">
         <div>
-          <p className="text-[11px] tracking-[0.24em] uppercase" style={{ color: 'var(--text-weak)' }}>
+          <p className="text-[10px] font-bold tracking-[0.24em] uppercase" style={{ color: 'var(--text-weak)' }}>
             Artist Workspace
           </p>
-          <h2 className="text-[20px] font-semibold mt-1" style={{ color: 'var(--text)' }}>
+          <h2 className="text-[20px] font-bold mt-1.5" style={{ color: 'var(--text)' }}>
             {title}
           </h2>
           {intro ? (
-            <p className="text-[13px] mt-2 leading-6 max-w-[560px]" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-[13px] mt-2.5 leading-relaxed max-w-[560px] font-medium" style={{ color: 'var(--text-muted)' }}>
               {intro}
             </p>
           ) : null}
@@ -107,12 +109,12 @@ function SectionCard({ title, intro, extra, children }) {
 function Field({ label, hint, children }) {
   return (
     <label className="block">
-      <div className="flex items-center justify-between gap-3 mb-2">
-        <span className="text-[12px]" style={{ color: 'var(--text-muted)' }}>
+      <div className="flex items-center justify-between gap-3 mb-2.5">
+        <span className="text-[12px] font-bold" style={{ color: 'var(--text-muted)' }}>
           {label}
         </span>
         {hint ? (
-          <span className="text-[11px]" style={{ color: 'var(--text-weak)' }}>
+          <span className="text-[11px] font-medium" style={{ color: 'var(--text-weak)' }}>
             {hint}
           </span>
         ) : null}
@@ -126,8 +128,8 @@ function Input(props) {
   return (
     <input
       {...props}
-      className="w-full px-3 py-3 border text-[14px] outline-none"
-      style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+      className="w-full px-4 py-3.5 text-[14px] outline-none transition-colors"
+      style={{ background: 'var(--bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', color: 'var(--text)' }}
     />
   )
 }
@@ -136,37 +138,33 @@ function Textarea(props) {
   return (
     <textarea
       {...props}
-      className="w-full px-3 py-3 border text-[14px] outline-none min-h-[120px]"
-      style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+      className="w-full px-4 py-3.5 text-[14px] outline-none transition-colors min-h-[120px]"
+      style={{ background: 'var(--bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', color: 'var(--text)' }}
     />
   )
 }
 
 function ActionButton({ children, onClick, type = 'button', variant = 'primary', className = '' }) {
-  const styles = {
-    primary: {
-      background: 'var(--text)',
-      color: 'white',
-      borderColor: 'var(--text)',
-    },
-    secondary: {
-      background: 'var(--surface)',
-      color: 'var(--text)',
-      borderColor: 'var(--border)',
-    },
-    danger: {
-      background: 'rgba(201,143,134,0.1)',
-      color: '#8A5B52',
-      borderColor: 'rgba(201,143,134,0.45)',
-    },
+  if (variant === 'primary') {
+    return (
+      <button type={type} onClick={onClick} className={`btn-primary ${className}`}>
+        {children}
+      </button>
+    )
   }
-
+  if (variant === 'secondary') {
+    return (
+      <button type={type} onClick={onClick} className={`btn-outline ${className}`}>
+        {children}
+      </button>
+    )
+  }
   return (
     <button
       type={type}
       onClick={onClick}
-      className={`border px-4 py-3 text-[13px] ${className}`}
-      style={styles[variant]}
+      className={`px-4 py-3 text-[13px] font-medium rounded-full transition-all active:scale-95 border ${className}`}
+      style={{ background: 'rgba(201,143,134,0.08)', color: '#8A5B52', borderColor: 'rgba(201,143,134,0.3)' }}
     >
       {children}
     </button>
@@ -184,8 +182,8 @@ function MetaPill({ children, tone = 'default' }) {
       color: '#54775E',
     },
     dark: {
-      background: 'rgba(38,46,56,0.08)',
-      color: '#2C3440',
+      background: 'var(--text)',
+      color: 'white',
     },
     warn: {
       background: 'rgba(167,110,76,0.12)',
@@ -194,7 +192,7 @@ function MetaPill({ children, tone = 'default' }) {
   }
 
   return (
-    <span className="inline-flex px-2 py-1 text-[11px]" style={tones[tone]}>
+    <span className="inline-flex px-2.5 py-1 text-[11px] font-bold rounded-full" style={tones[tone]}>
       {children}
     </span>
   )
@@ -202,15 +200,15 @@ function MetaPill({ children, tone = 'default' }) {
 
 function SummaryCard({ label, value, detail }) {
   return (
-    <div className="border px-4 py-4 min-h-[108px] flex flex-col justify-between" style={{ borderColor: 'rgba(214,201,187,0.95)' }}>
-      <div className="text-[11px] tracking-[0.18em] uppercase" style={{ color: 'var(--text-weak)' }}>
+    <div className="p-4 min-h-[108px] flex flex-col justify-between" style={{ background: 'var(--bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
+      <div className="text-[11px] font-bold tracking-[0.18em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
         {label}
       </div>
       <div>
-        <div className="text-[28px] font-semibold leading-none" style={{ color: 'var(--text)' }}>
+        <div className="text-[28px] font-bold leading-none mb-2" style={{ color: 'var(--text)' }}>
           {value}
         </div>
-        <p className="text-[12px] mt-3 leading-5" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-[12px] leading-relaxed font-medium" style={{ color: 'var(--text-muted)' }}>
           {detail}
         </p>
       </div>
@@ -409,23 +407,26 @@ export default function ArtistDashboardPage() {
         <div className="flex items-start justify-between gap-3">
           <button
             onClick={() => navigate('/profile')}
-            className="w-10 h-10 flex items-center justify-center border shrink-0"
-            style={{ background: 'rgba(255,255,255,0.5)', borderColor: 'rgba(214,201,187,0.95)', color: 'var(--text)' }}
+            className="w-10 h-10 flex items-center justify-center rounded-full shadow-sm transition-transform active:scale-90 bg-white/50 backdrop-blur"
+            style={{ color: 'var(--text)', border: '1px solid var(--border)' }}
           >
-            ←
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
           </button>
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] tracking-[0.34em] uppercase" style={{ color: 'var(--text-weak)' }}>
+            <p className="text-[10px] font-bold tracking-[0.34em] uppercase" style={{ color: 'var(--text-weak)' }}>
               Artist Control Room
             </p>
-            <h1 className="text-[25px] font-semibold mt-2 leading-tight" style={{ color: 'var(--text)' }}>
+            <h1 className="text-[25px] font-bold mt-2 leading-tight" style={{ color: 'var(--text)' }}>
               艺术家作品后台
             </h1>
-            <p className="text-[13px] leading-6 mt-3 max-w-[620px]" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-[13px] leading-relaxed mt-3 max-w-[620px] font-medium" style={{ color: 'var(--text-muted)' }}>
               在这里你可以自行发布作品、修改价格与库存、上传作品图片，并管理已经上架的艺术作品。
             </p>
           </div>
-          <ActionButton onClick={loadMyWorks} variant="secondary" className="shrink-0 px-3 py-2 text-[12px]">
+          <ActionButton onClick={loadMyWorks} variant="secondary" className="shrink-0">
             刷新
           </ActionButton>
         </div>
@@ -455,20 +456,20 @@ export default function ArtistDashboardPage() {
           <Field label="作品图片" hint="支持 JPG / PNG / WEBP">
             <div className="space-y-3">
               <div
-                className="border p-3"
-                style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
+                className="p-3"
+                style={{ background: 'var(--bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}
               >
                 {artworkForm.imageUrl ? (
                   <img
                     src={artworkForm.imageUrl}
                     alt="作品预览"
-                    className="w-full h-auto block"
+                    className="w-full h-auto block rounded"
                     style={{ maxHeight: '320px', objectFit: 'contain', background: '#f7f2eb' }}
                   />
                 ) : (
                   <div
-                    className="w-full flex items-center justify-center text-[13px]"
-                    style={{ minHeight: '180px', color: 'var(--text-weak)', background: '#f7f2eb' }}
+                    className="w-full flex items-center justify-center text-[13px] font-medium"
+                    style={{ minHeight: '180px', color: 'var(--text-weak)', background: '#f7f2eb', borderRadius: 'var(--radius-md)' }}
                   >
                     上传后将在这里预览作品图片
                   </div>
@@ -520,7 +521,7 @@ export default function ArtistDashboardPage() {
         ) : (
           <div className="space-y-3">
             {myWorks.map(artwork => (
-              <div key={artwork.id} className="border p-4" style={{ borderColor: 'var(--border)', background: 'var(--surface)' }}>
+              <div key={artwork.id} className="p-4" style={{ border: '1px solid var(--border)', background: 'var(--bg)', borderRadius: 'var(--radius-md)' }}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
@@ -541,11 +542,11 @@ export default function ArtistDashboardPage() {
                     ) : null}
                   </div>
                   <div className="flex flex-col gap-2 shrink-0">
-                    <ActionButton onClick={() => startEdit(artwork)} variant="secondary" className="px-3 py-2 text-[12px]">
+                    <ActionButton onClick={() => startEdit(artwork)} variant="secondary" className="px-5">
                       编辑
                     </ActionButton>
                     {artwork.inventoryStatus !== 'archived' ? (
-                      <ActionButton onClick={() => handleUnpublish(artwork.id)} variant="danger" className="px-3 py-2 text-[12px]">
+                      <ActionButton onClick={() => handleUnpublish(artwork.id)} variant="danger" className="px-5">
                         下架
                       </ActionButton>
                     ) : null}

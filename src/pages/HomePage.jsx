@@ -28,16 +28,16 @@ const HERO_SLIDES = [
 
 function SectionIntro({ eyebrow, title, description, actionLabel, onAction }) {
   return (
-    <div className="flex items-end justify-between gap-4 mb-5">
+    <div className="flex items-end justify-between gap-4 mb-6">
       <div className="min-w-0">
-        <p className="text-[10px] tracking-[0.28em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
+        <p className="text-[11px] font-bold tracking-[0.25em] uppercase mb-2.5" style={{ color: 'var(--accent)' }}>
           {eyebrow}
         </p>
-        <h2 className="text-[24px] leading-[1.18] font-semibold whitespace-pre-line" style={{ color: 'var(--text)' }}>
+        <h2 className="text-[26px] leading-[1.25] font-bold whitespace-pre-line tracking-tight" style={{ color: 'var(--text)' }}>
           {title}
         </h2>
         {description && (
-          <p className="text-[13px] leading-6 mt-3 max-w-[300px]" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-[14px] leading-relaxed mt-3 max-w-[320px]" style={{ color: 'var(--text-muted)' }}>
             {description}
           </p>
         )}
@@ -46,10 +46,13 @@ function SectionIntro({ eyebrow, title, description, actionLabel, onAction }) {
       {actionLabel && (
         <button
           onClick={onAction}
-          className="text-[12px] whitespace-nowrap pb-1"
-          style={{ color: 'var(--text)', borderBottom: '1px solid var(--text)' }}
+          className="text-[13px] font-semibold flex items-center gap-1 pb-1 transition-opacity hover:opacity-70 shrink-0"
+          style={{ color: 'var(--text)' }}
         >
           {actionLabel}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
         </button>
       )}
     </div>
@@ -63,18 +66,16 @@ function formatPrice(value) {
 function isLandscapeArtwork(artwork) {
   const size = artwork?.size || ''
   const match = size.match(/(\d+(?:\.\d+)?)\s*[×x]\s*(\d+(?:\.\d+)?)/)
-
   if (!match) return false
-
   return Number(match[1]) > Number(match[2])
 }
 
 function CartIcon() {
   return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="9" cy="20" r="1.2" />
-      <circle cx="17" cy="20" r="1.2" />
-      <path d="M3 4h2l2.2 10.5a1.6 1.6 0 0 0 1.6 1.3h8.8a1.6 1.6 0 0 0 1.5-1.1L21 7H6.1" />
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <path d="M16 10a4 4 0 0 1-8 0" />
     </svg>
   )
 }
@@ -83,10 +84,7 @@ function ArtworkTile({ artwork, large = false, onOpen, onAdd }) {
   const landscape = isLandscapeArtwork(artwork)
 
   return (
-    <article
-      className={`border overflow-hidden ${large ? 'col-span-2' : ''}`}
-      style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}
-    >
+    <article className={`art-card ${large ? 'col-span-2' : ''}`}>
       <div
         role="button"
         tabIndex={0}
@@ -99,44 +97,33 @@ function ArtworkTile({ artwork, large = false, onOpen, onAdd }) {
         }}
         className="block text-left cursor-pointer"
       >
-        <div
-          className={`flex items-center justify-center ${large ? 'aspect-[16/10]' : 'aspect-[4/5]'}`}
-          style={{ background: 'rgba(255,255,255,0.7)' }}
-        >
+        <div className={`img-wrapper flex items-center justify-center ${large ? 'p-6' : 'p-4'}`} style={{ background: 'var(--surface-2)' }}>
           <img
             src={artwork.img}
             alt={artwork.title}
-            className="block object-contain"
+            className="block drop-shadow-md w-full h-auto"
             loading="lazy"
-            style={{
-              maxWidth: large ? (landscape ? '84%' : '94%') : (landscape ? '80%' : '92%'),
-              maxHeight: large ? (landscape ? '74%' : '88%') : (landscape ? '70%' : '84%'),
-            }}
           />
         </div>
 
-        <div className={large ? 'px-4 py-3' : 'px-3 py-2.5'}>
-          <p
-            className={`${large ? 'text-[12px]' : 'text-[11px]'} font-medium mb-1`}
-            style={{ color: 'var(--text-muted)' }}
-          >
+        <div className={large ? 'px-4 py-3' : 'px-3.5 py-3'}>
+          <p className={`${large ? 'text-[12px]' : 'text-[10px]'} font-bold tracking-wider uppercase mb-1`} style={{ color: 'var(--text-weak)' }}>
             {artwork.artist}
           </p>
           <p
-            className={`${large ? 'text-[18px]' : 'text-[14px]'} leading-[1.28] font-semibold`}
+            className={`${large ? 'text-[18px]' : 'text-[14px]'} leading-[1.3] font-bold`}
             style={{
               color: 'var(--text)',
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden',
-              minHeight: large ? '2.56em' : '2.56em',
             }}
           >
             {artwork.title}
           </p>
-          <div className="mt-2 flex items-center justify-between gap-3">
-            <p className={`${large ? 'text-[15px]' : 'text-[13px]'} font-semibold`} style={{ color: 'var(--text)' }}>
+          <div className="mt-2.5 flex items-center justify-between gap-2">
+            <p className={`${large ? 'text-[16px]' : 'text-[14px]'} font-bold`} style={{ color: 'var(--accent)' }}>
               {formatPrice(artwork.price)}
             </p>
             <button
@@ -145,8 +132,8 @@ function ArtworkTile({ artwork, large = false, onOpen, onAdd }) {
                 event.stopPropagation()
                 onAdd(artwork)
               }}
-              className={`shrink-0 border flex items-center justify-center ${large ? 'w-9 h-9' : 'w-8 h-8'}`}
-              style={{ borderColor: 'var(--border)', background: 'var(--surface)', color: 'var(--text)' }}
+              className={`shrink-0 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95 ${large ? 'w-10 h-10' : 'w-8 h-8'}`}
+              style={{ background: 'var(--bg)', color: 'var(--text)', border: '1px solid var(--border)' }}
               aria-label={`加入购物车：${artwork.title}`}
             >
               <CartIcon />
@@ -169,87 +156,86 @@ function HeroShowcase() {
 
   useEffect(() => {
     if (total <= 1) return
-    const timer = setInterval(goNext, 4500)
+    const timer = setInterval(goNext, 5000)
     return () => clearInterval(timer)
   }, [goNext, total])
 
   const slide = HERO_SLIDES[current]
 
   return (
-    <section className="px-4 pt-5">
-      <div className="mb-6">
-        <p className="text-[9px] tracking-[0.34em] uppercase mb-2.5" style={{ color: 'var(--text-weak)' }}>
-          MEIYAJI
-        </p>
-        <h1 className="text-[16px] leading-[1.28] font-semibold whitespace-nowrap" style={{ color: '#3a3029' }}>
-          美芽集
-        </h1>
+    <section className="px-4 pt-6">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-[20px] leading-[1.2] font-bold tracking-wide" style={{ color: 'var(--text)' }}>
+            美芽集
+          </h1>
+          <p className="text-[10px] font-bold tracking-[0.3em] uppercase mt-1" style={{ color: 'var(--text-weak)' }}>
+            MEIYAJI
+          </p>
+        </div>
       </div>
 
       <div
-        className="relative overflow-hidden border cursor-pointer"
-        style={{ borderColor: 'rgba(232,225,216,0.9)', background: '#D9D4CE' }}
+        className="relative overflow-hidden cursor-pointer"
+        style={{ borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', background: 'var(--surface-2)' }}
         onClick={() => navigate('/charity')}
       >
         <div className="aspect-[4/5] relative">
-          <img src={slide.image} alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(19,18,17,0.08) 0%, rgba(19,18,17,0.62) 100%)' }} />
+          <img src={slide.image} alt="" className="w-full h-full object-cover transition-transform duration-1000 ease-out" style={{ transform: 'scale(1.03)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%)' }} />
 
-          <div className="absolute inset-x-0 top-0 px-5 pt-5 flex items-start justify-between">
-            <div>
-              <p className="text-[10px] tracking-[0.26em] uppercase" style={{ color: 'rgba(255,255,255,0.72)' }}>
-                {slide.eyebrow}
-              </p>
-            </div>
-            <div className="text-[11px]" style={{ color: 'rgba(255,255,255,0.72)' }}>
-              {String(current + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+          <div className="absolute inset-x-0 top-0 px-6 pt-6 flex items-start justify-between">
+            <p className="text-[11px] font-bold tracking-[0.25em] uppercase" style={{ color: 'rgba(255,255,255,0.9)' }}>
+              {slide.eyebrow}
+            </p>
+            <div className="text-[12px] font-medium tracking-widest" style={{ color: 'rgba(255,255,255,0.8)' }}>
+              {String(current + 1).padStart(2, '0')} <span className="opacity-50">/</span> {String(total).padStart(2, '0')}
             </div>
           </div>
 
-          <div className="absolute inset-x-0 bottom-0 px-5 pb-5">
-            <h2 className="text-[29px] leading-[1.12] font-semibold whitespace-pre-line mb-3" style={{ color: 'white' }}>
+          <div className="absolute inset-x-0 bottom-0 px-6 pb-6">
+            <h2 className="text-[32px] leading-[1.15] font-bold whitespace-pre-line mb-3 blur-reveal" key={current} style={{ color: 'white', textShadow: '0 2px 12px rgba(0,0,0,0.2)' }}>
               {slide.title}
             </h2>
-            <p className="text-[13px] leading-6 max-w-[290px] mb-5" style={{ color: 'rgba(255,255,255,0.78)' }}>
+            <p className="text-[14px] leading-relaxed max-w-[290px] mb-6 blur-reveal" key={`desc-${current}`} style={{ color: 'rgba(255,255,255,0.85)', animationDelay: '0.1s' }}>
               {slide.description}
             </p>
 
-            <div className="flex gap-2.5">
+            <div className="flex gap-3">
               <button
                 onClick={(event) => {
                   event.stopPropagation()
                   navigate('/discover')
                 }}
-                className="px-4 py-3 text-[12px] font-medium"
-                style={{ background: 'white', color: '#161412' }}
+                className="btn-primary"
               >
-                浏览作品
+                浏览藏品
               </button>
               <button
                 onClick={(event) => {
                   event.stopPropagation()
                   navigate('/charity')
                 }}
-                className="px-4 py-3 text-[12px] font-medium border"
-                style={{ borderColor: 'rgba(255,255,255,0.38)', color: 'white' }}
+                className="btn-outline"
               >
-                查看公益计划
+                公益计划
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex gap-2 mt-4">
+      <div className="flex justify-center gap-2 mt-6">
         {HERO_SLIDES.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrent(index)}
-            className="h-[2px] transition-all"
+            className="h-[3px] rounded-full transition-all duration-500"
             style={{
-              width: index === current ? '44px' : '18px',
-              background: index === current ? 'var(--text)' : 'rgba(62,58,55,0.18)',
+              width: index === current ? '32px' : '8px',
+              background: index === current ? 'var(--text)' : 'var(--secondary)',
             }}
+            aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>
@@ -269,24 +255,27 @@ function MissionBlock() {
   const leadProject = charity[0]
 
   return (
-    <section className="px-4 mt-14">
+    <section className="px-4 mt-16">
       <SectionIntro
         eyebrow="PUBLIC GOOD"
         title={'把公益做成长期项目\n而不是一次性活动'}
         description="我们希望让艺术的流动真正进入乡村教育现场，让作品、课堂、艺术家与受益者形成可持续连接。"
       />
 
-      <div className="border p-5" style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.9)' }}>
-        <p className="text-[10px] tracking-[0.22em] uppercase mb-4" style={{ color: 'var(--text-weak)' }}>
+      <div className="p-6 relative overflow-hidden" style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
+        {/* Decorative element */}
+        <div className="absolute top-0 right-0 w-32 h-32 opacity-5 pointer-events-none" style={{ background: 'radial-gradient(circle, var(--accent) 0%, transparent 70%)', transform: 'translate(30%, -30%)' }}></div>
+
+        <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-5" style={{ color: 'var(--text-weak)' }}>
           Current Initiative
         </p>
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-3 gap-4 mb-8">
           {stats.map(stat => (
             <div key={stat.label}>
-              <p className="text-[34px] leading-none font-semibold mb-2" style={{ color: 'var(--text)' }}>
+              <p className="text-[36px] leading-none font-bold mb-2 tracking-tight" style={{ color: 'var(--text)' }}>
                 {stat.value}
               </p>
-              <p className="text-[11px] leading-5" style={{ color: 'var(--text-muted)' }}>
+              <p className="text-[12px] font-medium" style={{ color: 'var(--text-muted)' }}>
                 {stat.label}
               </p>
             </div>
@@ -294,24 +283,28 @@ function MissionBlock() {
         </div>
 
         {leadProject && (
-          <div className="pt-4 border-t" style={{ borderColor: 'rgba(232,225,216,0.9)' }}>
-            <div className="flex items-start justify-between gap-4 mb-2">
-              <h3 className="text-[19px] font-semibold leading-[1.25]" style={{ color: 'var(--text)' }}>
+          <div className="pt-5 border-t" style={{ borderColor: 'var(--border)' }}>
+            <div className="flex items-start justify-between gap-4 mb-3">
+              <h3 className="text-[20px] font-bold leading-[1.3]" style={{ color: 'var(--text)' }}>
                 {leadProject.title}
               </h3>
-              <span className="text-[11px] px-2 py-1 border whitespace-nowrap" style={{ color: 'var(--text-muted)', borderColor: 'rgba(232,225,216,0.9)' }}>
+              <span className="tag-sage shrink-0">
                 {leadProject.tag}
               </span>
             </div>
-            <p className="text-[13px] leading-6 mb-4" style={{ color: 'var(--text-muted)' }}>
+            <p className="text-[14px] leading-relaxed mb-5" style={{ color: 'var(--text-muted)' }}>
               {leadProject.desc}
             </p>
             <button
               onClick={() => navigate(`/charity/project/${leadProject.id}`)}
-              className="text-[12px] pb-1"
-              style={{ color: 'var(--text)', borderBottom: '1px solid var(--text)' }}
+              className="text-[13px] font-semibold flex items-center gap-1 transition-opacity hover:opacity-70"
+              style={{ color: 'var(--accent)' }}
             >
               查看项目详情
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
             </button>
           </div>
         )}
@@ -327,8 +320,11 @@ function FeaturedWorksSection({ artworksData }) {
 
   if (!curatedWorks.length) return null
 
+  const col1 = curatedWorks.filter((_, i) => i % 2 === 0)
+  const col2 = curatedWorks.filter((_, i) => i % 2 === 1)
+
   return (
-    <section className="px-4 mt-14">
+    <section className="px-4 mt-16">
       <SectionIntro
         eyebrow="CURATED WORKS"
         title={'以作品为入口\n让艺术与公益被看见'}
@@ -337,8 +333,9 @@ function FeaturedWorksSection({ artworksData }) {
         onAction={() => navigate('/discover')}
       />
 
-        <div className="grid grid-cols-2 gap-2">
-          {curatedWorks.map(work => (
+      <div className="flex gap-4 items-start">
+        <div className="flex flex-col gap-4 flex-1">
+          {col1.map(work => (
             <ArtworkTile
               key={work.id}
               artwork={work}
@@ -347,54 +344,61 @@ function FeaturedWorksSection({ artworksData }) {
             />
           ))}
         </div>
-      </section>
+        <div className="flex flex-col gap-4 flex-1">
+          {col2.map(work => (
+            <ArtworkTile
+              key={work.id}
+              artwork={work}
+              onOpen={(id) => navigate(`/detail/${id}`)}
+              onAdd={addToCart}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
   )
 }
 
 function ArtistsSection() {
   const navigate = useNavigate()
-  const featuredArtists = artists.slice(0, 5)
+  const featuredArtists = artists.slice(0, 10)
 
   return (
-    <section className="px-4 mt-14">
-      <SectionIntro
-        eyebrow="ARTISTS"
-        title={'与艺术家并肩\n让作品进入更广阔的公共现场'}
-        description="每一位合作艺术家都以自己的作品参与这场长期的美育支持计划。"
-        actionLabel="艺术家名录"
-        onAction={() => navigate('/artists')}
-      />
+    <section className="mt-16 overflow-hidden">
+      <div className="px-4">
+        <SectionIntro
+          eyebrow="ARTISTS"
+          title={'与艺术家并肩\n让作品进入更广阔的现场'}
+          description="每一位合作艺术家都以自己的作品参与这场长期的美育支持计划。"
+          actionLabel="艺术家名录"
+          onAction={() => navigate('/artists')}
+        />
+      </div>
 
-      <div className="flex gap-3 overflow-x-auto pb-1">
+      {/* Grid Layout: 2 Rows, 5 Columns */}
+      <div className="grid grid-cols-5 gap-y-5 gap-x-2 px-4 pb-6">
         {featuredArtists.map(artist => {
           const coverArt = getArtistCoverArtwork(artist.id)
-          const conciseBio = artist.bio.split('，').slice(0, 2).join('，')
 
           return (
             <button
               key={artist.id}
               onClick={() => navigate(`/artist/${artist.id}`)}
-              className="w-[216px] flex-shrink-0 text-left border"
-              style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}
+              className="flex flex-col items-center group w-full"
             >
-              <div className="aspect-[4/5]" style={{ background: 'var(--surface-2)' }}>
+              <div 
+                className="w-[56px] h-[56px] rounded-full overflow-hidden mb-1.5 transition-transform duration-300 group-hover:scale-105 shadow-sm"
+                style={{ border: '2px solid white', background: 'var(--surface-2)', outline: '1px solid var(--border)' }}
+              >
                 {coverArt ? (
                   <img src={coverArt.img} alt={`${artist.name}代表作品`} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full" />
                 )}
               </div>
-              <div className="p-4">
-                <p className="text-[18px] font-semibold mb-2" style={{ color: 'var(--text)' }}>
-                  {artist.name}
-                </p>
-                <p className="text-[12px] leading-6 min-h-[72px]" style={{ color: 'var(--text-muted)' }}>
-                  {conciseBio}。
-                </p>
-                <div className="mt-4 text-[12px]" style={{ color: 'var(--text)', borderBottom: '1px solid var(--text)', display: 'inline-block', paddingBottom: '4px' }}>
-                  查看作品
-                </div>
-              </div>
+              <p className="text-[11px] font-bold text-center w-full truncate px-0.5" style={{ color: 'var(--text)' }}>
+                {artist.name}
+              </p>
             </button>
           )
         })}
@@ -412,53 +416,51 @@ function StoriesSection({ activities }) {
   if (!leadStory) return null
 
   return (
-    <section className="px-4 mt-14">
+    <section className="px-4 mt-10">
       <SectionIntro
         eyebrow="FIELD NOTES"
         title={'让公益被看见\n也让它被认真记录'}
-        description="我们希望公益故事像一本持续更新的现场札记，既有温度，也有真实的项目脉络。"
+        description="公益故事是一本持续更新的现场札记，既有温度，也有真实的脉络。"
         actionLabel="全部公益"
         onAction={() => navigate('/charity')}
       />
 
-      <div className="border overflow-hidden mb-3" style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}>
-        <button onClick={() => navigate(`/charity/article/${leadStory.id}`)} className="w-full text-left">
-          <div className="aspect-[16/10]">
-            <img src={leadStory.cover} alt={leadStory.title} className="w-full h-full object-cover" />
-          </div>
-          <div className="p-4">
-            <p className="text-[10px] tracking-[0.18em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
-              {leadStory.tag}
-            </p>
-            <h3 className="text-[21px] leading-[1.28] font-semibold mb-2" style={{ color: 'var(--text)' }}>
-              {leadStory.title}
-            </h3>
-            <p className="text-[13px] leading-6" style={{ color: 'var(--text-muted)' }}>
-              {leadStory.desc || leadStory.summary}
-            </p>
-          </div>
-        </button>
+      <div className="mb-4 group cursor-pointer" onClick={() => navigate(`/charity/article/${leadStory.id}`)} style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
+        <div className="aspect-[16/10] overflow-hidden">
+          <img src={leadStory.cover} alt={leadStory.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        </div>
+        <div className="p-5">
+          <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
+            {leadStory.tag}
+          </p>
+          <h3 className="text-[22px] leading-[1.3] font-bold mb-2" style={{ color: 'var(--text)' }}>
+            {leadStory.title}
+          </h3>
+          <p className="text-[14px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+            {leadStory.desc || leadStory.summary}
+          </p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-4">
         {sideStories.map(story => (
           <button
             key={story.id}
             onClick={() => navigate(`/charity/article/${story.id}`)}
-            className="border text-left"
-            style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(251,248,244,0.92)' }}
+            className="text-left group"
+            style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
           >
-            <div className="aspect-[4/3]">
-              <img src={story.cover} alt={story.title} className="w-full h-full object-cover" />
+            <div className="aspect-[4/3] overflow-hidden">
+              <img src={story.cover} alt={story.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             </div>
-            <div className="p-3">
-              <p className="text-[10px] tracking-[0.14em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
+            <div className="p-4">
+              <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
                 {story.tag}
               </p>
-              <p className="text-[15px] leading-[1.4] font-semibold mb-2" style={{ color: 'var(--text)' }}>
+              <p className="text-[15px] leading-[1.4] font-bold mb-2 line-clamp-2" style={{ color: 'var(--text)' }}>
                 {story.title}
               </p>
-              <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
+              <p className="text-[12px] font-medium" style={{ color: 'var(--text-muted)' }}>
                 {story.location} · {story.date}
               </p>
             </div>
@@ -473,38 +475,37 @@ function FooterSection() {
   const navigate = useNavigate()
 
   return (
-    <footer className="px-4 mt-14 pb-28">
-      <div className="border p-5" style={{ borderColor: 'rgba(232,225,216,0.92)', background: 'rgba(248,244,239,0.92)' }}>
-        <p className="text-[10px] tracking-[0.26em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
+    <footer className="px-4 mt-20 pb-32">
+      <div className="p-8 text-center" style={{ background: 'linear-gradient(180deg, var(--surface) 0%, var(--surface-2) 100%)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border)' }}>
+        <p className="text-[11px] font-bold tracking-[0.25em] uppercase mb-4" style={{ color: 'var(--text-weak)' }}>
           MEIYAJI FOUNDATION
         </p>
-        <h3 className="text-[24px] leading-[1.2] font-semibold mb-3" style={{ color: 'var(--text)' }}>
-          让线上展陈成为公益支持的开始
+        <h3 className="text-[24px] leading-[1.3] font-bold mb-4" style={{ color: 'var(--text)' }}>
+          让线上展陈成为<br/>公益支持的开始
         </h3>
-        <p className="text-[13px] leading-6 mb-5 max-w-[310px]" style={{ color: 'var(--text-muted)' }}>
-          这里既是作品浏览入口，也是公益项目的长期记录页。我们相信，艺术不仅值得收藏，也值得被分享给更多孩子。
+        <p className="text-[14px] leading-relaxed mb-8 mx-auto max-w-[280px]" style={{ color: 'var(--text-muted)' }}>
+          艺术不仅值得被收藏，也值得被分享给更多孩子。
         </p>
 
-        <div className="flex gap-2.5 mb-6">
+        <div className="flex flex-col gap-3 max-w-[200px] mx-auto mb-8">
           <button
             onClick={() => navigate('/charity')}
-            className="px-4 py-3 text-[12px] font-medium"
-            style={{ background: 'var(--text)', color: 'white' }}
+            className="btn-primary w-full"
           >
             查看公益计划
           </button>
           <button
             onClick={() => navigate('/discover')}
-            className="px-4 py-3 text-[12px] font-medium border"
-            style={{ borderColor: 'var(--border)', color: 'var(--text)' }}
+            className="btn-outline w-full"
+            style={{ background: 'transparent' }}
           >
             浏览全部作品
           </button>
         </div>
 
-        <div className="pt-4 border-t text-[11px] flex items-center justify-between gap-3" style={{ borderColor: 'rgba(232,225,216,0.9)', color: 'var(--text-weak)' }}>
-          <span>美芽集 · 艺术公益 H5</span>
-          <span>Art for Rural Aesthetic Education</span>
+        <div className="pt-6 border-t flex flex-col items-center gap-2" style={{ borderColor: 'var(--border)', color: 'var(--text-weak)' }}>
+          <span className="text-[12px] font-bold">美芽集 · 艺术公益</span>
+          <span className="text-[10px] tracking-wider uppercase">Art for Rural Aesthetic Education</span>
         </div>
       </div>
     </footer>
@@ -538,7 +539,7 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div className="pb-20 fade-in">
+    <div className="min-h-screen fade-in">
       <HeroShowcase />
       <MissionBlock />
       <FeaturedWorksSection artworksData={publicArtworks} />

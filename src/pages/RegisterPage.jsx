@@ -3,6 +3,15 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
 import { persistAuthSession, registerUser } from '../services/contentApi'
 
+function BackIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="19" y1="12" x2="5" y2="12"></line>
+      <polyline points="12 19 5 12 12 5"></polyline>
+    </svg>
+  )
+}
+
 export default function RegisterPage() {
   const navigate = useNavigate()
   const { setCurrentUser, showToast } = useApp()
@@ -51,38 +60,38 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="px-4 pt-5 pb-24 fade-in">
+    <div className="px-4 pt-5 pb-24 fade-in min-h-screen bg-[var(--bg)]">
       <div className="flex items-center justify-between gap-3 mb-8">
         <button
           onClick={() => navigate(-1)}
-          className="w-10 h-10 flex items-center justify-center border"
-          style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+          className="w-10 h-10 flex items-center justify-center rounded-full shadow-sm transition-transform active:scale-90"
+          style={{ background: 'var(--surface)', color: 'var(--text)', border: '1px solid var(--border)' }}
         >
-          ←
+          <BackIcon />
         </button>
-        <p className="text-[10px] tracking-[0.28em] uppercase" style={{ color: 'var(--text-weak)' }}>
+        <p className="text-[10px] font-bold tracking-[0.28em] uppercase" style={{ color: 'var(--text-weak)' }}>
           Register
         </p>
         <span className="w-10" />
       </div>
 
       <section
-        className="border p-6"
-        style={{ background: 'rgba(251,248,244,0.95)', borderColor: 'rgba(232,225,216,0.92)' }}
+        className="p-6"
+        style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
       >
-        <p className="text-[10px] tracking-[0.24em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
+        <p className="text-[10px] font-bold tracking-[0.24em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
           New Account
         </p>
-        <h1 className="text-[28px] leading-[1.18] font-semibold mb-3" style={{ color: 'var(--text)' }}>
-          注册美芽集账号
+        <h1 className="text-[28px] leading-[1.18] font-bold mb-3" style={{ color: 'var(--text)' }}>
+          注册美芽集
         </h1>
-        <p className="text-[13px] leading-6 mb-6" style={{ color: 'var(--text-muted)' }}>
+        <p className="text-[13px] leading-relaxed mb-8 font-medium" style={{ color: 'var(--text-muted)' }}>
           先注册普通会员账号，后续可以继续申请成为艺术家。
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <label className="block">
-            <span className="block text-[12px] mb-2" style={{ color: 'var(--text-muted)' }}>
+            <span className="block text-[12px] font-bold mb-2.5" style={{ color: 'var(--text-muted)' }}>
               邮箱
             </span>
             <input
@@ -90,14 +99,14 @@ export default function RegisterPage() {
               value={formData.email}
               onChange={(event) => updateField('email', event.target.value)}
               placeholder="请输入邮箱"
-              className="w-full px-4 py-3 border text-[14px] outline-none"
-              style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+              className="w-full px-4 py-3.5 text-[14px] outline-none transition-colors"
+              style={{ background: 'var(--bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', color: 'var(--text)' }}
               required
             />
           </label>
 
           <label className="block">
-            <span className="block text-[12px] mb-2" style={{ color: 'var(--text-muted)' }}>
+            <span className="block text-[12px] font-bold mb-2.5" style={{ color: 'var(--text-muted)' }}>
               用户名
             </span>
             <input
@@ -105,13 +114,13 @@ export default function RegisterPage() {
               value={formData.username}
               onChange={(event) => updateField('username', event.target.value)}
               placeholder="请输入用户名"
-              className="w-full px-4 py-3 border text-[14px] outline-none"
-              style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+              className="w-full px-4 py-3.5 text-[14px] outline-none transition-colors"
+              style={{ background: 'var(--bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', color: 'var(--text)' }}
             />
           </label>
 
           <label className="block">
-            <span className="block text-[12px] mb-2" style={{ color: 'var(--text-muted)' }}>
+            <span className="block text-[12px] font-bold mb-2.5" style={{ color: 'var(--text-muted)' }}>
               真实姓名
             </span>
             <input
@@ -119,13 +128,13 @@ export default function RegisterPage() {
               value={formData.realName}
               onChange={(event) => updateField('realName', event.target.value)}
               placeholder="请输入真实姓名"
-              className="w-full px-4 py-3 border text-[14px] outline-none"
-              style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+              className="w-full px-4 py-3.5 text-[14px] outline-none transition-colors"
+              style={{ background: 'var(--bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', color: 'var(--text)' }}
             />
           </label>
 
           <label className="block">
-            <span className="block text-[12px] mb-2" style={{ color: 'var(--text-muted)' }}>
+            <span className="block text-[12px] font-bold mb-2.5" style={{ color: 'var(--text-muted)' }}>
               密码
             </span>
             <input
@@ -133,14 +142,14 @@ export default function RegisterPage() {
               value={formData.password}
               onChange={(event) => updateField('password', event.target.value)}
               placeholder="请输入至少 6 位密码"
-              className="w-full px-4 py-3 border text-[14px] outline-none"
-              style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+              className="w-full px-4 py-3.5 text-[14px] outline-none transition-colors"
+              style={{ background: 'var(--bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', color: 'var(--text)' }}
               required
             />
           </label>
 
           <label className="block">
-            <span className="block text-[12px] mb-2" style={{ color: 'var(--text-muted)' }}>
+            <span className="block text-[12px] font-bold mb-2.5" style={{ color: 'var(--text-muted)' }}>
               确认密码
             </span>
             <input
@@ -148,35 +157,36 @@ export default function RegisterPage() {
               value={formData.confirmPassword}
               onChange={(event) => updateField('confirmPassword', event.target.value)}
               placeholder="请再次输入密码"
-              className="w-full px-4 py-3 border text-[14px] outline-none"
-              style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text)' }}
+              className="w-full px-4 py-3.5 text-[14px] outline-none transition-colors"
+              style={{ background: 'var(--bg)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', color: 'var(--text)' }}
               required
             />
           </label>
 
           {errorMessage && (
             <div
-              className="border px-4 py-3 text-[12px]"
-              style={{ background: 'rgba(201,143,134,0.08)', borderColor: 'rgba(201,143,134,0.3)', color: '#8A5B52' }}
+              className="px-4 py-3 text-[12px] font-medium"
+              style={{ background: 'rgba(201,143,134,0.08)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(201,143,134,0.3)', color: '#8A5B52' }}
             >
               {errorMessage}
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full py-3.5 text-[15px] font-medium disabled:opacity-60"
-            style={{ background: 'var(--text)', color: 'white' }}
-          >
-            {submitting ? '注册中...' : '创建账号'}
-          </button>
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="btn-primary w-full py-3.5 text-[15px]"
+            >
+              {submitting ? '注册中...' : '创建账号'}
+            </button>
+          </div>
         </form>
 
-        <div className="mt-5 text-[13px]" style={{ color: 'var(--text-muted)' }}>
+        <div className="mt-8 text-[13px] text-center font-medium" style={{ color: 'var(--text-muted)' }}>
           已有账号？{' '}
-          <Link to="/login" style={{ color: 'var(--text)', borderBottom: '1px solid var(--text)' }}>
-            去登录
+          <Link to="/login" className="font-bold transition-opacity hover:opacity-70" style={{ color: 'var(--text)' }}>
+            直接登录
           </Link>
         </div>
       </section>
