@@ -137,8 +137,8 @@ function Navigation() {
   const navItems = [
     { path: '/', icon: 'Home', label: '首页' },
     { path: '/charity', icon: 'Heart', label: '公益' },
-    { path: '/discover', icon: 'Gallery', label: '藏品' },
-    { path: '/artists', icon: 'Palette', label: '作者' },
+    { path: '/discover', icon: 'Gallery', label: '作品' },
+    { path: '/artists', icon: 'Palette', label: '艺术家' },
     { path: '/profile', icon: 'User', label: '我的' },
   ]
 
