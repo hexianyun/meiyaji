@@ -126,9 +126,6 @@ export default function DiscoverPage() {
                     
                     <div className="flex justify-between items-end gap-2">
                       <div className="flex flex-col gap-1 min-w-0">
-                        {art.charityPct && (
-                          <span className="tag-sage self-start" style={{ fontSize: '9px', padding: '2px 6px' }}>{art.charityPct}%公益</span>
-                        )}
                         <p className="text-[14px] font-bold truncate" style={{ color: 'var(--accent)' }}>¥{art.price.toLocaleString()}</p>
                       </div>
                       <button
@@ -185,9 +182,6 @@ export default function DiscoverPage() {
                     
                     <div className="flex justify-between items-end gap-2">
                       <div className="flex flex-col gap-1 min-w-0">
-                        {art.charityPct && (
-                          <span className="tag-sage self-start" style={{ fontSize: '9px', padding: '2px 6px' }}>{art.charityPct}%公益</span>
-                        )}
                         <p className="text-[14px] font-bold truncate" style={{ color: 'var(--accent)' }}>¥{art.price.toLocaleString()}</p>
                       </div>
                       <button
