@@ -1,8 +1,7 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
-import { orders } from '../data'
-import { clearAuthSession, updateMemberAvatar } from '../services/contentApi'
+import { clearAuthSession, getMemberOrders, updateMemberAvatar } from '../services/contentApi'
 
 function getRoleMeta(currentUser) {
   if (!currentUser) {
@@ -411,9 +410,34 @@ export default function ProfilePage() {
   const { favs, currentUser, setCurrentUser, showToast } = useApp()
   const fileInputRef = useRef(null)
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
+  const [ordersCount, setOrdersCount] = useState(0)
+
+  useEffect(() => {
+    let isActive = true
+
+    async function loadOrdersCount() {
+      if (!currentUser) {
+        setOrdersCount(0)
+        return
+      }
+
+      try {
+        const payload = await getMemberOrders()
+        if (isActive) setOrdersCount((payload.orders || []).length)
+      } catch {
+        if (isActive) setOrdersCount(0)
+      }
+    }
+
+    loadOrdersCount()
+
+    return () => {
+      isActive = false
+    }
+  }, [currentUser])
 
   const collectionItems = [
-    { icon: 'orders', label: '我的订单', meta: '查看购买记录与物流状态', badge: orders.length, path: '/orders' },
+    { icon: 'orders', label: '我的订单', meta: '查看购买记录与物流状态', badge: currentUser ? ordersCount : null, path: '/orders' },
     { icon: 'favorites', label: '我的收藏', meta: '保存你想再次细看的作品', badge: favs.length, path: '/discover' },
   ]
 
@@ -517,7 +541,7 @@ export default function ProfilePage() {
         onArtistEntry={handleArtistEntry}
       />
 
-      {currentUser && <StatsPanel favsCount={favs.length} ordersCount={orders.length} />}
+      {currentUser && <StatsPanel favsCount={favs.length} ordersCount={ordersCount} />}
 
       <div className="px-4 mt-5">
         <div className="overflow-hidden" style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
