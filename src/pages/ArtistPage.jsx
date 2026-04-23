@@ -156,10 +156,10 @@ export default function ArtistPage() {
           style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
         >
           <p className="text-[10px] font-bold tracking-[0.22em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
-            Creative Philosophy
+            Artist Profile
           </p>
           <h2 className="text-[20px] leading-[1.25] font-bold mb-3" style={{ color: 'var(--text)' }}>
-            创作理念
+            艺术家简介
           </h2>
           <p className="text-[14px] leading-relaxed font-medium" style={{ color: 'var(--text-muted)' }}>
             {artistProfile.creativePhilosophy}

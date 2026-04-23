@@ -377,6 +377,14 @@ export default function CharityPage() {
     <div className="pb-20 fade-in min-h-screen">
       <CharityHero activities={activities} />
       <ImpactSection />
+
+      {/* 插入的计划书图片 */}
+      <section className="px-4 mt-12 mb-4">
+        <div className="w-full overflow-hidden" style={{ borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
+          <img src="/jihuashu.png" alt="公益计划书" className="w-full h-auto block" />
+        </div>
+      </section>
+
       <InitiativesSection projects={projects} />
       <ActivitiesSection activities={activities} />
       <StoriesSection activities={activities} />
