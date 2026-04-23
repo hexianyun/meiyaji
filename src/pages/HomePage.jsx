@@ -145,6 +145,29 @@ function ArtworkTile({ artwork, large = false, onOpen, onAdd }) {
   )
 }
 
+function getArtworkArtistKey(artwork) {
+  return String(artwork.artistId ?? artwork.aid ?? artwork.artist ?? 'unknown')
+}
+
+function selectTwoWorksPerArtist(artworksData) {
+  const artistCounts = new Map()
+  const selectedWorks = []
+
+  artworksData.forEach(artwork => {
+    if (!artwork?.img || artwork.inventoryStatus === 'archived') return
+
+    const artistKey = getArtworkArtistKey(artwork)
+    const currentCount = artistCounts.get(artistKey) || 0
+
+    if (currentCount >= 2) return
+
+    artistCounts.set(artistKey, currentCount + 1)
+    selectedWorks.push(artwork)
+  })
+
+  return selectedWorks
+}
+
 function HeroShowcase() {
   const navigate = useNavigate()
   const [current, setCurrent] = useState(0)
@@ -316,7 +339,7 @@ function MissionBlock() {
 function FeaturedWorksSection({ artworksData }) {
   const navigate = useNavigate()
   const { addToCart } = useApp()
-  const curatedWorks = artworksData.slice(0, 20)
+  const curatedWorks = selectTwoWorksPerArtist(artworksData)
 
   if (!curatedWorks.length) return null
 
