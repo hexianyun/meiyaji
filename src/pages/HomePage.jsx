@@ -9,19 +9,19 @@ const HERO_SLIDES = [
   {
     image: '/hero-carousel/1232997301.jpg',
     eyebrow: 'ART & PUBLIC GOOD',
-    title: '让收藏成为一场\n持续发生的美育行动',
+    title: '让收藏成为\n一场远方的美育',
     description: '以艺术作品为入口，连接艺术家、收藏者与乡村美育计划。',
   },
   {
     image: '/hero-carousel/1710908245.jpg',
     eyebrow: 'CURATED CHARITY',
-    title: '把作品带到更远的地方\n也把美带给更多孩子',
+    title: '把作品带到远方\n把美留给孩子',
     description: '通过线上展陈、公益讲堂与长期项目支持，让艺术的影响真正落地。',
   },
   {
     image: '/hero-carousel/549412817.jpg',
     eyebrow: 'MEIYAJI',
-    title: '在图录式浏览中\n理解作品，也理解公益',
+    title: '在每一次浏览中\n理解艺术的温度',
     description: '每一次浏览与收藏，都是对乡村美育的一次微小灌溉。',
   },
 ]
@@ -33,7 +33,7 @@ function SectionIntro({ eyebrow, title, description, actionLabel, onAction }) {
         <p className="text-[11px] font-bold tracking-[0.25em] uppercase mb-2.5" style={{ color: 'var(--accent)' }}>
           {eyebrow}
         </p>
-        <h2 className="text-[26px] leading-[1.25] font-bold whitespace-pre-line tracking-tight" style={{ color: 'var(--text)' }}>
+        <h2 className="text-[22px] leading-[1.3] font-bold whitespace-pre-line tracking-tight" style={{ color: 'var(--text)' }}>
           {title}
         </h2>
         {description && (
@@ -111,14 +111,8 @@ function ArtworkTile({ artwork, large = false, onOpen, onAdd }) {
             {artwork.artist}
           </p>
           <p
-            className={`${large ? 'text-[18px]' : 'text-[14px]'} leading-[1.3] font-bold`}
-            style={{
-              color: 'var(--text)',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-            }}
+            className={`${large ? 'text-[18px]' : 'text-[14px]'} leading-[1.3] font-bold truncate`}
+            style={{ color: 'var(--text)' }}
           >
             {artwork.title}
           </p>
@@ -227,7 +221,7 @@ function HeroShowcase() {
           </div>
 
           <div className="absolute inset-x-0 bottom-0 px-6 pb-6">
-            <h2 className="text-[32px] leading-[1.15] font-bold whitespace-pre-line mb-3 blur-reveal" key={current} style={{ color: 'white', textShadow: '0 2px 12px rgba(0,0,0,0.2)' }}>
+            <h2 className="text-[26px] leading-[1.2] font-bold whitespace-pre-line mb-3 blur-reveal" key={current} style={{ color: 'white', textShadow: '0 2px 12px rgba(0,0,0,0.2)' }}>
               {slide.title}
             </h2>
             <p className="text-[14px] leading-relaxed max-w-[290px] mb-6 blur-reveal" key={`desc-${current}`} style={{ color: 'rgba(255,255,255,0.85)', animationDelay: '0.1s' }}>
@@ -291,24 +285,23 @@ function MissionBlock() {
     <section className="px-4 mt-16">
       <SectionIntro
         eyebrow="PUBLIC GOOD"
-        title={'把公益做成长期项目\n而不是一次性活动'}
-        description="我们希望让艺术的流动真正进入乡村教育现场，让作品、课堂、艺术家与受益者形成可持续连接。"
+        title={'让艺术的流动\n成为一场漫长而温柔的灌溉'}
       />
 
-      <div className="p-6 relative overflow-hidden" style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
+      <div className="p-5 relative overflow-hidden" style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
         {/* Decorative element */}
         <div className="absolute top-0 right-0 w-32 h-32 opacity-5 pointer-events-none" style={{ background: 'radial-gradient(circle, var(--accent) 0%, transparent 70%)', transform: 'translate(30%, -30%)' }}></div>
 
-        <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-5" style={{ color: 'var(--text-weak)' }}>
+        <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-3" style={{ color: 'var(--text-weak)' }}>
           Current Initiative
         </p>
-        <div className="grid grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-3 gap-2 mb-5">
           {stats.map(stat => (
             <div key={stat.label}>
-              <p className="text-[36px] leading-none font-bold mb-2 tracking-tight" style={{ color: 'var(--text)' }}>
+              <p className="text-[28px] leading-none font-bold mb-1.5 tracking-tight" style={{ color: 'var(--text)' }}>
                 {stat.value}
               </p>
-              <p className="text-[12px] font-medium" style={{ color: 'var(--text-muted)' }}>
+              <p className="text-[11px] font-medium" style={{ color: 'var(--text-muted)' }}>
                 {stat.label}
               </p>
             </div>
@@ -316,18 +309,15 @@ function MissionBlock() {
         </div>
 
         {leadProject && (
-          <div className="pt-5 border-t" style={{ borderColor: 'var(--border)' }}>
+          <div className="pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
             <div className="flex items-start justify-between gap-4 mb-3">
-              <h3 className="text-[20px] font-bold leading-[1.3]" style={{ color: 'var(--text)' }}>
+              <h3 className="text-[17px] font-bold leading-[1.3] line-clamp-2" style={{ color: 'var(--text)' }}>
                 {leadProject.title}
               </h3>
-              <span className="tag-sage shrink-0">
+              <span className="tag-sage shrink-0 mt-0.5">
                 {leadProject.tag}
               </span>
             </div>
-            <p className="text-[14px] leading-relaxed mb-5" style={{ color: 'var(--text-muted)' }}>
-              {leadProject.desc}
-            </p>
             <button
               onClick={() => navigate(`/charity/project/${leadProject.id}`)}
               className="text-[13px] font-semibold flex items-center gap-1 transition-opacity hover:opacity-70"
@@ -360,8 +350,7 @@ function FeaturedWorksSection({ artworksData }) {
     <section className="px-4 mt-16">
       <SectionIntro
         eyebrow="CURATED WORKS"
-        title={'以作品为入口\n让艺术与公益被看见'}
-        description="每一件作品都像一段被轻轻展开的艺术叙事，值得你慢慢停下来观看。"
+        title={'循着艺术的痕迹\n遇见远方的星光'}
         actionLabel="全部作品"
         onAction={() => navigate('/discover')}
       />
@@ -401,8 +390,7 @@ function ArtistsSection() {
       <div className="px-4">
         <SectionIntro
           eyebrow="ARTISTS"
-          title={'与艺术家并肩\n让作品进入更广阔的现场'}
-          description="每一位合作艺术家都以自己的作品参与这场长期的美育支持计划。"
+          title={'与光同行的\n创作者们'}
           actionLabel="艺术家名录"
           onAction={() => navigate('/artists')}
         />
@@ -452,8 +440,7 @@ function StoriesSection({ activities }) {
     <section className="px-4 mt-10">
       <SectionIntro
         eyebrow="FIELD NOTES"
-        title={'让公益被看见\n也让它被认真记录'}
-        description="公益故事是一本持续更新的现场札记，既有温度，也有真实的脉络。"
+        title={'时间的底片\n记录每一次美的发生'}
         actionLabel="全部公益"
         onAction={() => navigate('/charity')}
       />
@@ -469,7 +456,7 @@ function StoriesSection({ activities }) {
           <h3 className="text-[22px] leading-[1.3] font-bold mb-2" style={{ color: 'var(--text)' }}>
             {leadStory.title}
           </h3>
-          <p className="text-[14px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+          <p className="text-[13px] leading-relaxed line-clamp-2 font-medium" style={{ color: 'var(--text-muted)' }}>
             {leadStory.desc || leadStory.summary}
           </p>
         </div>
@@ -513,12 +500,9 @@ function FooterSection() {
         <p className="text-[11px] font-bold tracking-[0.25em] uppercase mb-4" style={{ color: 'var(--text-weak)' }}>
           MEIYAJI FOUNDATION
         </p>
-        <h3 className="text-[24px] leading-[1.3] font-bold mb-4" style={{ color: 'var(--text)' }}>
-          让线上展陈成为<br/>公益支持的开始
+        <h3 className="text-[20px] leading-[1.3] font-bold mb-8" style={{ color: 'var(--text)' }}>
+          每一次驻足<br/>都是对远方的守望
         </h3>
-        <p className="text-[14px] leading-relaxed mb-8 mx-auto max-w-[280px]" style={{ color: 'var(--text-muted)' }}>
-          艺术不仅值得被收藏，也值得被分享给更多孩子。
-        </p>
 
         <div className="flex flex-col gap-3 max-w-[200px] mx-auto mb-8">
           <button
@@ -575,9 +559,9 @@ export default function HomePage() {
     <div className="min-h-screen fade-in">
       <HeroShowcase />
       <MissionBlock />
+      <StoriesSection activities={publicActivities} />
       <FeaturedWorksSection artworksData={publicArtworks} />
       <ArtistsSection />
-      <StoriesSection activities={publicActivities} />
       <FooterSection />
     </div>
   )
