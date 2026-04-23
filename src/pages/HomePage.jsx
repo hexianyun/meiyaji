@@ -149,20 +149,30 @@ function getArtworkArtistKey(artwork) {
   return String(artwork.artistId ?? artwork.aid ?? artwork.artist ?? 'unknown')
 }
 
-function selectTwoWorksPerArtist(artworksData) {
-  const artistCounts = new Map()
+function selectTwoWorksPerArtist(artworksData, artistList = []) {
+  const groupedWorks = new Map()
   const selectedWorks = []
 
   artworksData.forEach(artwork => {
     if (!artwork?.img || artwork.inventoryStatus === 'archived') return
 
     const artistKey = getArtworkArtistKey(artwork)
-    const currentCount = artistCounts.get(artistKey) || 0
 
-    if (currentCount >= 2) return
+    if (!groupedWorks.has(artistKey)) {
+      groupedWorks.set(artistKey, [])
+    }
 
-    artistCounts.set(artistKey, currentCount + 1)
-    selectedWorks.push(artwork)
+    groupedWorks.get(artistKey).push(artwork)
+  })
+
+  const orderedArtistKeys = [
+    ...artistList.map(artist => String(artist.id)),
+    ...Array.from(groupedWorks.keys()).filter(key => !artistList.some(artist => String(artist.id) === key)),
+  ]
+
+  orderedArtistKeys.forEach(artistKey => {
+    const works = groupedWorks.get(artistKey) || []
+    selectedWorks.push(...works.slice(0, 2))
   })
 
   return selectedWorks
@@ -339,7 +349,7 @@ function MissionBlock() {
 function FeaturedWorksSection({ artworksData }) {
   const navigate = useNavigate()
   const { addToCart } = useApp()
-  const curatedWorks = selectTwoWorksPerArtist(artworksData)
+  const curatedWorks = selectTwoWorksPerArtist(artworksData, artists)
 
   if (!curatedWorks.length) return null
 
