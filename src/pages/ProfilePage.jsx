@@ -462,7 +462,21 @@ export default function ProfilePage() {
     showToast('已退出当前账号')
   }
 
+  const requireAuth = () => {
+    if (currentUser) return true
+
+    showToast('请先注册或登录')
+    return false
+  }
+
+  const navigateWithAuth = (path) => {
+    if (!requireAuth()) return
+    navigate(path)
+  }
+
   const handleArtistEntry = () => {
+    if (!requireAuth()) return
+
     if (currentUser?.role === 'admin') {
       navigate('/admin')
       return
@@ -473,7 +487,7 @@ export default function ProfilePage() {
       return
     }
 
-    navigate(currentUser ? '/artist/apply' : '/login')
+    navigate('/artist/apply')
   }
 
   const handleAvatarUploadClick = () => {
@@ -560,7 +574,7 @@ export default function ProfilePage() {
               label={item.label}
               meta={item.meta}
               badge={item.badge}
-              onClick={() => navigate(item.path)}
+              onClick={() => navigateWithAuth(item.path)}
               isLast={idx === collectionItems.length - 1}
             />
           ))}
@@ -576,7 +590,7 @@ export default function ProfilePage() {
               label={item.label}
               meta={item.meta}
               badge={item.badge}
-              onClick={() => item.path && navigate(item.path)}
+              onClick={() => item.path && (item.label === '联系客服' ? navigate(item.path) : navigateWithAuth(item.path))}
               isLast={idx === serviceItems.length - 1}
             />
           ))}
