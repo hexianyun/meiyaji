@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { charity, charityActivities, charityProjectDetails, charityStories, charitySignupEvents } from '../data'
+import { charity, charityActivities, charityStories, charitySignupEvents } from '../data'
 import { getPublicContents } from '../services/contentApi'
 
 function SectionIntro({ eyebrow, title, description, actionLabel, onAction }) {
@@ -196,8 +196,11 @@ function ImpactSection() {
   )
 }
 
-function InitiativesSection({ projects }) {
+function ActivitiesSection({ activities }) {
   const navigate = useNavigate()
+  const featuredActivity = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0]
+
+  if (!featuredActivity) return null
 
   return (
     <section id="charity-activities" className="px-4 mt-16 scroll-mt-24">
@@ -207,58 +210,46 @@ function InitiativesSection({ projects }) {
         description="从长期计划到现场实践，公益栏目首先呈现正在发生和已经留下影响的项目行动。"
       />
 
-      <div className="space-y-4">
-        {projects.map(item => (
-          <div
-            key={item.id}
-            className="group overflow-hidden"
-            style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
-          >
-            <div className="aspect-[16/10] overflow-hidden">
-              <img src={item.cover} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-            </div>
-            <div className="p-5">
-              <div className="flex items-start justify-between gap-4 mb-3">
-                <div>
-                  <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-2.5" style={{ color: 'var(--text-weak)' }}>
-                    {item.tag}
-                  </p>
-                  <h3 className="text-[22px] leading-[1.3] font-bold" style={{ color: 'var(--text)' }}>
-                    {item.title}
-                  </h3>
-                </div>
-                <div className="text-right text-[12px] font-medium" style={{ color: 'var(--text-muted)' }}>
-                  <div>项目类型 · {item.kind === 'project' ? '长期项目' : '公益内容'}</div>
-                  <div className="mt-1">{item.date}</div>
-                </div>
-              </div>
-              <p className="text-[14px] leading-relaxed mb-4" style={{ color: 'var(--text-muted)' }}>
-                {item.desc || item.summary}
-              </p>
-              {item.id && (
-                <button
-                  onClick={() => navigate(`/charity/project/${item.id}`)}
-                  className="text-[13px] font-semibold flex items-center gap-1 transition-opacity hover:opacity-70"
-                  style={{ color: 'var(--accent)' }}
-                >
-                  查看项目详情
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </button>
-              )}
-            </div>
+      <button
+        onClick={() => navigate(`/charity/article/${featuredActivity.id}`)}
+        className="w-full text-left group overflow-hidden"
+        style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
+      >
+        <div className="aspect-[16/10] overflow-hidden">
+          <img src={featuredActivity.cover} alt={featuredActivity.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        </div>
+        <div className="p-5">
+          <div className="flex items-center justify-between gap-4 mb-3 text-[12px] font-medium" style={{ color: 'var(--text-weak)' }}>
+            <span className="uppercase tracking-wider font-bold">{featuredActivity.tag}</span>
+            <span>{featuredActivity.location} · {featuredActivity.date}</span>
           </div>
-        ))}
-      </div>
+          <h3 className="text-[22px] leading-[1.3] font-bold mb-3" style={{ color: 'var(--text)' }}>
+            {featuredActivity.title}
+          </h3>
+          <p className="text-[14px] leading-relaxed mb-5" style={{ color: 'var(--text-muted)' }}>
+            {featuredActivity.desc || featuredActivity.summary}
+          </p>
+          <div className="flex items-center justify-between text-[13px] font-semibold">
+            <span style={{ color: 'var(--text-weak)' }}>{featuredActivity.participants ? `${featuredActivity.participants} 人参与` : '查看活动信息'}</span>
+            <span className="flex items-center gap-1 transition-colors group-hover:text-opacity-70" style={{ color: 'var(--accent)' }}>
+              查看活动详情
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </div>
+        </div>
+      </button>
     </section>
   )
 }
 
 function SignupSection({ events }) {
   const navigate = useNavigate()
-  const signupItems = [...events].sort((a, b) => String(b.date).localeCompare(String(a.date)))
+  const featuredEvent = [...events].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0]
+
+  if (!featuredEvent) return null
 
   return (
     <section id="charity-signup" className="px-4 mt-16 scroll-mt-24">
@@ -268,49 +259,46 @@ function SignupSection({ events }) {
         description="这里集中展示近期公益活动与参与入口，方便查看内容、时间和报名相关信息。"
       />
 
-      <div className="space-y-4">
-        {signupItems.map(event => (
-          <button
-            key={event.id}
-            onClick={() => navigate(`/charity/article/${event.id}`)}
-            className="w-full text-left group overflow-hidden"
-            style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
-          >
-            <div className="aspect-[16/10] overflow-hidden">
-              <img src={event.cover} alt={event.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-            </div>
-            <div className="p-5">
-              <div className="flex items-center justify-between gap-4 mb-3 text-[12px] font-medium" style={{ color: 'var(--text-weak)' }}>
-                <span className="uppercase tracking-wider font-bold">{event.tag}</span>
-                <span>{event.location} · {event.date}</span>
-              </div>
-              <h3 className="text-[20px] leading-[1.3] font-bold mb-3" style={{ color: 'var(--text)' }}>
-                {event.title}
-              </h3>
-              <p className="text-[14px] leading-relaxed mb-5" style={{ color: 'var(--text-muted)' }}>
-                {event.desc || event.summary}
-              </p>
-              <div className="flex items-center justify-between text-[13px] font-semibold">
-                <span style={{ color: 'var(--text-weak)' }}>{event.status || '开放报名中'}</span>
-                <span className="flex items-center gap-1 transition-colors group-hover:text-opacity-70" style={{ color: 'var(--accent)' }}>
-                  查看征集详情
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </span>
-              </div>
-            </div>
-          </button>
-        ))}
-      </div>
+      <button
+        onClick={() => navigate(`/charity/article/${featuredEvent.id}`)}
+        className="w-full text-left group overflow-hidden"
+        style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
+      >
+        <div className="aspect-[16/10] overflow-hidden">
+          <img src={featuredEvent.cover} alt={featuredEvent.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        </div>
+        <div className="p-5">
+          <div className="flex items-center justify-between gap-4 mb-3 text-[12px] font-medium" style={{ color: 'var(--text-weak)' }}>
+            <span className="uppercase tracking-wider font-bold">{featuredEvent.tag}</span>
+            <span>{featuredEvent.location} · {featuredEvent.date}</span>
+          </div>
+          <h3 className="text-[20px] leading-[1.3] font-bold mb-3" style={{ color: 'var(--text)' }}>
+            {featuredEvent.title}
+          </h3>
+          <p className="text-[14px] leading-relaxed mb-5" style={{ color: 'var(--text-muted)' }}>
+            {featuredEvent.desc || featuredEvent.summary}
+          </p>
+          <div className="flex items-center justify-between text-[13px] font-semibold">
+            <span style={{ color: 'var(--text-weak)' }}>{featuredEvent.status || '开放报名中'}</span>
+            <span className="flex items-center gap-1 transition-colors group-hover:text-opacity-70" style={{ color: 'var(--accent)' }}>
+              查看征集详情
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </div>
+        </div>
+      </button>
     </section>
   )
 }
 
 function StoriesSection({ stories }) {
   const navigate = useNavigate()
-  const storyItems = [...stories].sort((a, b) => String(b.date).localeCompare(String(a.date)))
+  const featuredStory = [...stories].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0]
+
+  if (!featuredStory) return null
 
   return (
     <section id="charity-stories" className="px-4 mt-16 scroll-mt-24">
@@ -319,35 +307,36 @@ function StoriesSection({ stories }) {
         title={'公益故事\n把现场变成可阅读的记录'}
         description="这一组内容延续真实活动文章，但以更轻的阅读节奏呈现项目背后的温度与细节。"
       />
-
-      <div className="grid grid-cols-2 gap-4">
-        {storyItems.map(story => (
-          <button
-            key={story.id}
-            onClick={() => navigate(`/charity/article/${story.id}`)}
-            className="text-left group"
-            style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
-          >
-            <div className="aspect-[4/3] overflow-hidden">
-              <img src={story.cover} alt={story.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-            </div>
-            <div className="p-4">
-              <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
-                {story.tag}
-              </p>
-              <h3 className="text-[15px] leading-[1.4] font-bold mb-2 line-clamp-2" style={{ color: 'var(--text)' }}>
-                {story.title}
-              </h3>
-              <p className="text-[12px] leading-relaxed font-medium line-clamp-2 mb-2.5" style={{ color: 'var(--text-muted)' }}>
-                {story.desc}
-              </p>
-              <p className="text-[12px] font-medium" style={{ color: 'var(--text-muted)' }}>
-                {story.location} · {story.date}
-              </p>
-            </div>
-          </button>
-        ))}
-      </div>
+      <button
+        onClick={() => navigate(`/charity/article/${featuredStory.id}`)}
+        className="w-full text-left group overflow-hidden"
+        style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
+      >
+        <div className="aspect-[16/10] overflow-hidden">
+          <img src={featuredStory.cover} alt={featuredStory.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        </div>
+        <div className="p-5">
+          <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
+            {featuredStory.tag}
+          </p>
+          <h3 className="text-[20px] leading-[1.3] font-bold mb-3" style={{ color: 'var(--text)' }}>
+            {featuredStory.title}
+          </h3>
+          <p className="text-[14px] leading-relaxed mb-4" style={{ color: 'var(--text-muted)' }}>
+            {featuredStory.desc}
+          </p>
+          <div className="flex items-center justify-between text-[13px] font-semibold">
+            <span style={{ color: 'var(--text-weak)' }}>{featuredStory.location} · {featuredStory.date}</span>
+            <span className="flex items-center gap-1 transition-colors group-hover:text-opacity-70" style={{ color: 'var(--accent)' }}>
+              阅读公益故事
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </div>
+        </div>
+      </button>
     </section>
   )
 }
@@ -395,10 +384,6 @@ function CharityFooter() {
 
 export default function CharityPage() {
   const [activities, setActivities] = useState(charityActivities)
-  const [projects, setProjects] = useState(charity.map(item => ({
-    ...item,
-    id: String(item.id),
-  })))
   const [signupEvents] = useState(charitySignupEvents)
   const [storyItems] = useState(charityStories)
 
@@ -406,15 +391,11 @@ export default function CharityPage() {
     let isActive = true
 
     async function loadContent() {
-      const [nextActivities, nextProjects] = await Promise.all([
-        getPublicContents('activity'),
-        getPublicContents('project'),
-      ])
+      const nextActivities = await getPublicContents('activity')
 
       if (!isActive) return
 
       setActivities(nextActivities)
-      setProjects(nextProjects)
     }
 
     loadContent()
@@ -436,7 +417,7 @@ export default function CharityPage() {
         </div>
       </section>
 
-      <InitiativesSection projects={projects} />
+      <ActivitiesSection activities={activities} />
       <SignupSection events={signupEvents} />
       <StoriesSection stories={storyItems} />
       <CharityFooter />
