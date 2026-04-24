@@ -38,9 +38,21 @@ function SectionIntro({ eyebrow, title, description, actionLabel, onAction }) {
 
 function CharityHero({ activities }) {
   const navigate = useNavigate()
-  const leadActivity = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0]
+  const [currentSlide, setCurrentSlide] = useState(0)
 
-  if (!leadActivity) return null
+  const carouselActivities = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 5)
+
+  useEffect(() => {
+    if (carouselActivities.length <= 1) return
+
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % carouselActivities.length)
+    }, 4500)
+
+    return () => clearInterval(timer)
+  }, [carouselActivities.length])
+
+  if (carouselActivities.length === 0) return null
 
   return (
     <section className="px-4 pt-6">
@@ -55,48 +67,78 @@ function CharityHero({ activities }) {
         </div>
       </div>
 
-      <div className="relative overflow-hidden cursor-pointer" style={{ borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', background: 'var(--surface-2)' }}>
-        <div className="aspect-[4/5] relative">
-          <img src={leadActivity.cover} alt={leadActivity.title} className="w-full h-full object-cover transition-transform duration-1000 ease-out" style={{ transform: 'scale(1.03)' }} />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%)' }} />
+      <div 
+        className="w-full relative overflow-hidden mb-5" 
+        style={{ borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}
+      >
+        <div className="aspect-[4/5] w-full relative">
+          {carouselActivities.map((activity, idx) => (
+            <img 
+              key={activity.id}
+              src={activity.cover} 
+              alt={activity.title} 
+              className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out"
+              style={{ opacity: currentSlide === idx ? 1 : 0 }}
+            />
+          ))}
+          
+          {/* 渐变遮罩层，让底部按钮清晰可见 */}
+          <div className="absolute inset-0 z-10 pointer-events-none" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%)' }} />
 
-          <div className="absolute inset-x-0 top-0 px-6 pt-6 flex items-start justify-between">
-            <p className="text-[11px] font-bold tracking-[0.25em] uppercase" style={{ color: 'rgba(255,255,255,0.9)' }}>
-              FIELD PRACTICE
-            </p>
-            <div className="text-right text-[12px] font-medium tracking-wide" style={{ color: 'rgba(255,255,255,0.8)' }}>
-              {leadActivity.location}
-              <br />
-              {leadActivity.date}
-            </div>
+          {/* 轮播指示点 */}
+          <div className="absolute top-4 inset-x-0 flex justify-center gap-1.5 z-20">
+            {carouselActivities.map((_, idx) => (
+              <div 
+                key={idx}
+                className="h-1 rounded-full transition-all duration-500"
+                style={{
+                  width: currentSlide === idx ? '16px' : '6px',
+                  background: currentSlide === idx ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.4)'
+                }}
+              />
+            ))}
           </div>
 
-          <div className="absolute inset-x-0 bottom-0 px-6 pb-6">
-            <span
-              className="inline-block px-3 py-1.5 text-[10px] font-bold tracking-wider rounded-full mb-4"
-              style={{ color: 'white', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.2)' }}
-            >
-              {leadActivity.tag}
-            </span>
-            <h2 className="text-[32px] leading-[1.15] font-bold mb-3 blur-reveal" style={{ color: 'white', textShadow: '0 2px 12px rgba(0,0,0,0.2)' }}>
-              {leadActivity.title}
-            </h2>
-            <p className="text-[14px] leading-relaxed max-w-[290px] mb-6 blur-reveal" style={{ color: 'rgba(255,255,255,0.85)', animationDelay: '0.1s' }}>
-              {leadActivity.desc || leadActivity.summary}
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => navigate(`/charity/article/${leadActivity.id}`)}
-                className="btn-primary"
+          {/* 悬浮在图片底部的按钮组 */}
+          <div className="absolute inset-x-0 bottom-0 p-4 z-20">
+            <div className="grid grid-cols-3 gap-3">
+              <button 
+                onClick={() => navigate('/charity')}
+                className="flex flex-col items-center justify-center py-3.5 transition-transform active:scale-95"
+                style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(12px)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
               >
-                阅读现场记录
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'white' }}>
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span className="text-[12px] font-bold mt-1.5" style={{ color: 'white' }}>公益活动</span>
               </button>
-              <button
-                onClick={() => navigate('/discover')}
-                className="btn-outline"
-                style={{ color: 'white', borderColor: 'rgba(255,255,255,0.4)', background: 'transparent' }}
+
+              <button 
+                onClick={() => navigate('/charity')}
+                className="flex flex-col items-center justify-center py-3.5 transition-transform active:scale-95"
+                style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(12px)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
               >
-                浏览参与作品
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'white' }}>
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <polyline points="16 11 18 13 22 9"></polyline>
+                </svg>
+                <span className="text-[12px] font-bold mt-1.5" style={{ color: 'white' }}>活动报名</span>
+              </button>
+
+              <button 
+                onClick={() => navigate('/charity')}
+                className="flex flex-col items-center justify-center py-3.5 transition-transform active:scale-95"
+                style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(12px)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'white' }}>
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+                <span className="text-[12px] font-bold mt-1.5" style={{ color: 'white' }}>公益故事</span>
               </button>
             </div>
           </div>
