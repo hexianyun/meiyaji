@@ -136,7 +136,7 @@ function HeroAvatar({ currentUser, onUploadClick, isUploading }) {
   )
 }
 
-function ProfileHero({ currentUser, onAvatarUploadClick, isUploadingAvatar }) {
+function ProfileHero({ currentUser, onAvatarUploadClick, isUploadingAvatar, onLogout }) {
   const roleMeta = getRoleMeta(currentUser)
   const heroImageSrc = '/profile/my-banner-hero.jpg'
   const profileLabel = currentUser ? roleMeta.label : '美芽集用户中心'
@@ -178,9 +178,25 @@ function ProfileHero({ currentUser, onAvatarUploadClick, isUploadingAvatar }) {
                   {profileLabel}
                 </span>
               </div>
-              <h1 className="text-[26px] leading-[1.2] font-bold mb-1.5 truncate" style={{ color: 'white', textShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
-                {currentUser ? (currentUser.name || '美芽集用户') : '欢迎来到美芽集'}
-              </h1>
+              <div className="flex items-center justify-between gap-3 mb-1.5">
+                <h1 className="text-[26px] leading-[1.2] font-bold truncate min-w-0" style={{ color: 'white', textShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
+                  {currentUser ? (currentUser.name || '美芽集用户') : '欢迎来到美芽集'}
+                </h1>
+                {currentUser && (
+                  <button
+                    onClick={onLogout}
+                    className="shrink-0 px-3 py-1.5 text-[11px] font-semibold rounded-full transition-opacity hover:opacity-85"
+                    style={{
+                      color: 'rgba(255,255,255,0.96)',
+                      background: 'rgba(255,255,255,0.14)',
+                      border: '1px solid rgba(255,255,255,0.24)',
+                      backdropFilter: 'blur(8px)',
+                    }}
+                  >
+                    退出账号
+                  </button>
+                )}
+              </div>
               <p className="text-[12px] font-medium truncate" style={{ color: 'rgba(255,255,255,0.85)' }}>
                 {profileMeta}
               </p>
@@ -192,9 +208,7 @@ function ProfileHero({ currentUser, onAvatarUploadClick, isUploadingAvatar }) {
   )
 }
 
-function AccountPanel({ currentUser, onLogin, onRegister, onLogout, onArtistEntry }) {
-  const roleMeta = getRoleMeta(currentUser)
-
+function AccountPanel({ currentUser, onLogin, onRegister }) {
   if (!currentUser) {
     return (
       <div
@@ -229,47 +243,7 @@ function AccountPanel({ currentUser, onLogin, onRegister, onLogout, onArtistEntr
     )
   }
 
-  return (
-    <div
-      className="mx-4 mt-5 p-6"
-      style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
-    >
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <p className="text-[11px] font-bold tracking-[0.2em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
-            Status
-          </p>
-          <h2 className="text-[20px] font-bold mb-2" style={{ color: 'var(--text)' }}>
-            {roleMeta.label}
-          </h2>
-          <p className="text-[13px] leading-relaxed mb-3" style={{ color: 'var(--text-muted)' }}>
-            {roleMeta.note}
-          </p>
-        </div>
-      </div>
-
-      <div className="flex gap-3 mt-4 pt-5" style={{ borderTop: '1px solid var(--border)' }}>
-        <button
-          onClick={onArtistEntry}
-          className="btn-outline flex-1 py-3 text-[13px] font-semibold"
-          style={{ background: 'var(--bg)' }}
-        >
-          {currentUser.role === 'admin'
-            ? '进入管理员后台'
-            : currentUser.role === 'artist' && currentUser.artistStatus === 'approved'
-              ? '进入艺术家后台'
-              : '艺术家入驻'}
-        </button>
-        <button
-          onClick={onLogout}
-          className="btn-outline flex-1 py-3 text-[13px] font-medium"
-          style={{ border: '1px solid transparent', color: 'var(--text-muted)' }}
-        >
-          退出当前账号
-        </button>
-      </div>
-    </div>
-  )
+  return null
 }
 
 function StatsPanel({ favsCount, ordersCount }) {
@@ -554,14 +528,13 @@ export default function ProfilePage() {
         currentUser={currentUser}
         onAvatarUploadClick={handleAvatarUploadClick}
         isUploadingAvatar={isUploadingAvatar}
+        onLogout={handleLogout}
       />
 
       <AccountPanel
         currentUser={currentUser}
         onLogin={() => navigate('/login')}
         onRegister={() => navigate('/register')}
-        onLogout={handleLogout}
-        onArtistEntry={handleArtistEntry}
       />
 
       {currentUser && <MembershipBenefitsCard total_spent={currentUser.totalSpent ?? 0} />}
