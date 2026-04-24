@@ -2995,13 +2995,7 @@ export const charityStoryDetails = {
       "讲堂结束后，学校老师告诉我们，之后几周里，依然有学生会在课间把画纸拿出来，对着窗外继续画校园。对我们来说，这种自发的延续，比课堂当天的热闹更珍贵。它说明艺术并没有停留在活动里，而是被孩子们带回了自己的日常。",
       "所以回头看永泰，我们最想记录的并不是完成了多少张作品，而是那些第一次被点亮的观察力、第一次大胆使用的颜色、第一次愿意说出“这是我看到的样子”的勇气。公益讲堂的价值，也许正藏在这些不喧哗却极其具体的变化中。",
     ],
-    images: [
-      "/charity-articles/images/article1_1.png",
-      "/charity-articles/images/article1_2.png",
-      "/charity-articles/images/article1_3.png",
-      "/charity-articles/images/article1_4.png",
-      "/charity-articles/images/article1_5.png",
-    ],
+    images: [],
   },
   "story-2": {
     title: "婺源的春天，让一堂美育课慢慢长成公共记忆",
@@ -3017,13 +3011,7 @@ export const charityStoryDetails = {
       "我们也很在意课堂之外留下了什么。活动结束时捐赠的画材、与老师一同整理的课程经验、现场形成的作品展示方式，都让这次讲堂不仅是一段短暂访问，而是成为学校后续美术教学可以继续使用的资源。公益真正可持续，常常要靠这些被认真留下的细节。",
       "婺源的故事提醒我们，一堂好的公益美育课并不只属于课堂当天。它可以在师生的回忆里继续生长，在学校的展示墙上继续停留，也可以成为一个地方重新确认自身文化与审美价值的开始。春天会过去，但被种下的观看方式和表达意愿，会在更长的时间里慢慢发芽。",
     ],
-    images: [
-      "/charity-articles/images/article2_1.jpg",
-      "/charity-articles/images/article2_4.jpg",
-      "/charity-articles/images/article2_7.jpg",
-      "/charity-articles/images/article2_10.jpg",
-      "/charity-articles/images/article2_13.jpg",
-    ],
+    images: [],
   },
   "story-3": {
     title: "在洽湾，写生课第一次让孩子把家乡画得那么认真",
@@ -3039,13 +3027,7 @@ export const charityStoryDetails = {
       "活动中的一对一指导也让孩子们感受到被认真对待。艺术家并没有简单评价“好看”或“不好看”，而是告诉他们哪里已经很有感觉、哪里还可以更大胆、哪里其实最能代表自己的观看方式。这种针对性的回应，让孩子明白：自己的画面不是被统一标准衡量的，而是可以继续发展出个人表达的。",
       "写生课结束后，洽湾的故事并没有结束。我们记得那些被风吹得微微卷起的画纸，也记得孩子们举着作品时的骄傲神情。对于很多乡村孩子来说，这可能是第一次，他们不是在完成一项课堂作业，而是在认真地把家乡当成一处值得描绘的风景。这个意识一旦建立，艺术就会离他们更近一步。",
     ],
-    images: [
-      "/charity-articles/images/article3_1.jpg",
-      "/charity-articles/images/article3_4.jpg",
-      "/charity-articles/images/article3_7.jpg",
-      "/charity-articles/images/article3_10.jpg",
-      "/charity-articles/images/article3_15.jpg",
-    ],
+    images: [],
   },
   "story-4": {
     title: "榕江之后，我们重新理解了“把课堂留在学校里”",
@@ -3061,13 +3043,7 @@ export const charityStoryDetails = {
       "我们也特别珍惜榕江活动后的反馈。有老师说，自从那次课程之后，学生在美术课上更愿意尝试新材料，也更愿意在作品里画自己身边的生活，而不是一味模仿已有样本。这种变化说明，课堂留下的不是“怎么画得更像”，而是“我也可以从自己的经验出发去表达”。",
       "榕江给我们的启发很直接：公益美育最需要的不是短暂的热度，而是能够嵌入学校、能够被老师和学生继续使用的具体支持。把课堂真正留在学校里，意味着把资源、方法和信心一起留下。这或许比任何口号都更能说明，公益为什么值得长期做下去。",
     ],
-    images: [
-      "/charity-articles/images/article5_1.jpg",
-      "/charity-articles/images/article5_3.jpg",
-      "/charity-articles/images/article5_5.jpg",
-      "/charity-articles/images/article5_8.jpg",
-      "/charity-articles/images/article5_11.jpg",
-    ],
+    images: [],
   },
   "story-5": {
     title: "文山的长卷画完以后，孩子们开始期待下一次相见",
@@ -3083,13 +3059,7 @@ export const charityStoryDetails = {
       "很多家长和老师在活动结束后都提到，孩子们回家以后还会继续谈论当天画了什么、老师说了什么、下次想尝试什么题材。对我们来说，这正是公益故事真正发生的地方。故事并不只在活动现场，它会延伸到放学后的路上、晚饭时的交谈里，也会留在下一次翻开画本时的动作里。",
       "所以我们愿意把文山写成一篇公益故事，而不只是活动记录。因为一场好的公益实践，最终留下的往往不是“我们做了什么”，而是“孩子们之后还想继续做什么”。当一幅长卷画完之后，如果期待没有结束，那么这次相遇就已经不只是一次活动，而是下一段成长的开头。",
     ],
-    images: [
-      "/charity-articles/images/article6_2.jpg",
-      "/charity-articles/images/article6_5.jpg",
-      "/charity-articles/images/article6_8.jpg",
-      "/charity-articles/images/article7_4.jpg",
-      "/charity-articles/images/article7_10.jpg",
-    ],
+    images: [],
   },
 }
 
@@ -3348,7 +3318,7 @@ export const charitySignupEvents = [
     id: "signup-1",
     title: "凤凰公益行——艺芽·童画公益拍卖作品征集",
     type: "作品征集",
-    cover: "/hero-carousel/1710908245.jpg",
+    cover: "/charity-articles/phoenix-charity-cover.png",
     date: "2026-05-18 截止征集",
     location: "线上征集",
     price: 0,
@@ -3365,20 +3335,16 @@ export const charitySignupDetails = {
     author: "美芽集公益项目组",
     location: "线上征集 · 凤凰公益行",
     tag: "活动报名",
-    cover: "/hero-carousel/1710908245.jpg",
+    cover: "/charity-articles/phoenix-charity-cover.png",
     sections: [
-      "“凤凰公益行——艺芽·童画公益拍卖作品征集”由美芽集公益项目组发起，希望通过一次更有公共参与感的公益拍卖，让艺术家的创作与乡村儿童的美育支持形成更直接的连接。我们邀请关注公益与儿童艺术教育的创作者、机构与合作伙伴，一起把作品转化为能够持续发生的支持力量。",
-      "本次征集主要面向油画、丙烯、水彩、水墨、版画、综合材料等适合展示与公益拍卖的平面作品，同时也欢迎围绕儿童观看经验、乡村成长记忆、自然教育与美育启蒙等主题展开的创作。我们希望每件入选作品都不仅具有视觉感染力，也能够清晰传递对儿童、对教育、对公共善意的理解。",
-      "征集期间，投稿者需提交作品高清图、尺寸材质说明、创作年份、作者简介以及一段简短的公益说明，介绍作品愿意参与本次公益拍卖的原因。项目组将根据作品完整度、主题契合度、展示条件与整体拍卖结构进行统一评审，并在征集结束后陆续向入选作者发送通知。",
-      "拍卖所得将继续用于美芽集乡村美育相关项目，包括画材补给、学校空间支持、艺术家公益讲堂及后续课程整理等长期工作。我们也会在活动结束后向参与作者与公众公开拍卖结果和项目去向，让每一次支持都能够被清楚看见。",
-      "如果你愿意让作品参与这次公益行动，欢迎在征集期内将资料发送至项目指定邮箱，并在邮件标题中注明“凤凰公益行——艺芽·童画公益拍卖作品征集”。我们期待更多来自艺术现场的真诚回应，一起为乡村孩子打开更长久的审美入口。",
+      "用童画传递温暖，让艺术点亮爱心！“凤凰公益行”现面向全国征集儿童优秀画作，拍卖所得善款将全额用于新萌芽乡村美育公益，期待小艺术家们的爱心加入！",
+      "征集详情：征集对象为3-15周岁少年儿童，接受个人及机构报名。",
+      "作品要求：画种不限，水彩、国画、素描、创意画、拼贴等均可；尺寸建议A3或四开，无需装裱；作品必须为本人原创，内容积极向上、富有童趣。",
+      "参与方式：线上初选请将作品高清照片和报名信息发送至邮箱 888888@qq.com。报名信息包括姓名、年龄、作品名、家长电话和一句话作品简介；邮件主题请注明“艺芽童画+姓名+年龄”。",
+      "实物寄送：初选入选后，工作人员将通知寄送原作。寄送地址及收件人电话待后续通知。",
+      "时间安排：征集截止时间为2026年5月20日。",
     ],
-    images: [
-      "/hero-carousel/1232997301.jpg",
-      "/hero-carousel/549412817.jpg",
-      "/charity-articles/images/article6_5.jpg",
-      "/charity-articles/images/article7_10.jpg",
-    ],
+    images: [],
   },
 }
 

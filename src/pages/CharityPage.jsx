@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { charity, charityActivities, charityStories, charitySignupEvents } from '../data'
 import { getPublicContents } from '../services/contentApi'
 
@@ -36,15 +36,11 @@ function SectionIntro({ eyebrow, title, description, actionLabel, onAction }) {
   )
 }
 
-function CharityHero({ activities }) {
+function CharityHero({ activities, activeSection }) {
+  const navigate = useNavigate()
   const [currentSlide, setCurrentSlide] = useState(0)
 
   const carouselActivities = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 5)
-
-  const scrollToSection = (sectionId) => {
-    const section = document.getElementById(sectionId)
-    section?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
 
   useEffect(() => {
     if (carouselActivities.length <= 1) return
@@ -107,9 +103,9 @@ function CharityHero({ activities }) {
           <div className="absolute inset-x-0 bottom-0 p-4 z-20">
             <div className="grid grid-cols-3 gap-3">
               <button 
-                onClick={() => scrollToSection('charity-activities')}
+                onClick={() => navigate('/charity/section/activities')}
                 className="flex flex-col items-center justify-center py-3.5 transition-transform active:scale-95"
-                style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(12px)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
+                style={{ background: activeSection === 'activities' ? 'rgba(255, 255, 255, 0.28)' : 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(12px)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
               >
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'white' }}>
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -121,9 +117,9 @@ function CharityHero({ activities }) {
               </button>
 
               <button 
-                onClick={() => scrollToSection('charity-signup')}
+                onClick={() => navigate('/charity/section/signup')}
                 className="flex flex-col items-center justify-center py-3.5 transition-transform active:scale-95"
-                style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(12px)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
+                style={{ background: activeSection === 'signup' ? 'rgba(255, 255, 255, 0.28)' : 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(12px)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
               >
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'white' }}>
                   <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
@@ -134,9 +130,9 @@ function CharityHero({ activities }) {
               </button>
 
               <button 
-                onClick={() => scrollToSection('charity-stories')}
+                onClick={() => navigate('/charity/section/stories')}
                 className="flex flex-col items-center justify-center py-3.5 transition-transform active:scale-95"
-                style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(12px)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
+                style={{ background: activeSection === 'stories' ? 'rgba(255, 255, 255, 0.28)' : 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(12px)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
               >
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'white' }}>
                   <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -152,53 +148,10 @@ function CharityHero({ activities }) {
   )
 }
 
-function ImpactSection() {
-  const totalRaised = charity.reduce((sum, item) => sum + item.raised, 0)
-  const totalBeneficiaries = charity.reduce((sum, item) => sum + item.beneficiaries, 0)
-  const stats = [
-    { value: charity.length + charityActivities.length, label: '公益项目与行动' },
-    { value: totalBeneficiaries, label: '累计受益人次' },
-    { value: `¥${Math.round(totalRaised / 10000)}万`, label: '当前项目筹集' },
-  ]
-
-  return (
-    <section className="px-4 mt-16">
-      <SectionIntro
-        eyebrow="MISSION"
-        title={'公益不是附属说明\n而是项目的核心结构'}
-        description="我们把作品展陈、艺术家参与、乡村课堂与长期项目并置，让公益页不仅能被阅读，也能被信任。"
-      />
-
-      <div className="p-6 relative overflow-hidden" style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
-        {/* Decorative element */}
-        <div className="absolute top-0 right-0 w-32 h-32 opacity-5 pointer-events-none" style={{ background: 'radial-gradient(circle, var(--accent) 0%, transparent 70%)', transform: 'translate(30%, -30%)' }}></div>
-
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          {stats.map(stat => (
-            <div key={stat.label}>
-              <p className="text-[36px] leading-none font-bold mb-2 tracking-tight" style={{ color: 'var(--text)' }}>
-                {stat.value}
-              </p>
-              <p className="text-[12px] font-medium" style={{ color: 'var(--text-muted)' }}>
-                {stat.label}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div className="pt-5 border-t" style={{ borderColor: 'var(--border)' }}>
-          <p className="text-[14px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-            从长期美育教室，到儿童写生支持，再到艺术家公益讲堂，我们希望每一个项目都能够留下清晰的方法、真实的记录与持续的影响。
-          </p>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function ActivitiesSection({ activities }) {
+function ActivitiesSection({ activities, showAll = false }) {
   const navigate = useNavigate()
-  const featuredActivity = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0]
+  const sortedActivities = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date)))
+  const featuredActivity = sortedActivities[0]
 
   if (!featuredActivity) return null
 
@@ -210,44 +163,50 @@ function ActivitiesSection({ activities }) {
         description="从长期计划到现场实践，公益栏目首先呈现正在发生和已经留下影响的项目行动。"
       />
 
-      <button
-        onClick={() => navigate(`/charity/article/${featuredActivity.id}`)}
-        className="w-full text-left group overflow-hidden"
-        style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
-      >
-        <div className="aspect-[16/10] overflow-hidden">
-          <img src={featuredActivity.cover} alt={featuredActivity.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-        </div>
-        <div className="p-5">
-          <div className="flex items-center justify-between gap-4 mb-3 text-[12px] font-medium" style={{ color: 'var(--text-weak)' }}>
-            <span className="uppercase tracking-wider font-bold">{featuredActivity.tag}</span>
-            <span>{featuredActivity.location} · {featuredActivity.date}</span>
-          </div>
-          <h3 className="text-[22px] leading-[1.3] font-bold mb-3" style={{ color: 'var(--text)' }}>
-            {featuredActivity.title}
-          </h3>
-          <p className="text-[14px] leading-relaxed mb-5" style={{ color: 'var(--text-muted)' }}>
-            {featuredActivity.desc || featuredActivity.summary}
-          </p>
-          <div className="flex items-center justify-between text-[13px] font-semibold">
-            <span style={{ color: 'var(--text-weak)' }}>{featuredActivity.participants ? `${featuredActivity.participants} 人参与` : '查看活动信息'}</span>
-            <span className="flex items-center gap-1 transition-colors group-hover:text-opacity-70" style={{ color: 'var(--accent)' }}>
-              查看活动详情
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </span>
-          </div>
-        </div>
-      </button>
+      <div className="space-y-4">
+        {(showAll ? sortedActivities : [featuredActivity]).map(activity => (
+          <button
+            key={activity.id}
+            onClick={() => navigate(`/charity/article/${activity.id}`)}
+            className="w-full text-left group overflow-hidden"
+            style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
+          >
+            <div className="aspect-[16/10] overflow-hidden">
+              <img src={activity.cover} alt={activity.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            </div>
+            <div className="p-5">
+              <div className="flex items-center justify-between gap-4 mb-3 text-[12px] font-medium" style={{ color: 'var(--text-weak)' }}>
+                <span className="uppercase tracking-wider font-bold">{activity.tag}</span>
+                <span>{activity.location} · {activity.date}</span>
+              </div>
+              <h3 className="text-[22px] leading-[1.3] font-bold mb-3" style={{ color: 'var(--text)' }}>
+                {activity.title}
+              </h3>
+              <p className="text-[14px] leading-relaxed mb-5" style={{ color: 'var(--text-muted)' }}>
+                {activity.desc || activity.summary}
+              </p>
+              <div className="flex items-center justify-between text-[13px] font-semibold">
+                <span style={{ color: 'var(--text-weak)' }}>{activity.participants ? `${activity.participants} 人参与` : '查看活动信息'}</span>
+                <span className="flex items-center gap-1 transition-colors group-hover:text-opacity-70" style={{ color: 'var(--accent)' }}>
+                  查看活动详情
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
     </section>
   )
 }
 
-function SignupSection({ events }) {
+function SignupSection({ events, showAll = false }) {
   const navigate = useNavigate()
-  const featuredEvent = [...events].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0]
+  const sortedEvents = [...events].sort((a, b) => String(b.date).localeCompare(String(a.date)))
+  const featuredEvent = sortedEvents[0]
 
   if (!featuredEvent) return null
 
@@ -259,44 +218,50 @@ function SignupSection({ events }) {
         description="这里集中展示近期公益活动与参与入口，方便查看内容、时间和报名相关信息。"
       />
 
-      <button
-        onClick={() => navigate(`/charity/article/${featuredEvent.id}`)}
-        className="w-full text-left group overflow-hidden"
-        style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
-      >
-        <div className="aspect-[16/10] overflow-hidden">
-          <img src={featuredEvent.cover} alt={featuredEvent.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-        </div>
-        <div className="p-5">
-          <div className="flex items-center justify-between gap-4 mb-3 text-[12px] font-medium" style={{ color: 'var(--text-weak)' }}>
-            <span className="uppercase tracking-wider font-bold">{featuredEvent.tag}</span>
-            <span>{featuredEvent.location} · {featuredEvent.date}</span>
-          </div>
-          <h3 className="text-[20px] leading-[1.3] font-bold mb-3" style={{ color: 'var(--text)' }}>
-            {featuredEvent.title}
-          </h3>
-          <p className="text-[14px] leading-relaxed mb-5" style={{ color: 'var(--text-muted)' }}>
-            {featuredEvent.desc || featuredEvent.summary}
-          </p>
-          <div className="flex items-center justify-between text-[13px] font-semibold">
-            <span style={{ color: 'var(--text-weak)' }}>{featuredEvent.status || '开放报名中'}</span>
-            <span className="flex items-center gap-1 transition-colors group-hover:text-opacity-70" style={{ color: 'var(--accent)' }}>
-              查看征集详情
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </span>
-          </div>
-        </div>
-      </button>
+      <div className="space-y-4">
+        {(showAll ? sortedEvents : [featuredEvent]).map(event => (
+          <button
+            key={event.id}
+            onClick={() => navigate(`/charity/article/${event.id}`)}
+            className="w-full text-left group overflow-hidden"
+            style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
+          >
+            <div className="aspect-[16/10] overflow-hidden">
+              <img src={event.cover} alt={event.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            </div>
+            <div className="p-5">
+              <div className="flex items-center justify-between gap-4 mb-3 text-[12px] font-medium" style={{ color: 'var(--text-weak)' }}>
+                <span className="uppercase tracking-wider font-bold">{event.tag}</span>
+                <span>{event.location} · {event.date}</span>
+              </div>
+              <h3 className="text-[20px] leading-[1.3] font-bold mb-3" style={{ color: 'var(--text)' }}>
+                {event.title}
+              </h3>
+              <p className="text-[14px] leading-relaxed mb-5" style={{ color: 'var(--text-muted)' }}>
+                {event.desc || event.summary}
+              </p>
+              <div className="flex items-center justify-between text-[13px] font-semibold">
+                <span style={{ color: 'var(--text-weak)' }}>{event.status || '开放报名中'}</span>
+                <span className="flex items-center gap-1 transition-colors group-hover:text-opacity-70" style={{ color: 'var(--accent)' }}>
+                  查看征集详情
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
     </section>
   )
 }
 
-function StoriesSection({ stories }) {
+function StoriesSection({ stories, showAll = false }) {
   const navigate = useNavigate()
-  const featuredStory = [...stories].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0]
+  const sortedStories = [...stories].sort((a, b) => String(b.date).localeCompare(String(a.date)))
+  const featuredStory = sortedStories[0]
 
   if (!featuredStory) return null
 
@@ -307,36 +272,41 @@ function StoriesSection({ stories }) {
         title={'公益故事\n把现场变成可阅读的记录'}
         description="这一组内容延续真实活动文章，但以更轻的阅读节奏呈现项目背后的温度与细节。"
       />
-      <button
-        onClick={() => navigate(`/charity/article/${featuredStory.id}`)}
-        className="w-full text-left group overflow-hidden"
-        style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
-      >
-        <div className="aspect-[16/10] overflow-hidden">
-          <img src={featuredStory.cover} alt={featuredStory.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-        </div>
-        <div className="p-5">
-          <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
-            {featuredStory.tag}
-          </p>
-          <h3 className="text-[20px] leading-[1.3] font-bold mb-3" style={{ color: 'var(--text)' }}>
-            {featuredStory.title}
-          </h3>
-          <p className="text-[14px] leading-relaxed mb-4" style={{ color: 'var(--text-muted)' }}>
-            {featuredStory.desc}
-          </p>
-          <div className="flex items-center justify-between text-[13px] font-semibold">
-            <span style={{ color: 'var(--text-weak)' }}>{featuredStory.location} · {featuredStory.date}</span>
-            <span className="flex items-center gap-1 transition-colors group-hover:text-opacity-70" style={{ color: 'var(--accent)' }}>
-              阅读公益故事
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </span>
-          </div>
-        </div>
-      </button>
+      <div className="space-y-4">
+        {(showAll ? sortedStories : [featuredStory]).map(story => (
+          <button
+            key={story.id}
+            onClick={() => navigate(`/charity/article/${story.id}`)}
+            className="w-full text-left group overflow-hidden"
+            style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
+          >
+            <div className="aspect-[16/10] overflow-hidden">
+              <img src={story.cover} alt={story.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            </div>
+            <div className="p-5">
+              <p className="text-[10px] font-bold tracking-[0.15em] uppercase mb-2" style={{ color: 'var(--text-weak)' }}>
+                {story.tag}
+              </p>
+              <h3 className="text-[20px] leading-[1.3] font-bold mb-3" style={{ color: 'var(--text)' }}>
+                {story.title}
+              </h3>
+              <p className="text-[14px] leading-relaxed mb-4" style={{ color: 'var(--text-muted)' }}>
+                {story.desc}
+              </p>
+              <div className="flex items-center justify-between text-[13px] font-semibold">
+                <span style={{ color: 'var(--text-weak)' }}>{story.location} · {story.date}</span>
+                <span className="flex items-center gap-1 transition-colors group-hover:text-opacity-70" style={{ color: 'var(--accent)' }}>
+                  阅读公益故事
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
     </section>
   )
 }
@@ -383,9 +353,13 @@ function CharityFooter() {
 }
 
 export default function CharityPage() {
+  const { section } = useParams()
   const [activities, setActivities] = useState(charityActivities)
   const [signupEvents] = useState(charitySignupEvents)
   const [storyItems] = useState(charityStories)
+  const activeSection = section === 'activities' || section === 'signup' || section === 'stories'
+    ? section
+    : 'overview'
 
   useEffect(() => {
     let isActive = true
@@ -407,19 +381,17 @@ export default function CharityPage() {
 
   return (
     <div className="pb-20 fade-in min-h-screen">
-      <CharityHero activities={activities} />
-      <ImpactSection />
+      <CharityHero activities={activities} activeSection={activeSection} />
 
-      {/* 插入的计划书图片 */}
-      <section className="px-4 mt-12 mb-4">
-        <div className="w-full overflow-hidden" style={{ borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}>
-          <img src="/jihuashu.png" alt="公益计划书" className="w-full h-auto block" />
-        </div>
-      </section>
-
-      <ActivitiesSection activities={activities} />
-      <SignupSection events={signupEvents} />
-      <StoriesSection stories={storyItems} />
+      {(activeSection === 'overview' || activeSection === 'activities') && (
+        <ActivitiesSection activities={activities} showAll={activeSection === 'activities'} />
+      )}
+      {(activeSection === 'overview' || activeSection === 'signup') && (
+        <SignupSection events={signupEvents} showAll={activeSection === 'signup'} />
+      )}
+      {(activeSection === 'overview' || activeSection === 'stories') && (
+        <StoriesSection stories={storyItems} showAll={activeSection === 'stories'} />
+      )}
       <CharityFooter />
     </div>
   )

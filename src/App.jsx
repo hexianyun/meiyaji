@@ -311,6 +311,7 @@ function AppContent() {
           <Route path="/artists" element={<ArtistListPage />} />
           <Route path="/exhibitions" element={<ExhibitionsPage />} />
           <Route path="/charity" element={<CharityPage />} />
+          <Route path="/charity/section/:section" element={<CharityPage />} />
           <Route path="/charity/article/:id" element={<CharityArticlePage />} />
           <Route path="/charity/project/:id" element={<CharityProjectPage />} />
         </Routes>
