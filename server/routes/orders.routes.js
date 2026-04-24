@@ -3,6 +3,7 @@ import { Router } from 'express'
 import { z } from 'zod'
 import { prisma } from '../lib/prisma.js'
 import { verifyMember } from '../middleware/auth.js'
+import { processNewOrder } from '../services/membership.service.js'
 
 const router = Router()
 
@@ -16,7 +17,7 @@ const orderItemSchema = z.object({
 })
 
 const createOrderSchema = z.object({
-  items: z.array(orderItemSchema).min(1, '订单中至少需要一件作品'),
+  items: z.array(orderItemSchema).min(1, '订单中至少需要一件作品。'),
   buyerName: z.string().min(1).optional(),
   buyerPhone: z.string().min(1).optional(),
   shippingAddress: z.string().min(1).optional(),
@@ -86,7 +87,7 @@ router.get('/', async (req, res) => {
       message: '获取订单成功。',
       orders: orders.map(serializeOrder),
     })
-  } catch (error) {
+  } catch (_error) {
     return res.status(500).json({
       message: '获取订单失败，请稍后再试。',
     })
@@ -98,23 +99,34 @@ router.post('/', async (req, res) => {
     const data = createOrderSchema.parse(req.body)
     const total = data.items.reduce((sum, item) => sum + (item.price * item.qty), 0)
 
-    const order = await prisma.order.create({
-      data: {
-        orderNo: generateOrderNo(),
-        userId: req.user.id,
-        buyerName: data.buyerName || req.user.realName || req.user.username || req.user.email,
-        buyerEmail: req.user.email,
-        buyerPhone: data.buyerPhone,
-        shippingAddress: data.shippingAddress || '待补充收货地址',
-        status: 'pending_shipment',
-        totalAmount: new Prisma.Decimal(total),
-        items: data.items,
-      },
+    const { order, membership } = await prisma.$transaction(async (tx) => {
+      const order = await tx.order.create({
+        data: {
+          orderNo: generateOrderNo(),
+          userId: req.user.id,
+          buyerName: data.buyerName || req.user.realName || req.user.username || req.user.email,
+          buyerEmail: req.user.email,
+          buyerPhone: data.buyerPhone,
+          shippingAddress: data.shippingAddress || '待补充收货地址',
+          status: 'pending_shipment',
+          totalAmount: new Prisma.Decimal(total),
+          items: data.items,
+        },
+      })
+
+      const membership = await processNewOrder(req.user.id, total, {
+        prismaClient: tx,
+        orderId: order.id,
+        note: `Order ${order.orderNo}`,
+      })
+
+      return { order, membership }
     })
 
     return res.status(201).json({
       message: '订单创建成功。',
       order: serializeOrder(order),
+      membership,
     })
   } catch (error) {
     if (error instanceof z.ZodError) {

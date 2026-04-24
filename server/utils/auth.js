@@ -38,6 +38,8 @@ export function serializeUser(user) {
     bio: user.bio,
     artistIntro: user.artistIntro,
     portfolioUrl: user.portfolioUrl,
+    totalSpent: Number(user.total_spent ?? 0),
+    currentTierLevel: user.current_tier_level ?? 0,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   }

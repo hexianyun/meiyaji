@@ -40,27 +40,37 @@ enum OrderStatus {
   cancelled
 }
 
+enum TransactionType {
+  order_payment
+  manual_adjustment
+  refund
+}
+
 model User {
-  id           String        @id @default(cuid())
-  email        String        @unique
-  passwordHash String
-  username     String?       @unique
-  realName     String?
-  avatarUrl    String?
-  phone        String?
-  role         UserRole      @default(member)
-  artistStatus ArtistStatus?
-  bio          String?       @db.Text
-  artistIntro  String?       @db.Text
-  portfolioUrl String?
-  isActive     Boolean       @default(true)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  artworks     Artwork[]
-  orders       Order[]
+  id                 String        @id @default(cuid())
+  email              String        @unique
+  passwordHash       String
+  username           String?       @unique
+  realName           String?
+  avatarUrl          String?
+  phone              String?
+  role               UserRole      @default(member)
+  artistStatus       ArtistStatus?
+  bio                String?       @db.Text
+  artistIntro        String?       @db.Text
+  portfolioUrl       String?
+  isActive           Boolean       @default(true)
+  total_spent        Decimal       @default(0) @db.Decimal(12, 2)
+  current_tier_level Int           @default(0)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  artworks           Artwork[]
+  orders             Order[]
+  transactions       Transaction[]
 
   @@index([role])
   @@index([artistStatus])
+  @@index([current_tier_level])
 }
 
 model Artwork {
@@ -123,7 +133,27 @@ model Order {
   deliveredAt      DateTime?
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
+  transactions     Transaction[]
 
   @@index([userId, createdAt])
   @@index([status, createdAt])
+}
+
+model Transaction {
+  id                  String          @id @default(cuid())
+  userId              String
+  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderId             String?
+  order               Order?          @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  type                TransactionType @default(order_payment)
+  amount              Decimal         @db.Decimal(12, 2)
+  total_spent_snapshot Decimal        @db.Decimal(12, 2)
+  tier_level_snapshot Int
+  perks               Json?
+  note                String?         @db.Text
+  createdAt           DateTime        @default(now())
+
+  @@index([userId, createdAt])
+  @@index([orderId])
+  @@index([type, createdAt])
 }
