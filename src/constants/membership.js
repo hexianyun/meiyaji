@@ -1,13 +1,13 @@
 export const MEMBERSHIP_TIERS = [
   {
     level: 0,
-    name: '观艺',
+    name: '唤春使者',
     threshold: 0,
     perks: [],
   },
   {
     level: 1,
-    name: '拾色',
+    name: '新芽伙伴',
     threshold: 3000,
     perks: [
       '新萌芽精美伴手礼一份',
@@ -16,7 +16,7 @@ export const MEMBERSHIP_TIERS = [
   },
   {
     level: 2,
-    name: '描心',
+    name: '润枝使者',
     threshold: 5000,
     perks: [
       '新萌芽精美伴手礼一份',
@@ -26,7 +26,7 @@ export const MEMBERSHIP_TIERS = [
   },
   {
     level: 3,
-    name: '臻赏',
+    name: '繁花知音',
     threshold: 10000,
     perks: [
       '新萌芽精美伴手礼一份',
@@ -37,7 +37,7 @@ export const MEMBERSHIP_TIERS = [
   },
   {
     level: 4,
-    name: '传薪',
+    name: '硕果共建人',
     threshold: 100000,
     perks: [
       '新萌芽精美伴手礼一份',
