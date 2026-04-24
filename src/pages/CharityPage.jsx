@@ -37,10 +37,14 @@ function SectionIntro({ eyebrow, title, description, actionLabel, onAction }) {
 }
 
 function CharityHero({ activities }) {
-  const navigate = useNavigate()
   const [currentSlide, setCurrentSlide] = useState(0)
 
   const carouselActivities = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 5)
+
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId)
+    section?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   useEffect(() => {
     if (carouselActivities.length <= 1) return
@@ -103,7 +107,7 @@ function CharityHero({ activities }) {
           <div className="absolute inset-x-0 bottom-0 p-4 z-20">
             <div className="grid grid-cols-3 gap-3">
               <button 
-                onClick={() => navigate('/charity')}
+                onClick={() => scrollToSection('charity-activities')}
                 className="flex flex-col items-center justify-center py-3.5 transition-transform active:scale-95"
                 style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(12px)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
               >
@@ -117,7 +121,7 @@ function CharityHero({ activities }) {
               </button>
 
               <button 
-                onClick={() => navigate('/charity')}
+                onClick={() => scrollToSection('charity-signup')}
                 className="flex flex-col items-center justify-center py-3.5 transition-transform active:scale-95"
                 style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(12px)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
               >
@@ -130,7 +134,7 @@ function CharityHero({ activities }) {
               </button>
 
               <button 
-                onClick={() => navigate('/charity')}
+                onClick={() => scrollToSection('charity-stories')}
                 className="flex flex-col items-center justify-center py-3.5 transition-transform active:scale-95"
                 style={{ background: 'rgba(255, 255, 255, 0.15)', backdropFilter: 'blur(12px)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(255, 255, 255, 0.3)' }}
               >
@@ -196,11 +200,11 @@ function InitiativesSection({ projects }) {
   const navigate = useNavigate()
 
   return (
-    <section className="px-4 mt-16">
+    <section id="charity-activities" className="px-4 mt-16 scroll-mt-24">
       <SectionIntro
-        eyebrow="INITIATIVES"
-        title={'把长期项目单独陈列\n让每一项计划都清晰可见'}
-        description="公益项目不只是一则活动信息，而应该像机构图录一样，被完整地展开。"
+        eyebrow="CHARITY EVENTS"
+        title={'公益活动\n把每一次行动清晰展开'}
+        description="从长期计划到现场实践，公益栏目首先呈现正在发生和已经留下影响的项目行动。"
       />
 
       <div className="space-y-4">
@@ -257,11 +261,11 @@ function ActivitiesSection({ activities }) {
   const sortedActivities = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date)))
 
   return (
-    <section className="px-4 mt-16">
+    <section id="charity-signup" className="px-4 mt-16 scroll-mt-24">
       <SectionIntro
-        eyebrow="FIELD NOTES"
-        title={'把行动现场整理成\n可持续阅读的公益记录'}
-        description="每一次讲堂、回访与现场实践，都应该留下完整的图像和叙事，而不是短暂滑过的信息。"
+        eyebrow="EVENT SIGNUP"
+        title={'活动报名\n查看近期开放活动'}
+        description="这里集中展示近期公益活动与参与入口，方便查看内容、时间和报名相关信息。"
       />
 
       <div className="space-y-4">
@@ -287,9 +291,9 @@ function ActivitiesSection({ activities }) {
                 {activity.desc || activity.summary}
               </p>
               <div className="flex items-center justify-between text-[13px] font-semibold">
-                <span style={{ color: 'var(--text-weak)' }}>{activity.participants ? `${activity.participants} 人参与` : '查看项目现场'}</span>
+                <span style={{ color: 'var(--text-weak)' }}>{activity.participants ? `${activity.participants} 人参与` : '查看活动信息'}</span>
                 <span className="flex items-center gap-1 transition-colors group-hover:text-opacity-70" style={{ color: 'var(--accent)' }}>
-                  查看现场记录
+                  查看活动详情
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                     <polyline points="12 5 19 12 12 19"></polyline>
@@ -309,11 +313,11 @@ function StoriesSection({ activities }) {
   const editorialActivities = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 2)
 
   return (
-    <section className="px-4 mt-16">
+    <section id="charity-stories" className="px-4 mt-16 scroll-mt-24">
       <SectionIntro
-        eyebrow="EDITORIAL"
-        title={'用更编辑化的方式\n补充项目的温度与背景'}
-        description="这一组内容同样来自已有公益活动文章，只是以更轻的编辑式方式再次呈现，让页面不止有数据，也有阅读节奏。"
+        eyebrow="CHARITY STORIES"
+        title={'公益故事\n把现场变成可阅读的记录'}
+        description="这一组内容延续真实活动文章，但以更轻的阅读节奏呈现项目背后的温度与细节。"
       />
 
       <div className="grid grid-cols-2 gap-4">
