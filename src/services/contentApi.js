@@ -4,6 +4,10 @@ import {
   charityActivities,
   charityArticleDetails,
   charityProjectDetails,
+  charityStories,
+  charityStoryDetails,
+  charitySignupEvents,
+  charitySignupDetails,
 } from '../data'
 
 const CURRENT_USER_STORAGE_KEY = 'meiyaji_current_user'
@@ -163,21 +167,61 @@ function normalizeStaticActivity(id, activity) {
   const article = charityArticleDetails[id]
   return {
     id: String(id),
-    legacyId: id,
+    legacyId: Number.isFinite(Number(id)) ? Number(id) : null,
     kind: 'activity',
-    title: article?.title || activity.title,
-    cover: article?.cover || activity.cover,
-    date: article?.date || activity.date,
+    title: article?.title || activity?.title || '',
+    cover: article?.cover || activity?.cover || '',
+    date: article?.date || activity?.date || '',
     author: article?.author || '美芽集公益项目组',
-    location: article?.location || activity.location,
-    tag: article?.tag || activity.tag,
-    summary: activity.desc || article?.sections?.[0] || '',
+    location: article?.location || activity?.location || '',
+    tag: article?.tag || activity?.tag || '',
+    summary: activity?.desc || article?.sections?.[0] || '',
     sections: article?.sections || [],
     images: article?.images || [],
-    participants: activity.participants,
-    price: activity.price,
-    status: activity.status,
-    desc: activity.desc,
+    participants: activity?.participants,
+    price: activity?.price,
+    status: activity?.status,
+    desc: activity?.desc || '',
+  }
+}
+
+function normalizeStaticStory(id, story) {
+  const article = charityStoryDetails[id]
+  return {
+    id: String(id),
+    legacyId: null,
+    kind: 'story',
+    title: article?.title || story?.title || '',
+    cover: article?.cover || story?.cover || '',
+    date: article?.date || story?.date || '',
+    author: article?.author || '美芽集编辑部',
+    location: article?.location || story?.location || '',
+    tag: article?.tag || story?.tag || '',
+    summary: story?.desc || article?.sections?.[0] || '',
+    sections: article?.sections || [],
+    images: article?.images || [],
+    desc: story?.desc || '',
+  }
+}
+
+function normalizeStaticSignupEvent(id, event) {
+  const article = charitySignupDetails[id]
+  return {
+    id: String(id),
+    legacyId: null,
+    kind: 'signup',
+    title: article?.title || event?.title || '',
+    cover: article?.cover || event?.cover || '',
+    date: article?.date || event?.date || '',
+    author: article?.author || '美芽集公益项目组',
+    location: article?.location || event?.location || '',
+    tag: article?.tag || event?.tag || '',
+    summary: event?.desc || article?.sections?.[0] || '',
+    sections: article?.sections || [],
+    images: article?.images || [],
+    price: event?.price,
+    status: event?.status,
+    desc: event?.desc || '',
   }
 }
 
@@ -403,7 +447,21 @@ export async function getPublicContentById(kind, id) {
 
     const numericId = Number(id)
     const activity = charityActivities.find(item => item.id === numericId)
-    return activity ? normalizeStaticActivity(numericId, activity) : null
+    if (activity || charityArticleDetails[id]) {
+      return normalizeStaticActivity(id, activity)
+    }
+
+    const story = charityStories.find(item => String(item.id) === String(id))
+    if (story || charityStoryDetails[id]) {
+      return normalizeStaticStory(id, story)
+    }
+
+    const signupEvent = charitySignupEvents.find(item => String(item.id) === String(id))
+    if (signupEvent || charitySignupDetails[id]) {
+      return normalizeStaticSignupEvent(id, signupEvent)
+    }
+
+    return null
   }
 }
 

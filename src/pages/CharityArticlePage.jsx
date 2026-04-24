@@ -37,13 +37,13 @@ export default function CharityArticlePage() {
       <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg)' }}>
         <div className="text-center p-8">
           <div className="text-3xl mb-4" style={{ color: 'var(--text-weak)' }}>◇</div>
-          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>文章未找到</p>
+          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>内容未找到</p>
           <button
             onClick={() => navigate('/charity')}
             className="mt-4 text-sm font-medium"
             style={{ color: 'var(--primary)' }}
           >
-            返回公益活动
+            返回公益栏目
           </button>
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function CharityArticlePage() {
           >
             ←
           </button>
-          <span className="text-sm font-semibold" style={{ color: 'var(--text)' }}>活动详情</span>
+          <span className="text-sm font-semibold" style={{ color: 'var(--text)' }}>公益详情</span>
           <span className="w-9"></span>
         </div>
       </div>
@@ -118,7 +118,7 @@ export default function CharityArticlePage() {
         <div className="pt-6 mt-8" style={{ borderTop: '1px solid var(--border)' }}>
           <p className="text-center text-xs leading-loose" style={{ color: 'var(--text-weak)' }}>
             — 本文完 —<br />
-            <span className="text-[10px] opacity-70">美芽集 · 公益活动</span>
+            <span className="text-[10px] opacity-70">美芽集 · 公益栏目</span>
           </p>
         </div>
 
@@ -127,7 +127,7 @@ export default function CharityArticlePage() {
           className="w-full py-3 font-medium text-sm"
           style={{ background: 'var(--primary)', color: 'white' }}
         >
-          返回公益活动列表
+          返回公益栏目
         </button>
       </div>
     </div>

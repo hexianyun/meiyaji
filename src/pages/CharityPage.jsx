@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { charity, charityActivities, charityProjectDetails } from '../data'
+import { charity, charityActivities, charityProjectDetails, charityStories, charitySignupEvents } from '../data'
 import { getPublicContents } from '../services/contentApi'
 
 function SectionIntro({ eyebrow, title, description, actionLabel, onAction }) {
@@ -256,9 +256,9 @@ function InitiativesSection({ projects }) {
   )
 }
 
-function ActivitiesSection({ activities }) {
+function SignupSection({ events }) {
   const navigate = useNavigate()
-  const sortedActivities = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date)))
+  const signupItems = [...events].sort((a, b) => String(b.date).localeCompare(String(a.date)))
 
   return (
     <section id="charity-signup" className="px-4 mt-16 scroll-mt-24">
@@ -269,31 +269,31 @@ function ActivitiesSection({ activities }) {
       />
 
       <div className="space-y-4">
-        {sortedActivities.map(activity => (
+        {signupItems.map(event => (
           <button
-            key={activity.id}
-            onClick={() => navigate(`/charity/article/${activity.id}`)}
+            key={event.id}
+            onClick={() => navigate(`/charity/article/${event.id}`)}
             className="w-full text-left group overflow-hidden"
             style={{ background: 'var(--surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border)' }}
           >
             <div className="aspect-[16/10] overflow-hidden">
-              <img src={activity.cover} alt={activity.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src={event.cover} alt={event.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             </div>
             <div className="p-5">
               <div className="flex items-center justify-between gap-4 mb-3 text-[12px] font-medium" style={{ color: 'var(--text-weak)' }}>
-                <span className="uppercase tracking-wider font-bold">{activity.tag}</span>
-                <span>{activity.location} · {activity.date}</span>
+                <span className="uppercase tracking-wider font-bold">{event.tag}</span>
+                <span>{event.location} · {event.date}</span>
               </div>
               <h3 className="text-[20px] leading-[1.3] font-bold mb-3" style={{ color: 'var(--text)' }}>
-                {activity.title}
+                {event.title}
               </h3>
               <p className="text-[14px] leading-relaxed mb-5" style={{ color: 'var(--text-muted)' }}>
-                {activity.desc || activity.summary}
+                {event.desc || event.summary}
               </p>
               <div className="flex items-center justify-between text-[13px] font-semibold">
-                <span style={{ color: 'var(--text-weak)' }}>{activity.participants ? `${activity.participants} 人参与` : '查看活动信息'}</span>
+                <span style={{ color: 'var(--text-weak)' }}>{event.status || '开放报名中'}</span>
                 <span className="flex items-center gap-1 transition-colors group-hover:text-opacity-70" style={{ color: 'var(--accent)' }}>
-                  查看活动详情
+                  查看征集详情
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                     <polyline points="12 5 19 12 12 19"></polyline>
@@ -308,9 +308,9 @@ function ActivitiesSection({ activities }) {
   )
 }
 
-function StoriesSection({ activities }) {
+function StoriesSection({ stories }) {
   const navigate = useNavigate()
-  const editorialActivities = [...activities].sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 2)
+  const storyItems = [...stories].sort((a, b) => String(b.date).localeCompare(String(a.date)))
 
   return (
     <section id="charity-stories" className="px-4 mt-16 scroll-mt-24">
@@ -321,7 +321,7 @@ function StoriesSection({ activities }) {
       />
 
       <div className="grid grid-cols-2 gap-4">
-        {editorialActivities.map(story => (
+        {storyItems.map(story => (
           <button
             key={story.id}
             onClick={() => navigate(`/charity/article/${story.id}`)}
@@ -338,6 +338,9 @@ function StoriesSection({ activities }) {
               <h3 className="text-[15px] leading-[1.4] font-bold mb-2 line-clamp-2" style={{ color: 'var(--text)' }}>
                 {story.title}
               </h3>
+              <p className="text-[12px] leading-relaxed font-medium line-clamp-2 mb-2.5" style={{ color: 'var(--text-muted)' }}>
+                {story.desc}
+              </p>
               <p className="text-[12px] font-medium" style={{ color: 'var(--text-muted)' }}>
                 {story.location} · {story.date}
               </p>
@@ -396,6 +399,8 @@ export default function CharityPage() {
     ...item,
     id: String(item.id),
   })))
+  const [signupEvents] = useState(charitySignupEvents)
+  const [storyItems] = useState(charityStories)
 
   useEffect(() => {
     let isActive = true
@@ -432,8 +437,8 @@ export default function CharityPage() {
       </section>
 
       <InitiativesSection projects={projects} />
-      <ActivitiesSection activities={activities} />
-      <StoriesSection activities={activities} />
+      <SignupSection events={signupEvents} />
+      <StoriesSection stories={storyItems} />
       <CharityFooter />
     </div>
   )
