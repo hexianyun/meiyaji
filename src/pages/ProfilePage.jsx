@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App'
+import MembershipBenefitsCard from '../components/MembershipBenefitsCard'
 import { clearAuthSession, getMemberOrders, updateMemberAvatar } from '../services/contentApi'
 
 function getRoleMeta(currentUser) {
@@ -562,6 +563,8 @@ export default function ProfilePage() {
         onLogout={handleLogout}
         onArtistEntry={handleArtistEntry}
       />
+
+      {currentUser && <MembershipBenefitsCard total_spent={currentUser.totalSpent ?? 0} />}
 
       {currentUser && <StatsPanel favsCount={favs.length} ordersCount={ordersCount} />}
 

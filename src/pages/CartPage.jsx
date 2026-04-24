@@ -4,7 +4,7 @@ import { createOrder } from '../services/contentApi'
 
 export default function CartPage() {
   const navigate = useNavigate()
-  const { cart, removeFromCart, cartTotal, clearCart, currentUser, showToast } = useApp()
+  const { cart, removeFromCart, cartTotal, clearCart, currentUser, setCurrentUser, showToast } = useApp()
 
   if (cart.length === 0) {
     return (
@@ -43,7 +43,7 @@ export default function CartPage() {
     }
 
     try {
-      await createOrder({
+      const payload = await createOrder({
         items: cart.map(item => ({
           id: item.art.id,
           title: item.art.title,
@@ -53,6 +53,14 @@ export default function CartPage() {
           qty: item.qty,
         })),
       })
+
+      if (payload?.membership && currentUser) {
+        setCurrentUser({
+          ...currentUser,
+          totalSpent: payload.membership.totalSpent ?? currentUser.totalSpent ?? 0,
+          currentTierLevel: payload.membership.currentTierLevel ?? currentUser.currentTierLevel ?? 0,
+        })
+      }
 
       clearCart()
       showToast('下单成功')

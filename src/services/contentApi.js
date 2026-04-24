@@ -56,6 +56,8 @@ function normalizeCurrentUser(user) {
     artistIntro: user.artistIntro ?? '',
     portfolioUrl: user.portfolioUrl ?? '',
     artistProfileId: user.artistProfileId ?? user.artistId ?? user.id ?? null,
+    totalSpent: Number(user.totalSpent ?? user.total_spent ?? 0),
+    currentTierLevel: Number(user.currentTierLevel ?? user.current_tier_level ?? 0),
   }
 }
 
