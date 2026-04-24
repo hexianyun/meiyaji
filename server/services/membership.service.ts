@@ -3,28 +3,53 @@ import { Prisma, PrismaClient } from '@prisma/client'
 export const MEMBERSHIP_TIERS = [
   {
     level: 0,
+    name: '普通会员',
     threshold: 0,
-    perks: ['Browse and purchase artworks', 'Apply to become an artist'],
+    perks: [],
   },
   {
     level: 1,
+    name: '新芽伙伴',
     threshold: 3000,
-    perks: ['Digital membership certificate', 'Priority nonprofit updates'],
+    perks: [
+      '新萌芽精美伴手礼一份',
+      '公益支持纪念证书',
+    ],
   },
   {
     level: 2,
+    name: '抽枝使者',
     threshold: 5000,
-    perks: ['Tier 2 digital certificate', 'Priority event registration', 'Dedicated nonprofit notifications'],
+    perks: [
+      '新萌芽精美伴手礼一份',
+      '艺术家原创速写作品一幅',
+      '公益支持纪念证书',
+    ],
   },
   {
     level: 3,
+    name: '繁花藏家',
     threshold: 10000,
-    perks: ['Tier 3 digital certificate', 'Meiyaji gift package', 'Priority charity auction access'],
+    perks: [
+      '新萌芽精美伴手礼一份',
+      '艺术家原创速写作品一幅',
+      '艺术家小幅原作一幅',
+      '公益支持纪念证书',
+    ],
   },
   {
     level: 4,
+    name: '硕果共建人',
     threshold: 100000,
-    perks: ['Tier 4 honor certificate', 'Annual nonprofit commemorative gift', 'Priority invitation and dedicated acknowledgment'],
+    perks: [
+      '新萌芽精美伴手礼一份',
+      '艺术家原创速写作品一幅',
+      '艺术家小幅原作一幅',
+      '尊享乡村美育公益项目支持冠名权',
+      '在项目成果册、活动现场及官方宣传中专属署名鸣谢',
+      '受邀参与线下美育公益活动与艺术交流',
+      '公益支持纪念证书',
+    ],
   },
 ] as const
 
