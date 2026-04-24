@@ -6,13 +6,13 @@ const { Prisma } = prismaPackage
 export const MEMBERSHIP_TIERS = [
   {
     level: 0,
-    name: '普通会员',
+    name: '观艺',
     threshold: 0,
     perks: [],
   },
   {
     level: 1,
-    name: '新芽伙伴',
+    name: '拾色',
     threshold: 3000,
     perks: [
       '新萌芽精美伴手礼一份',
@@ -21,7 +21,7 @@ export const MEMBERSHIP_TIERS = [
   },
   {
     level: 2,
-    name: '抽枝使者',
+    name: '描心',
     threshold: 5000,
     perks: [
       '新萌芽精美伴手礼一份',
@@ -31,7 +31,7 @@ export const MEMBERSHIP_TIERS = [
   },
   {
     level: 3,
-    name: '繁花藏家',
+    name: '臻赏',
     threshold: 10000,
     perks: [
       '新萌芽精美伴手礼一份',
@@ -42,7 +42,7 @@ export const MEMBERSHIP_TIERS = [
   },
   {
     level: 4,
-    name: '硕果共建人',
+    name: '传薪',
     threshold: 100000,
     perks: [
       '新萌芽精美伴手礼一份',
